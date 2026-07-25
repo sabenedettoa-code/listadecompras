@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%236366f1'/><g fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'><path d='M192 180 V 140 A 64 64 0 0 1 320 140 V 180'/><path d='M128 180 H 384 L 360 400 A 24 24 0 0 1 336 424 H 176 A 24 24 0 0 1 152 400 Z' fill='%23ffffff' fill-opacity='0.2'/><path d='M220 290 L 248 318 L 300 260' stroke-width='36'/></g></svg>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#6366f1">
   <title>Mis Listas de Compras</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Favicon Integrado -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%236366f1'/><g fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'><path d='M192 180 V 140 A 64 64 0 0 1 320 140 V 180'/><path d='M128 180 H 384 L 360 400 A 24 24 0 0 1 336 424 H 176 A 24 24 0 0 1 152 400 Z' fill='%23ffffff' fill-opacity='0.2'/><path d='M220 290 L 248 318 L 300 260' stroke-width='36'/></g></svg>">
+
   <style>
     :root {
       --primary: #6366f1;
@@ -16,7 +20,22 @@
       --text: #0f172a;
       --text-muted: #64748b;
       --danger: #ef4444;
+      --success: #10b981;
       --border: #e2e8f0;
+      --tab-bg: #f1f5f9;
+      --shadow: rgba(0, 0, 0, 0.05);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --card-bg: #1e293b;
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --border: #334155;
+        --tab-bg: #0f172a;
+        --shadow: rgba(0, 0, 0, 0.3);
+      }
     }
 
     * { box-sizing: border-box; }
@@ -29,6 +48,7 @@
       justify-content: center;
       padding: 20px 16px;
       margin: 0;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     .container {
@@ -37,14 +57,15 @@
       max-width: 440px;
       padding: 20px;
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 30px var(--shadow);
+      position: relative;
     }
 
     .nav-tabs {
       display: flex;
       gap: 6px;
       margin-bottom: 20px;
-      background-color: #f1f5f9;
+      background-color: var(--tab-bg);
       padding: 4px;
       border-radius: 12px;
     }
@@ -64,35 +85,41 @@
 
     .nav-btn.active {
       color: var(--primary);
-      background-color: #ffffff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      background-color: var(--card-bg);
+      box-shadow: 0 2px 4px var(--shadow);
     }
 
     .input-container {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 16px;
     }
 
     input[type="text"] {
       flex: 1;
-      padding: 12px 14px;
+      padding: 12px;
       border: 2px solid var(--border);
+      background-color: var(--card-bg);
+      color: var(--text);
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
-      transition: all 0.2s;
+      min-width: 0;
     }
 
     input[type="number"] {
-      width: 60px;
-      padding: 12px 8px;
+      padding: 12px 6px;
       border: 2px solid var(--border);
+      background-color: var(--card-bg);
+      color: var(--text);
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       text-align: center;
       outline: none;
     }
+
+    .qty-input { width: 45px; }
+    .price-input { width: 85px; }
 
     input:focus { border-color: var(--primary); }
 
@@ -100,13 +127,38 @@
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 12px 16px;
+      padding: 12px 14px;
       border-radius: 12px;
       font-weight: 600;
       cursor: pointer;
     }
 
     .btn-main:hover { background-color: var(--primary-hover); }
+
+    .action-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .btn-sec {
+      flex: 1;
+      background-color: var(--tab-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: background 0.2s;
+    }
+
+    .btn-sec:hover { background-color: var(--border); }
 
     .btn-share {
       background-color: #25d366;
@@ -117,96 +169,175 @@
       font-weight: 600;
       font-size: 0.85rem;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
     }
 
-    .btn-share:hover { background-color: #20ba5a; }
+    /* Barra de Progreso Visual */
+    .progress-container {
+      margin-bottom: 16px;
+      background: var(--tab-bg);
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .progress-track {
+      height: 8px;
+      background-color: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--success);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
 
     .list-card {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 14px;
-      background: #ffffff;
+      background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       margin-bottom: 10px;
       cursor: pointer;
-      transition: all 0.2s;
     }
-
-    .list-card:hover { border-color: var(--primary); }
 
     .list-info h4 { margin: 0 0 4px 0; font-size: 1rem; }
     .list-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+
+    .category-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      margin: 16px 0 8px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .category-nav-btns {
+      display: flex;
+      gap: 2px;
+    }
+
+    .btn-cat-order {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .btn-cat-order:hover { background-color: var(--tab-bg); color: var(--text); }
 
     ul { list-style: none; padding: 0; margin: 0; }
 
     li {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      background: #ffffff;
+      gap: 8px;
+      padding: 10px;
+      background: var(--card-bg);
       border-radius: 10px;
       margin-bottom: 8px;
       border: 1px solid var(--border);
     }
 
-    .item-text { flex: 1; cursor: pointer; word-break: break-word; }
-    .comprado { text-decoration: line-through; color: #94a3b8; }
+    .item-details { flex: 1; min-width: 0; cursor: pointer; }
+    .item-name { font-weight: 500; font-size: 0.93rem; word-break: break-word; }
+    .item-subtext { font-size: 0.78rem; color: var(--text-muted); }
+
+    .comprado { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
 
     .qty-controls {
       display: flex;
       align-items: center;
-      gap: 4px;
-      background: #f1f5f9;
-      padding: 2px 6px;
+      gap: 2px;
+      background: var(--tab-bg);
+      padding: 2px 4px;
       border-radius: 8px;
     }
 
-    .btn-qty { background: none; border: none; cursor: pointer; font-weight: bold; }
-    .btn-delete { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.1rem; }
+    .btn-qty { background: none; border: none; color: var(--text); cursor: pointer; font-weight: bold; padding: 2px 6px; }
+    .btn-delete { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
     .btn-delete:hover { color: var(--danger); }
 
-    .sub-tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .sub-btn {
-      background: none;
-      border: none;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 4px 8px;
+    .inline-price {
+      width: 70px;
+      padding: 4px 6px;
+      border: 1px solid var(--border);
+      background-color: var(--card-bg);
+      color: var(--text);
       border-radius: 6px;
+      font-size: 0.8rem;
+      text-align: right;
     }
 
-    .sub-btn.active { background: #e2e8f0; color: var(--text); font-weight: 600; }
-
-    .header-active {
+    .budget-summary {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: var(--tab-bg);
+      border-radius: 12px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
-      gap: 8px;
+      align-items: center;
+      font-size: 0.88rem;
     }
 
-    .btn-back {
-      background: none;
-      border: none;
-      color: var(--primary);
-      font-weight: 600;
-      cursor: pointer;
-      padding: 0;
-    }
+    .budget-item { text-align: center; }
+    .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; }
+    .budget-val { font-weight: 700; font-size: 0.95rem; }
+    .budget-val.spent { color: var(--success); }
 
+    .sub-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .sub-btn { background: none; border: none; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+    .sub-btn.active { background: var(--tab-bg); color: var(--text); font-weight: 600; }
+
+    .header-active { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 8px; }
+    .btn-back { background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; padding: 0; }
     .empty-msg { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 30px; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background-color: var(--text);
+      color: var(--card-bg);
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
   </style>
 </head>
 <body>
@@ -218,17 +349,24 @@
       <button class="nav-btn" id="navListaActiva" onclick="verSeccion('lista-activa')">🛒 Lista Actual</button>
     </div>
 
-    <!-- SECCIÓN 1: MIS LISTAS ORGANIZADAS -->
+    <!-- SECCIÓN 1: MIS LISTAS -->
     <div id="secMisListas">
       <div class="input-container">
-        <input type="text" id="nombreNuevaLista" placeholder="Nombre de nueva lista (ej: Supermercado)...">
+        <input type="text" id="nombreNuevaLista" placeholder="Ej: Mercado mensual, Asado del domingo...">
         <button class="btn-main" onclick="crearNuevaLista()">Crear</button>
+      </div>
+
+      <!-- Respaldo JSON -->
+      <div class="action-bar">
+        <button class="btn-sec" onclick="exportarBackup()">💾 Exportar Backup</button>
+        <button class="btn-sec" onclick="document.getElementById('importFileInput').click()">📂 Importar Backup</button>
+        <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importarBackup(event)">
       </div>
 
       <div id="contenedorListas"></div>
     </div>
 
-    <!-- SECCIÓN 2: DETALLE DE LA LISTA SELECCIONADA -->
+    <!-- SECCIÓN 2: DETALLE DE LISTA ACTIVA -->
     <div id="secListaActiva" style="display: none;">
       <div class="header-active">
         <button class="btn-back" onclick="verSeccion('mis-listas')">← Listas</button>
@@ -236,10 +374,79 @@
         <button class="btn-share" onclick="compartirListaActiva()">📲 Compartir</button>
       </div>
 
+      <!-- Barra de Progreso Visual -->
+      <div class="progress-container">
+        <div class="progress-text">
+          <span id="txtProgresoEstado">0 de 0 productos en el carro</span>
+          <span id="txtProgresoPorcentaje">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="fillProgreso" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Formulario con Sugerencias Genericas Chilenas -->
       <div class="input-container">
-        <input type="number" id="itemQty" value="1" min="1" max="99">
-        <input type="text" id="itemInput" placeholder="Añadir producto...">
-        <button class="btn-main" onclick="agregarProducto()">Agregar</button>
+        <input type="number" id="itemQty" class="qty-input" value="1" min="1" max="99" title="Cantidad">
+        <input type="text" id="itemInput" list="sugerenciasGenericasChilenas" placeholder="Producto...">
+        <datalist id="sugerenciasGenericasChilenas">
+          <option value="Marraqueta"></option>
+          <option value="Hallulla"></option>
+          <option value="Pan de molde"></option>
+          <option value="Palta hass"></option>
+          <option value="Tomate"></option>
+          <option value="Leche entera"></option>
+          <option value="Leche descremada"></option>
+          <option value="Huevos"></option>
+          <option value="Queso gauda"></option>
+          <option value="Quesillo"></option>
+          <option value="Mantequilla"></option>
+          <option value="Manjar"></option>
+          <option value="Yogur"></option>
+          <option value="Carne molida"></option>
+          <option value="Lomo vetado"></option>
+          <option value="Lomo liso"></option>
+          <option value="Sobrecostilla"></option>
+          <option value="Huachalomo"></option>
+          <option value="Tapapecho"></option>
+          <option value="Abastero"></option>
+          <option value="Entraña"></option>
+          <option value="Pechuga de pollo"></option>
+          <option value="Vienesas"></option>
+          <option value="Longaniza"></option>
+          <option value="Choricillo"></option>
+          <option value="Arroz"></option>
+          <option value="Tallarines"></option>
+          <option value="Espaguetis"></option>
+          <option value="Salsa de tomate"></option>
+          <option value="Aceite de maravilla"></option>
+          <option value="Jurel en tarro"></option>
+          <option value="Atún en lata"></option>
+          <option value="Detergente"></option>
+          <option value="Cloro gel"></option>
+          <option value="Lavaloza"></option>
+          <option value="Toalla nova"></option>
+          <option value="Papel higiénico"></option>
+          <option value="Limpiavidrios"></option>
+          <option value="Limpiapisos"></option>
+          <option value="Agua mineral"></option>
+          <option value="Bebida"></option>
+          <option value="Jugo en sobre"></option>
+          <option value="Pisco"></option>
+          <option value="Cerveza"></option>
+          <option value="Vino tinto"></option>
+          <option value="Papas fritas"></option>
+          <option value="Ramitas"></option>
+          <option value="Maní salado"></option>
+        </datalist>
+        <input type="number" id="itemPrice" class="price-input" placeholder="$ CLP" min="0" step="1" title="Precio CLP">
+        <button class="btn-main" onclick="agregarProducto()">+</button>
+      </div>
+
+      <!-- Acciones Rápidas -->
+      <div class="action-bar">
+        <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar Lista</button>
+        <button class="btn-sec" onclick="copiarComoTexto()">📝 Copiar Texto</button>
       </div>
 
       <div class="sub-tabs">
@@ -247,30 +454,66 @@
         <button class="sub-btn" id="subTabComprados" onclick="cambiarFiltro('comprados')">Comprados</button>
       </div>
 
-      <ul id="listaProductos"></ul>
+      <div id="contenedorProductosCategorizados"></div>
+
+      <div class="budget-summary" id="panelPresupuesto">
+        <div class="budget-item">
+          <div class="budget-label">Llevas gastado</div>
+          <div class="budget-val spent" id="valGastado">$0 CLP</div>
+        </div>
+        <div style="height: 24px; width: 1px; background: var(--border);"></div>
+        <div class="budget-item">
+          <div class="budget-label">Total Estimado</div>
+          <div class="budget-val" id="valTotal">$0 CLP</div>
+        </div>
+      </div>
     </div>
 
   </div>
+
+  <div id="toast" class="toast">¡Mensaje del sistema!</div>
 
   <script>
     let coleccionListas = [];
     let idListaActiva = null;
     let filtroProductos = 'pendientes';
 
-    function obtenerIcono(texto) {
-      const t = texto.toLowerCase();
-      if (/(leche|queso|yogur|mantequilla)/.test(t)) return '🥛';
-      if (/(huevos|huevo)/.test(t)) return '🥚';
-      if (/(manzana|fresa|tomate|papa|cebolla|verdura|fruta)/.test(t)) return '🥦';
-      if (/(carne|pollo|pescado|jamon)/.test(t)) return '🥩';
-      if (/(pan|harina|arroz|fideos|pasta)/.test(t)) return '🍞';
-      if (/(jabon|detergente|papel|limpiador)/.test(t)) return '🧹';
-      if (/(agua|jugo|cerveza|vino|cafe)/.test(t)) return '🥤';
-      return '🛒';
+    const formatoCLP = new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      maximumFractionDigits: 0
+    });
+
+    let CATEGORIAS = [
+      { id: 'frescos', nombre: 'Frutas y Verduras', icono: '🥦', regex: /(manzana|platano|plátano|banano|pera|frutilla|uva|limon|limón|naranja|mandarina|clementina|tomate|tomates|papa|papas|cebolla|cebollas|lechuga|zanahoria|palta|pimenton|pimentón|choclo|zapallo|zapallito|cebollin|cebollín|cilantro|perejil|ajo|ají|aji|champignon|champiñon|champiñones|durazno|damasco|ciruela|kiwi|melon|melón|sandia|sandía|higo|caqui|membrillo|granada|maracuya|maracuyá|frambuesa|mora|arandano|arándano|piña|albahaca|espinaca|acelga|repollo|coliflor|brócoli|brocoli|betarraga|rabanito|rabanitos|apio|puerro|hinojo|espárrago|esparrago|alcachofa|arveja|arvejas|poroto verde|porotos verdes|haba|habas|camote|pepino|huesillo|jengibre|merken|merkén|salvia|romero|tomillo|menta|ciboulette)/i },
+      { id: 'lacteos', nombre: 'Lácteos, Huevos y Cecinas', icono: '🥛', regex: /(leche|queso|quesillo|yogur|yogurt|mantequilla|margarina|crema|huevo|huevos|manjar|jamon|jamón|vienesa|vienesas|salchicha|salchichas|longaniza|longanizas|chorizo|chorizos|tocino|salame|pate|paté|arrollado|arrollado de huaso|queso gauda|queso chanco|queso mantecoso|queso mozzarella|queso parmesano|queso de cabra|queso crema|ricotta|provolone|mortadela|salchichón|queso de cabeza|jamón serrano|jamón de pavo|jamón de pierna|choricillo|choricillos|chicharron|chicharrón|prieta|prietas|morcilla|jamonada)/i },
+      { id: 'carnes', nombre: 'Carnes, Pescados y Mariscos', icono: '🥩', regex: /(carne|carnes|lomo|aloyado|lomo vetado|lomo liso|lomo carnudo|asado|asado carnicero|costillar|pollo|pechuga|muslo|truto|trutos|ala|alas|cerdo|pescado|reineta|salmon|salmón|atun|atún|merluza|carne molida|posta|posta negra|posta rosada|chuleta|sobrecostilla|huachalomo|tapapecho|abastero|entraña|entrañita|palanca|plateada|punta de ganso|punta picana|tapacostilla|choclillo|ganso|asado de tira|malaya|churrasco|churrascos|escalopa|milanesa|albondiga|albóndiga|hamburguesa|hamburguesas|pavo|pavo deshuesado|cordero|chivo|conejo|guatitas|lengua|chunchules|molleja|mollejas|hígado|higado|corazon|corazón|marisco|mariscos|chorito|choritos|almeja|almejas|macha|machas|ostion|ostión|ostiones|camaron|camarón|camarones|jaiba|centolla|pulpo|calamar|calamares|piure|picoroco|loco|locos|cochayuyo|luche|erizo|erizos|navajuela|sardina|sardinas|sierra|corvina|lenguado)/i },
+      { id: 'panaderia', nombre: 'Panadería y Cereal', icono: '🍞', regex: /(pan|pancito|marraqueta|marraquetas|hallulla|hallullas|dobladita|dobladitas|galleta|galletas|harina|arroz|fideos|tallarines|espageti|espagueti|pasta|pastas|cereal|cereales|avena|tostadas|pan de molde|pan frica|pan de hot dog|pan pita|pan ciabatta|pan baguette|pan de masa madre|pan integral|pan amasado|coliza|bocado de dama|sopaipilla|sopaipillas|empanada|empanadas|pino|queso empanada|tortilla|tortillas|rapiditas|croissant|medialuna|medialunas|dona|donas|muffin|muffins|queque|queques|brownie|brownies|panqueque|panqueques|corbatitas|espirales|lasaña|lasagna|ñoquis|sémola|semola|harina tostada|quinoa|quínoa|mote|granola)/i },
+      { id: 'despensa', nombre: 'Despensa y Abarrotes', icono: '🥫', regex: /(aceite|sal|azucar|azúcar|lenteja|lentejas|poroto|porotos|garbanzo|garbanzos|salsa|ketchup|kétchup|mostaza|mayonesa|mayo|conserva|jurel|atun en lata|atún en lata|sopa|sopas|caldo|caldos|salsa de tomate|salsas|aderezo|aliño|aliño completo|comino|pimienta|orégano|oregano|paprika|pimentón en polvo|curry|cúrcuma|curcuma|laurel|vinagre|salsa de soya|salsa inglesa|salsa de ajo|ají color|aji color|puré|pure|puré de papas|palmitos|palmito|aceitunas|aceituna|pepinillos|alcaparras|salsa barbacoa|mermelada|mermeladas|miel|miel de abeja|leche condensada|leche evaporada|polvo de hornear|polvos de hornear|bicarbonato|esencia de vainilla|levadura|cobertura de chocolate|maicena|chuño|gelatina|jalea|flan|saborizante|coco rallado)/i },
+      { id: 'limpieza', nombre: 'Limpieza e Higiene', icono: '🧹', regex: /(jabón|jabon|detergente|cloro|desinfectante|papel|suavizante|limpiador|limpiavidrios|limpia vidrios|limpiapisos|lustramuebles|desengrasante|esponja|esponjas|shampoo|champú|champu|acondicionador|papel higienico|papel higiénico|toalla nova|toallas nova|toalla absorbente|desodorante|pasta de dientes|crema dental|cepillo de dientes|lavaloza|mopa|escoba|escobillón|escobillon|pala|bolsa de basura|bolsas de basura|virutilla|cera para piso|pastilla wc|trapero|paño|paños|paño microfibra|guantes|guantes para loza|cotonitos|toallitas húmedas|toallitas humedas|pañal|pañales|toalla higiénica|toallas higienicas|protector diario|tampones|tampón|rasuradora|prestobarba|espuma de afeitar|hilo dental|enjuague bucal|bloqueador|bloqueador solar|crema humectante|crema corporal|talco|algodón|algodon|parche curita|agua oxigenada|alcohol|alcohol gel|preservativo|preservativos|condón|condones)/i },
+      { id: 'bebidas', nombre: 'Bebidas y Bares', icono: '🥤', regex: /(agua|agua mineral|jugo|jugos|refresco|gaseosa|bebida|bebidas|cerveza|cervezas|vino|vinos|pisco|piscola|ron|vodka|gin|whisky|whiskey|tequila|fernet|licor|champagne|espumante|espumoso|sangria|sangría|borgoña|clery|navegado|terremoto|pipeño|chicha|ginger ale|agua tónica|agua tonica|energetica|energética|jugo en sobre|jugo en polvo|jugo concentrado|cafe|café|cafe descafeinado|cafe molido|cafe en grano|\bte\b|\bté\b|té en bolsa|té de hierbas|manzanilla|anis|anís|boldo|hierba mate|mate)/i },
+      { id: 'snack', nombre: 'Snacks y Dulces', icono: '🍫', regex: /(chocolate|chocolates|dulce|dulces|caramelo|caramelos|helado|helados|pastel|pasteles|torta|tortas|papas fritas|maní|mani|snack|snacks|ramitas|gomitas|chocolatina|barrita de cereal|frutos secos|almendras|nueces|castañas de caju|pistachos|avellanas|semillas de girasol|maravilla|bocadillos|tortillas de maíz|nachos|cabritas|popcorn|pretzels|chicle|chicles|chupete|chupetes|malvaviscos|cuchufli|cuchuflí|turron|turrón|alfajor|alfajores|obleas|caluga|calugas)/i },
+      { id: 'libreria', nombre: 'Hogar, Mascotas y Librería', icono: '🐾', regex: /(comida de perro|comida de gato|alimento para perro|alimento para gato|arena de gato|arena sanitaria|juguete mascota|collar|correa|plato mascota|cuaderno|cuadernos|lápiz|lapiz|lápices|lapices|corrector|goma|sacapuntas|regla|tijeras|pegamento|estuche|mochila|hojas|resma|vela|velas|fósforo|fósforos|encendedor|pila|pilas|ampolleta|ampolletas|zapatilla eléctrica|cinta adhesiva|papel aluminio|alusa plas|film transparente|servilleta|servilletas|plato desechable|vaso desechable|cubiertos desechables|bombilla|bombillas|carbón|carbon|iniciador de fuego|parrilla|maceta|tierra de hojas)/i },
+      { id: 'varios', nombre: 'Otros / Varios', icono: '🛒', regex: /.*/ }
+    ];
+
+    function clasificarProducto(texto) {
+      for (const cat of CATEGORIAS) {
+        if (cat.id !== 'varios' && cat.regex.test(texto)) return cat;
+      }
+      return CATEGORIAS.find(c => c.id === 'varios');
+    }
+
+    function mostrarToast(mensaje) {
+      const toast = document.getElementById('toast');
+      toast.textContent = mensaje;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       cargarStorage();
+      cargarOrdenCategorias();
       procesarListaRecibidaPorURL();
       renderizarListas();
     });
@@ -299,45 +542,155 @@
       }
     }
 
-    /* --- COMPARTIR LISTAS (OPTIMIZADO PARA VERCEL) --- */
-    function compartirListaActiva() {
+    /* --- RESPALDO JSON (EXPORTAR / IMPORTAR) --- */
+    function exportarBackup() {
+      if (coleccionListas.length === 0) {
+        mostrarToast("⚠️ No hay listas para exportar");
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(coleccionListas));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `mis_listas_compras_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      mostrarToast("💾 Respaldo guardado con éxito");
+    }
+
+    function importarBackup(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const importadas = JSON.parse(evt.target.result);
+          if (Array.isArray(importadas)) {
+            coleccionListas = importadas;
+            guardarStorage();
+            renderizarListas();
+            mostrarToast("📂 Respaldo importado correctamente");
+          } else {
+            throw new Error();
+          }
+        } catch (err) {
+          mostrarToast("⚠️ Archivo de respaldo no válido");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    /* --- REORDENAR PASILLOS --- */
+    function moverCategoria(index, direccion) {
+      const nuevoIndex = index + direccion;
+      if (nuevoIndex < 0 || nuevoIndex >= CATEGORIAS.length) return;
+      
+      const temp = CATEGORIAS[index];
+      CATEGORIAS[index] = CATEGORIAS[nuevoIndex];
+      CATEGORIAS[nuevoIndex] = temp;
+
+      guardarOrdenCategorias();
+      renderizarProductos();
+    }
+
+    function guardarOrdenCategorias() {
+      const ordenIds = CATEGORIAS.map(c => c.id);
+      localStorage.setItem('ordenPasillos_v1', JSON.stringify(ordenIds));
+    }
+
+    function cargarOrdenCategorias() {
+      const datos = localStorage.getItem('ordenPasillos_v1');
+      if (datos) {
+        try {
+          const ordenIds = JSON.parse(datos);
+          CATEGORIAS.sort((a, b) => ordenIds.indexOf(a.id) - ordenIds.indexOf(b.id));
+        } catch (e) {}
+      }
+    }
+
+    function desmarcarTodos() {
+      const lista = coleccionListas.find(l => l.id === idListaActiva);
+      if (!lista || lista.items.length === 0) return;
+
+      lista.items.forEach(i => i.comprado = false);
+      guardarStorage();
+      renderizarProductos();
+      mostrarToast("🔄 Lista desmarcada para una nueva compra");
+    }
+
+    async function copiarComoTexto() {
+      const lista = coleccionListas.find(l => l.id === idListaActiva);
+      if (!lista || lista.items.length === 0) return;
+
+      let textoPlano = `🛒 *Lista: ${lista.nombre}*\n\n`;
+      let totalEstimado = 0;
+
+      lista.items.forEach(item => {
+        const subtotal = item.cantidad * (item.precio || 0);
+        totalEstimado += subtotal;
+        const precioTxt = subtotal > 0 ? ` (${formatoCLP.format(subtotal)})` : '';
+        const check = item.comprado ? '✅' : '▫️';
+        textoPlano += `${check} ${item.cantidad}x ${item.texto}${precioTxt}\n`;
+      });
+
+      if (totalEstimado > 0) {
+        textoPlano += `\n*Total estimado: ${formatoCLP.format(totalEstimado)}*`;
+      }
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(textoPlano);
+          mostrarToast("📝 Lista copiada al portapapeles");
+        } else {
+          throw new Error();
+        }
+      } catch (err) {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoPlano)}`, '_blank');
+      }
+    }
+
+    async function compartirListaActiva() {
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (!lista) return;
 
       try {
         const datosJSON = JSON.stringify({
           nombre: lista.nombre,
-          items: lista.items.map(i => ({ t: i.texto, c: i.cantidad, k: i.comprado }))
+          items: lista.items.map(i => ({ t: i.texto, c: i.cantidad, p: i.precio || 0, k: i.comprado }))
         });
 
-        // Codificación Base64 ligera para URLs cortas
         const datosBase64 = btoa(encodeURIComponent(datosJSON));
         const urlCompartida = `${window.location.origin}${window.location.pathname}?l=${datosBase64}`;
-        const textoMensaje = `Te comparto la lista de compras "${lista.nombre}":`;
 
         if (navigator.share) {
-          navigator.share({
-            title: `Lista: ${lista.nombre}`,
-            text: textoMensaje,
-            url: urlCompartida
-          }).catch(() => {
-            copiarAlPortapapeles(urlCompartida);
-          });
-        } else {
-          copiarAlPortapapeles(urlCompartida);
+          try {
+            await navigator.share({
+              title: `Lista: ${lista.nombre}`,
+              text: `Te comparto la lista de compras "${lista.nombre}":`,
+              url: urlCompartida
+            });
+            return;
+          } catch (e) {
+            if (e.name === 'AbortError') return;
+          }
         }
+        await copiarEnlace(urlCompartida, lista.nombre);
       } catch (error) {
-        alert("Error al generar el enlace para compartir.");
+        mostrarToast("⚠️ Error al compartir");
       }
     }
 
-    function copiarAlPortapapeles(url) {
-      navigator.clipboard.writeText(url).then(() => {
-        alert("¡Enlace copiado al portapapeles! Puedes pegarlo en WhatsApp o enviarlo a quien quieras.");
-      }).catch(() => {
-        const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista de compras: ${url}`)}`;
-        window.open(waUrl, '_blank');
-      });
+    async function copiarEnlace(url, nombreLista) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(url);
+          mostrarToast(`📋 ¡Enlace copiado!`);
+        } else { throw new Error(); }
+      } catch (err) {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista "${nombreLista}": ${url}`)}`, '_blank');
+      }
     }
 
     function procesarListaRecibidaPorURL() {
@@ -346,60 +699,43 @@
 
       if (datosBase64) {
         try {
-          let datos;
-          if (urlParams.get('l')) {
-            const jsonString = decodeURIComponent(atob(datosBase64));
-            datos = JSON.parse(jsonString);
-          } else {
-            datos = JSON.parse(decodeURIComponent(datosBase64));
-          }
-          
+          let datos = JSON.parse(urlParams.get('l') ? decodeURIComponent(atob(datosBase64)) : decodeURIComponent(datosBase64));
           if (datos && datos.nombre) {
-            const itemsRestaurados = (datos.items || []).map(i => ({
-              id: Date.now() + Math.random(),
-              texto: i.t || i.texto,
-              cantidad: i.c || i.cantidad || 1,
-              icono: obtenerIcono(i.t || i.texto),
-              comprado: i.k || i.comprado || false
-            }));
+            const itemsRestaurados = (datos.items || []).map(i => {
+              const catInfo = clasificarProducto(i.t || i.texto);
+              return {
+                id: Date.now() + Math.random(),
+                texto: i.t || i.texto,
+                cantidad: i.c || i.cantidad || 1,
+                precio: Math.round(i.p || i.precio || 0),
+                categoriaId: catInfo.id,
+                icono: catInfo.icono,
+                comprado: i.k || i.comprado || false
+              };
+            });
 
-            const nuevaListaImportada = {
-              id: Date.now(),
-              nombre: `${datos.nombre} (Compartida)`,
-              items: itemsRestaurados
-            };
-
-            coleccionListas.push(nuevaListaImportada);
+            const nuevaLista = { id: Date.now(), nombre: `${datos.nombre} (Compartida)`, items: itemsRestaurados };
+            coleccionListas.push(nuevaLista);
             guardarStorage();
-            
-            // Limpia los parámetros de la URL sin recargar
             window.history.replaceState({}, document.title, window.location.pathname);
-            
-            abrirLista(nuevaListaImportada.id);
-            alert(`¡Has recibido la lista "${datos.nombre}" correctamente!`);
+            abrirLista(nuevaLista.id);
+            mostrarToast(`🎉 ¡Lista "${datos.nombre}" importada!`);
           }
-        } catch (e) {
-          console.error("Error al procesar la lista recibida:", e);
-        }
+        } catch (e) { console.error(e); }
       }
     }
 
-    /* --- GESTIÓN DE LISTAS --- */
     function crearNuevaLista() {
       const input = document.getElementById('nombreNuevaLista');
       const nombre = input.value.trim();
       if (!nombre) return;
 
-      const nuevaLista = {
-        id: Date.now(),
-        nombre: nombre,
-        items: []
-      };
-
+      const nuevaLista = { id: Date.now(), nombre: nombre, items: [] };
       coleccionListas.push(nuevaLista);
       guardarStorage();
       input.value = "";
       abrirLista(nuevaLista.id);
+      mostrarToast(`✨ Lista creada`);
     }
 
     function abrirLista(id) {
@@ -413,28 +749,25 @@
       if (idListaActiva === id) idListaActiva = null;
       guardarStorage();
       renderizarListas();
+      mostrarToast(`🗑️ Lista eliminada`);
     }
 
     function renderizarListas() {
       const contenedor = document.getElementById('contenedorListas');
       contenedor.innerHTML = "";
-
       if (coleccionListas.length === 0) {
         contenedor.innerHTML = '<p class="empty-msg">No tienes listas creadas. ¡Crea una arriba!</p>';
         return;
       }
-
       coleccionListas.forEach(lista => {
         const pendientes = lista.items.filter(i => !i.comprado).length;
-        const total = lista.items.length;
-
         const div = document.createElement('div');
         div.className = 'list-card';
         div.onclick = () => abrirLista(lista.id);
         div.innerHTML = `
           <div class="list-info">
             <h4>📌 ${escapeHtml(lista.nombre)}</h4>
-            <p>${pendientes} pendientes de ${total} productos</p>
+            <p>${pendientes} pendientes de ${lista.items.length} productos</p>
           </div>
           <button class="btn-delete" onclick="eliminarLista(event, ${lista.id})">🗑️</button>
         `;
@@ -442,24 +775,29 @@
       });
     }
 
-    /* --- PRODUCTOS DENTRO DE LA LISTA ACTIVA --- */
     function agregarProducto() {
       if (!idListaActiva) return;
 
       const input = document.getElementById('itemInput');
       const qtyInput = document.getElementById('itemQty');
+      const priceInput = document.getElementById('itemPrice');
+      
       const texto = input.value.trim();
       const cantidad = parseInt(qtyInput.value) || 1;
+      const precio = Math.round(parseFloat(priceInput.value) || 0);
 
       if (!texto) return;
 
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (lista) {
+        const catInfo = clasificarProducto(texto);
         lista.items.push({
           id: Date.now(),
           texto: texto,
           cantidad: cantidad,
-          icono: obtenerIcono(texto),
+          precio: precio,
+          categoriaId: catInfo.id,
+          icono: catInfo.icono,
           comprado: false
         });
 
@@ -467,6 +805,8 @@
         renderizarProductos();
         input.value = "";
         qtyInput.value = "1";
+        priceInput.value = "";
+        input.focus();
       }
     }
 
@@ -492,6 +832,18 @@
       }
     }
 
+    function actualizarPrecioProducto(prodId, nuevoPrecio) {
+      const lista = coleccionListas.find(l => l.id === idListaActiva);
+      if (lista) {
+        const prod = lista.items.find(i => i.id === prodId);
+        if (prod) {
+          prod.precio = Math.max(0, Math.round(parseFloat(nuevoPrecio) || 0));
+          guardarStorage();
+          renderizarProductos();
+        }
+      }
+    }
+
     function eliminarProducto(prodId) {
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (lista) {
@@ -508,57 +860,102 @@
       renderizarProductos();
     }
 
+    function actualizarPresupuestoYProgreso(lista) {
+      let gastado = 0;
+      let total = 0;
+      let compradosCount = 0;
+      const totalItems = lista.items.length;
+
+      lista.items.forEach(item => {
+        const subtotal = item.cantidad * Math.round(item.precio || 0);
+        total += subtotal;
+        if (item.comprado) {
+          gastado += subtotal;
+          compradosCount++;
+        }
+      });
+
+      document.getElementById('valGastado').textContent = formatoCLP.format(gastado);
+      document.getElementById('valTotal').textContent = formatoCLP.format(total);
+
+      // Barra de progreso
+      const pct = totalItems > 0 ? Math.round((compradosCount / totalItems) * 100) : 0;
+      document.getElementById('txtProgresoEstado').textContent = `${compradosCount} de ${totalItems} productos en el carro`;
+      document.getElementById('txtProgresoPorcentaje').textContent = `${pct}%`;
+      document.getElementById('fillProgreso').style.width = `${pct}%`;
+    }
+
     function renderizarProductos() {
-      const ul = document.getElementById('listaProductos');
+      const contenedor = document.getElementById('contenedorProductosCategorizados');
       const titulo = document.getElementById('tituloListaActiva');
-      ul.innerHTML = "";
+      contenedor.innerHTML = "";
 
       const lista = coleccionListas.find(l => l.id === idListaActiva);
-
-      if (!lista) {
-        titulo.textContent = "Selecciona una lista";
-        ul.innerHTML = '<p class="empty-msg">No hay ninguna lista seleccionada.</p>';
-        return;
-      }
+      if (!lista) return;
 
       titulo.textContent = lista.nombre;
+      actualizarPresupuestoYProgreso(lista);
 
       const filtrados = lista.items.filter(item => 
         filtroProductos === 'pendientes' ? !item.comprado : item.comprado
       );
 
       if (filtrados.length === 0) {
-        ul.innerHTML = `<p class="empty-msg">${filtroProductos === 'pendientes' ? '¡Todo comprado en esta lista!' : 'No hay productos comprados aún.'}</p>`;
+        contenedor.innerHTML = `<p class="empty-msg">${filtroProductos === 'pendientes' ? '¡Todo comprado!' : 'No hay productos comprados.'}</p>`;
         return;
       }
 
-      filtrados.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${item.icono}</span>
-          <span class="item-text ${item.comprado ? 'comprado' : ''}" onclick="cambiarEstadoProducto(${item.id})">
-            ${escapeHtml(item.texto)}
-          </span>
-          <div class="qty-controls">
-            <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, -1)">-</button>
-            <span>${item.cantidad}</span>
-            <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, 1)">+</button>
-          </div>
-          <button class="btn-delete" onclick="eliminarProducto(${item.id})">✕</button>
-        `;
-        ul.appendChild(li);
+      CATEGORIAS.forEach((cat, index) => {
+        const itemsDeCat = filtrados.filter(i => (i.categoriaId || clasificarProducto(i.texto).id) === cat.id);
+
+        if (itemsDeCat.length > 0) {
+          const header = document.createElement('div');
+          header.className = 'category-header';
+          header.innerHTML = `
+            <div class="category-title">
+              <span>${cat.icono}</span> <span>${cat.nombre}</span>
+            </div>
+            <div class="category-nav-btns">
+              <button class="btn-cat-order" onclick="moverCategoria(${index}, -1)" title="Subir pasillo">▲</button>
+              <button class="btn-cat-order" onclick="moverCategoria(${index}, 1)" title="Bajar pasillo">▼</button>
+            </div>
+          `;
+          contenedor.appendChild(header);
+
+          const ul = document.createElement('ul');
+
+          itemsDeCat.forEach(item => {
+            const li = document.createElement('li');
+            const subtotal = item.cantidad * (item.precio || 0);
+
+            li.innerHTML = `
+              <div class="item-details ${item.comprado ? 'comprado' : ''}" onclick="cambiarEstadoProducto(${item.id})">
+                <div class="item-name">${escapeHtml(item.texto)}</div>
+                <div class="item-subtext">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}</div>
+              </div>
+              
+              <input type="number" class="inline-price" value="${item.precio || ''}" placeholder="$ CLP" 
+                     onchange="actualizarPrecioProducto(${item.id}, this.value)" title="Precio CLP">
+
+              <div class="qty-controls">
+                <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, -1)">-</button>
+                <span>${item.cantidad}</span>
+                <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, 1)">+</button>
+              </div>
+              <button class="btn-delete" onclick="eliminarProducto(${item.id})">✕</button>
+            `;
+            ul.appendChild(li);
+          });
+
+          contenedor.appendChild(ul);
+        }
       });
     }
 
-    function guardarStorage() {
-      localStorage.setItem('misListasCompras_v1', JSON.stringify(coleccionListas));
-    }
-
+    function guardarStorage() { localStorage.setItem('misListasCompras_v1', JSON.stringify(coleccionListas)); }
     function cargarStorage() {
       const datos = localStorage.getItem('misListasCompras_v1');
-      if (datos) {
-        try { coleccionListas = JSON.parse(datos); } catch (e) { coleccionListas = []; }
-      }
+      if (datos) { try { coleccionListas = JSON.parse(datos); } catch (e) { coleccionListas = []; } }
     }
 
     function escapeHtml(str) {
@@ -566,7 +963,9 @@
     }
 
     document.getElementById('nombreNuevaLista').addEventListener('keypress', e => { if (e.key === 'Enter') crearNuevaLista(); });
-    document.getElementById('itemInput').addEventListener('keypress', e => { if (e.key === 'Enter') agregarProducto(); });
+    ['itemInput', 'itemQty', 'itemPrice'].forEach(id => {
+      document.getElementById(id).addEventListener('keypress', e => { if (e.key === 'Enter') agregarProducto(); });
+    });
   </script>
 </body>
 </html>
