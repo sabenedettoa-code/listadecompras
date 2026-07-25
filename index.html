@@ -171,7 +171,6 @@
       cursor: pointer;
     }
 
-    /* Barra de Progreso Visual */
     .progress-container {
       margin-bottom: 16px;
       background: var(--tab-bg);
@@ -356,7 +355,6 @@
         <button class="btn-main" onclick="crearNuevaLista()">Crear</button>
       </div>
 
-      <!-- Respaldo JSON -->
       <div class="action-bar">
         <button class="btn-sec" onclick="exportarBackup()">💾 Exportar Backup</button>
         <button class="btn-sec" onclick="document.getElementById('importFileInput').click()">📂 Importar Backup</button>
@@ -374,7 +372,6 @@
         <button class="btn-share" onclick="compartirListaActiva()">📲 Compartir</button>
       </div>
 
-      <!-- Barra de Progreso Visual -->
       <div class="progress-container">
         <div class="progress-text">
           <span id="txtProgresoEstado">0 de 0 productos en el carro</span>
@@ -385,7 +382,6 @@
         </div>
       </div>
 
-      <!-- Formulario con Sugerencias Genericas Chilenas -->
       <div class="input-container">
         <input type="number" id="itemQty" class="qty-input" value="1" min="1" max="99" title="Cantidad">
         <input type="text" id="itemInput" list="sugerenciasGenericasChilenas" placeholder="Producto...">
@@ -443,7 +439,6 @@
         <button class="btn-main" onclick="agregarProducto()">+</button>
       </div>
 
-      <!-- Acciones Rápidas -->
       <div class="action-bar">
         <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar Lista</button>
         <button class="btn-sec" onclick="copiarComoTexto()">📝 Copiar Texto</button>
@@ -518,6 +513,7 @@
       renderizarListas();
     });
 
+    /* --- VALIDACIÓN DE ACCESO A PESTAÑA --- */
     function verSeccion(seccion) {
       const secMisListas = document.getElementById('secMisListas');
       const secListaActiva = document.getElementById('secListaActiva');
@@ -531,9 +527,16 @@
         navListaActiva.classList.remove('active');
         renderizarListas();
       } else {
-        if (!idListaActiva && coleccionListas.length > 0) {
+        // Validación: Si no hay listas creadas, no permite entrar y avisa con un Toast
+        if (coleccionListas.length === 0) {
+          mostrarToast("⚠️ Primero debes crear una lista de compras");
+          return;
+        }
+
+        if (!idListaActiva) {
           idListaActiva = coleccionListas[0].id;
         }
+
         secMisListas.style.display = 'none';
         secListaActiva.style.display = 'block';
         navMisListas.classList.remove('active');
@@ -542,7 +545,6 @@
       }
     }
 
-    /* --- RESPALDO JSON (EXPORTAR / IMPORTAR) --- */
     function exportarBackup() {
       if (coleccionListas.length === 0) {
         mostrarToast("⚠️ No hay listas para exportar");
@@ -582,7 +584,6 @@
       e.target.value = '';
     }
 
-    /* --- REORDENAR PASILLOS --- */
     function moverCategoria(index, direccion) {
       const nuevoIndex = index + direccion;
       if (nuevoIndex < 0 || nuevoIndex >= CATEGORIAS.length) return;
@@ -878,7 +879,6 @@
       document.getElementById('valGastado').textContent = formatoCLP.format(gastado);
       document.getElementById('valTotal').textContent = formatoCLP.format(total);
 
-      // Barra de progreso
       const pct = totalItems > 0 ? Math.round((compradosCount / totalItems) * 100) : 0;
       document.getElementById('txtProgresoEstado').textContent = `${compradosCount} de ${totalItems} productos en el carro`;
       document.getElementById('txtProgresoPorcentaje').textContent = `${pct}%`;
