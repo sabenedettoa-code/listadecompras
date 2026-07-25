@@ -1,20 +1,21 @@
-const CACHE_NAME = 'mi-lista-compras-v5';
+const CACHE_NAME = 'mi-lista-compras-v8';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json'
 ];
 
-// Instalación del Service Worker y almacenamiento de archivos esenciales en caché
+// Instalación e ignorar espera (fuerza la actualización inmediata)
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activación y limpieza de cachés antiguas
+// Activación y borrado inmediato de cachés viejas
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -25,34 +26,23 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.clients.claim()) // Toma el control de las pestañas abiertas inmediatamente
   );
 });
 
-// Intercepción de peticiones: estrategia "Cache First, con caída a red"
+// Estrategia Network First para HTML para asegurar que siempre cargue la última versión si hay red
 self.addEventListener('fetch', (event) => {
-  // Ignorar peticiones de extensiones o URLs no HTTP
   if (!event.request.url.startsWith('http')) return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        // Almacenar en caché dinámicamente si la respuesta es válida
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
         }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
         return networkResponse;
-      });
-    }).catch(() => {
-      // Si no hay red ni respuesta en caché, devuelve el index.html base
-      return caches.match('/index.html');
-    })
+      })
+      .catch(() => caches.match(event.request).then((cachedResponse) => cachedResponse || caches.match('/index.html')))
   );
 });
