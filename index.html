@@ -154,7 +154,6 @@
       box-shadow: 0 2px 6px var(--shadow);
     }
 
-    /* TARJETA DE AGREGAR PRODUCTO (AMPLIA Y LEGIBLE) */
     .add-product-card {
       background-color: var(--tab-bg);
       border: 2px solid var(--border);
@@ -166,16 +165,8 @@
       gap: 10px;
     }
 
-    .add-row-1 {
-      display: flex;
-      gap: 8px;
-    }
-
-    .add-row-2 {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+    .add-row-1 { display: flex; gap: 8px; }
+    .add-row-2 { display: flex; gap: 8px; align-items: center; }
 
     .input-product-large {
       flex: 1;
@@ -191,14 +182,8 @@
       min-height: 50px;
     }
 
-    .input-product-large:focus {
-      border-color: var(--primary);
-    }
-
-    .input-product-large::placeholder {
-      color: var(--text-muted);
-      opacity: 0.8;
-    }
+    .input-product-large:focus { border-color: var(--primary); }
+    .input-product-large::placeholder { color: var(--text-muted); opacity: 0.8; }
 
     .field-box {
       display: flex;
@@ -211,11 +196,7 @@
       min-height: 48px;
     }
 
-    .field-box label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
+    .field-box label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
 
     .input-clean {
       border: none;
@@ -383,12 +364,7 @@
       justify-content: space-between;
     }
 
-    .category-title {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .category-title { display: flex; align-items: center; gap: 6px; }
     .category-nav-btns { display: flex; gap: 4px; }
 
     .btn-cat-order {
@@ -512,6 +488,7 @@
     .btn-back { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; padding: 6px 0; font-size: 0.95rem; }
     .empty-msg { text-align: center; color: var(--text-muted); font-size: 0.95rem; margin-top: 30px; }
 
+    /* TOAST Y BOTÓN DESHACER FLOTANTE */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -519,7 +496,7 @@
       transform: translateX(-50%) translateY(100px);
       background-color: var(--text);
       color: var(--card-bg);
-      padding: 12px 20px;
+      padding: 10px 18px;
       border-radius: 30px;
       font-size: 0.9rem;
       font-weight: 600;
@@ -530,6 +507,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      max-width: 90%;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -537,21 +515,22 @@
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.82rem;
-      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 800;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .tutorial-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.85);
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 16px;
       z-index: 2000;
       opacity: 0;
       pointer-events: none;
@@ -564,33 +543,49 @@
       background: var(--card-bg);
       color: var(--text);
       width: 100%;
-      max-width: 380px;
-      padding: 24px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      max-width: 400px;
+      padding: 24px 20px;
+      border-radius: 22px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
       text-align: center;
+      border: 3px solid var(--primary);
     }
 
-    .tutorial-icon { font-size: 3rem; margin-bottom: 12px; }
-    .tutorial-card h3 { margin: 0 0 10px 0; font-size: 1.25rem; }
-    .tutorial-card p { font-size: 0.98rem; line-height: 1.5; color: var(--text-muted); margin: 0 0 20px 0; }
-    .tutorial-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
-    .dot.active { background: var(--primary); width: 20px; border-radius: 4px; }
+    .tutorial-icon { font-size: 3.2rem; margin-bottom: 8px; }
+
+    .tutorial-badge {
+      display: inline-block;
+      background-color: var(--tab-bg);
+      border: 2px solid var(--border);
+      color: var(--primary);
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .tutorial-card h3 { margin: 0 0 10px 0; font-size: 1.3rem; font-weight: 800; }
+    .tutorial-card p { font-size: 1rem; line-height: 1.5; color: var(--text-muted); margin: 0 0 20px 0; }
+
+    .tutorial-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
+    .dot.active { background: var(--primary); width: 24px; border-radius: 6px; }
+
     .tutorial-actions { display: flex; gap: 10px; }
 
     .btn-tut {
       flex: 1;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.95rem;
+      padding: 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 1rem;
       cursor: pointer;
       border: none;
-      min-height: 48px;
+      min-height: 52px;
     }
 
-    .btn-tut.prev { background-color: var(--tab-bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-tut.prev { background-color: var(--tab-bg); color: var(--text); border: 2px solid var(--border); }
     .btn-tut.next { background-color: var(--primary); color: white; }
   </style>
 </head>
@@ -648,15 +643,13 @@
         </div>
       </div>
 
-      <!-- TARJETA ESTRUCTURADA EN 2 FILAS PARA AGREGAR PRODUCTO -->
+      <!-- Formulario de Entrada -->
       <div class="add-product-card">
-        <!-- FILA 1: CUADRO DE TEXTO GIGANTE Y MICRÓFONO -->
         <div class="add-row-1">
           <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta un producto...">
           <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz">🎤</button>
         </div>
         
-        <!-- FILA 2: CANTIDAD, PRECIO Y BOTÓN AGREGAR -->
         <div class="add-row-2">
           <div class="field-box">
             <label for="itemQty">Cant:</label>
@@ -742,22 +735,18 @@
 
   <div id="toast" class="toast">
     <span id="toastMsg">Mensaje del sistema</span>
-    <button id="btnUndoToast" class="btn-undo" onclick="deshacerEliminacion()" style="display:none;">↩️ Deshacer</button>
+    <button id="btnUndoToast" class="btn-undo" onclick="ejecutarAccionDeshacer()" style="display:none;">↩️ Deshacer</button>
   </div>
 
   <!-- MODAL TUTORIAL INTERACTIVO -->
   <div id="tutorialOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div id="tutIcon" class="tutorial-icon">👋</div>
+      <div id="tutBadge" class="tutorial-badge">Paso 1 de 5</div>
       <h3 id="tutTitle">¡Bienvenido!</h3>
-      <p id="tutDesc">Esta aplicación te ayudará a organizar tus compras del supermercado de forma muy fácil.</p>
+      <p id="tutDesc">Esta aplicación te ayudará a hacer tus compras de forma fácil y ordenada.</p>
       
-      <div class="tutorial-dots">
-        <span class="dot active" id="dot0"></span>
-        <span class="dot" id="dot1"></span>
-        <span class="dot" id="dot2"></span>
-        <span class="dot" id="dot3"></span>
-      </div>
+      <div class="tutorial-dots" id="tutorialDots"></div>
 
       <div class="tutorial-actions">
         <button id="btnTutPrev" class="btn-tut prev" onclick="pasoTutorial(-1)" style="display:none;">Anterior</button>
@@ -774,28 +763,38 @@
     let esEscuchandoVoz = false;
     let escalaFuenteActual = 1;
     let wakeLockSentinel = null;
-    let ultimoProductoEliminado = null;
+    let ultimaAccionDeshacer = null;
 
     const pasosTutorialData = [
       {
         icon: '👋',
-        title: '¡Bienvenido a tu Lista!',
-        desc: 'Te enseñamos en pocos pasos cómo usar tu nueva lista de compras para el supermercado.'
+        badge: '¡Hola!',
+        title: '¡Bienvenid@ a tu Lista!',
+        desc: 'Esta aplicación fue diseñada para ayudarte a comprar sin estrés. Te enseñamos lo básico en 5 pasos breves.'
       },
       {
         icon: '📝',
-        title: '1. Crea tu Lista',
-        desc: 'Escribe el nombre que quieras (ej: "Jumbo" o "Feria") en la casilla de arriba y presiona el botón "Crear".'
+        badge: 'Paso 1',
+        title: 'Crea tu primera lista',
+        desc: 'Escribe un nombre en la casilla (ej: "Jumbo" o "Feria") y presiona el botón [Crear]. Puedes tener varias listas a la vez.'
       },
       {
         icon: '🎤',
-        title: '2. Dicta o Escribe',
-        desc: 'Puedes escribir lo que necesites o presionar el botón del micrófono 🎤 para dictarlo por voz. Se ordenará solo por pasillos.'
+        badge: 'Paso 2',
+        title: 'Dicta o Escribe productos',
+        desc: 'Toca el micrófono 🎤 para decir lo que necesitas (ej: "Dos kilos de palta"). La app ordenará todo automáticamente por pasillos (Verduras, Panadería, Aseo, etc.).'
       },
       {
-        icon: '🛒',
-        title: '3. En el Supermercado',
-        desc: 'Toca sobre el nombre de cada producto a medida que lo eches al carro. Se tachará y sabrás exactamente cuánto llevas gastado.'
+        icon: '👓',
+        badge: 'Paso 3',
+        title: 'Agranda la letra y fija la pantalla',
+        desc: 'Usa los botones [A+] arriba para ver más grande. Y en el supermercado, toca [💡 Pantalla Encendida] para que el teléfono no se apague solo.'
+      },
+      {
+        icon: '🔊',
+        badge: 'Paso 4',
+        title: 'Escucha o Tacha productos',
+        desc: 'Si no ves bien, presiona [🔊 Leer Lista] para escuchar los productos. Cuando eches algo al carro, tócalo para tacharlo (¡y si te equivocas, usa [↩️ Deshacer]!).'
       }
     ];
 
@@ -826,12 +825,10 @@
     }
 
     function vibrarConfirmacion() {
-      if (navigator.vibrate) {
-        navigator.vibrate(35);
-      }
+      if (navigator.vibrate) navigator.vibrate(35);
     }
 
-    function mostrarToast(mensaje, conUndo = false) {
+    function mostrarToast(mensaje, conUndo = false, callbackUndo = null) {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toastMsg');
       const btnUndo = document.getElementById('btnUndoToast');
@@ -839,8 +836,22 @@
       toastMsg.textContent = mensaje;
       btnUndo.style.display = conUndo ? 'inline-block' : 'none';
 
+      if (conUndo && callbackUndo) {
+        ultimaAccionDeshacer = callbackUndo;
+      } else if (!conUndo) {
+        ultimaAccionDeshacer = null;
+      }
+
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    function ejecutarAccionDeshacer() {
+      if (ultimaAccionDeshacer) {
+        ultimaAccionDeshacer();
+        ultimaAccionDeshacer = null;
+        document.getElementById('toast').classList.remove('show');
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -871,7 +882,7 @@
             mostrarToast("💡 Pantalla devuelta a modo normal");
           }
         } catch (err) {
-          mostrarToast("⚠️ No se pudo bloquear el apague de pantalla");
+          mostrarToast("⚠️ No se pudo bloquear el apagado");
         }
       } else {
         mostrarToast("⚠️ Tu navegador no admite bloqueo de apagado");
@@ -899,7 +910,7 @@
 
         const utterance = new SpeechSynthesisUtterance(texto);
         utterance.lang = 'es-CL';
-        utterance.rate = 0.9;
+        utterance.rate = 0.88;
         window.speechSynthesis.speak(utterance);
         mostrarToast("🔊 Leyendo lista en voz alta...");
       } else {
@@ -975,7 +986,7 @@
     }
 
     function comprobarTutorialPrimeraVez() {
-      const visto = localStorage.getItem('tutorialVisto_v1');
+      const visto = localStorage.getItem('tutorialVisto_v2');
       if (!visto) abrirTutorial();
     }
 
@@ -989,7 +1000,7 @@
     function cerrarTutorial() {
       vibrarConfirmacion();
       document.getElementById('tutorialOverlay').classList.remove('active');
-      localStorage.setItem('tutorialVisto_v1', 'true');
+      localStorage.setItem('tutorialVisto_v2', 'true');
     }
 
     function pasoTutorial(dir) {
@@ -1006,6 +1017,7 @@
     function actualizarTutorialUI() {
       const data = pasosTutorialData[pasoActualTutorial];
       document.getElementById('tutIcon').textContent = data.icon;
+      document.getElementById('tutBadge').textContent = data.badge;
       document.getElementById('tutTitle').textContent = data.title;
       document.getElementById('tutDesc').textContent = data.desc;
 
@@ -1013,12 +1025,15 @@
       const btnNext = document.getElementById('btnTutNext');
 
       btnPrev.style.display = pasoActualTutorial === 0 ? 'none' : 'block';
-      btnNext.textContent = pasoActualTutorial === pasosTutorialData.length - 1 ? '¡Entendido!' : 'Siguiente';
+      btnNext.textContent = pasoActualTutorial === pasosTutorialData.length - 1 ? '¡Entendido! 👍' : 'Siguiente ➔';
 
-      for (let i = 0; i < 4; i++) {
-        const dot = document.getElementById(`dot${i}`);
-        if (dot) dot.classList.toggle('active', i === pasoActualTutorial);
-      }
+      const dotsContainer = document.getElementById('tutorialDots');
+      dotsContainer.innerHTML = '';
+      pasosTutorialData.forEach((_, idx) => {
+        const dot = document.createElement('span');
+        dot.className = `dot ${idx === pasoActualTutorial ? 'active' : ''}`;
+        dotsContainer.appendChild(dot);
+      });
     }
 
     function verSeccion(seccion) {
@@ -1324,14 +1339,28 @@
       }
     }
 
+    /* --- CAMBIAR ESTADO PRODUCTO CON DESHACER SI FUE UN ERROR --- */
     function cambiarEstadoProducto(prodId) {
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (lista) {
         const prod = lista.items.find(i => i.id === prodId);
-        if (prod) prod.comprado = !prod.comprado;
-        guardarStorage();
-        renderizarProductos();
+        if (prod) {
+          prod.comprado = !prod.comprado;
+          guardarStorage();
+          renderizarProductos();
+
+          const accionTxt = prod.comprado ? 'comprado' : 'pendiente';
+          const iconoTxt = prod.comprado ? '✅' : '▫️';
+
+          // Ofrecer botón de deshacer en el Toast
+          mostrarToast(`${iconoTxt} "${prod.texto}" marcado como ${accionTxt}`, true, () => {
+            prod.comprado = !prod.comprado;
+            guardarStorage();
+            renderizarProductos();
+            mostrarToast(`↩️ Cambio en "${prod.texto}" deshacido`);
+          });
+        }
       }
     }
 
@@ -1366,31 +1395,19 @@
       if (lista) {
         const prodIndex = lista.items.findIndex(i => i.id === prodId);
         if (prodIndex !== -1) {
-          ultimoProductoEliminado = {
-            listaId: idListaActiva,
-            item: lista.items[prodIndex],
-            index: prodIndex
-          };
+          const itemEliminado = lista.items[prodIndex];
 
           lista.items.splice(prodIndex, 1);
           guardarStorage();
           renderizarProductos();
-          mostrarToast(`🗑️ "${ultimoProductoEliminado.item.texto}" borrado`, true);
+
+          mostrarToast(`🗑️ "${itemEliminado.texto}" borrado`, true, () => {
+            lista.items.splice(prodIndex, 0, itemEliminado);
+            guardarStorage();
+            renderizarProductos();
+            mostrarToast(`↩️ "${itemEliminado.texto}" restaurado`);
+          });
         }
-      }
-    }
-
-    function deshacerEliminacion() {
-      vibrarConfirmacion();
-      if (!ultimoProductoEliminado) return;
-
-      const lista = coleccionListas.find(l => l.id === ultimoProductoEliminado.listaId);
-      if (lista) {
-        lista.items.splice(ultimoProductoEliminado.index, 0, ultimoProductoEliminado.item);
-        guardarStorage();
-        renderizarProductos();
-        mostrarToast(`↩️ Producto restaurado`);
-        ultimoProductoEliminado = null;
       }
     }
 
@@ -1510,12 +1527,12 @@
     });
   </script>
 
-  <!-- REGISTRO DEL SERVICE WORKER V3 -->
+  <!-- SERVICE WORKER V5 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v3 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v5 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
