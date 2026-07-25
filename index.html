@@ -61,6 +61,35 @@
       position: relative;
     }
 
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .app-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .btn-help {
+      background-color: var(--tab-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-help:hover { background-color: var(--border); }
+
     .nav-tabs {
       display: flex;
       gap: 6px;
@@ -102,7 +131,7 @@
       background-color: var(--card-bg);
       color: var(--text);
       border-radius: 12px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       outline: none;
       min-width: 0;
     }
@@ -113,7 +142,7 @@
       background-color: var(--card-bg);
       color: var(--text);
       border-radius: 12px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       text-align: center;
       outline: none;
     }
@@ -266,7 +295,7 @@
     }
 
     .item-details { flex: 1; min-width: 0; cursor: pointer; }
-    .item-name { font-weight: 500; font-size: 0.93rem; word-break: break-word; }
+    .item-name { font-weight: 500; font-size: 0.95rem; word-break: break-word; }
     .item-subtext { font-size: 0.78rem; color: var(--text-muted); }
 
     .comprado { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
@@ -337,12 +366,111 @@
       pointer-events: none;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ESTILOS DEL MODAL TUTORIAL PARA ADULTOS MAYORES */
+    .tutorial-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .tutorial-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .tutorial-card {
+      background: var(--card-bg);
+      color: var(--text);
+      width: 100%;
+      max-width: 380px;
+      padding: 24px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .tutorial-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .tutorial-card h3 {
+      margin: 0 0 10px 0;
+      font-size: 1.25rem;
+    }
+
+    .tutorial-card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin: 0 0 20px 0;
+    }
+
+    .tutorial-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .dot.active {
+      background: var(--primary);
+      width: 20px;
+      border-radius: 4px;
+    }
+
+    .tutorial-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-tut {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-tut.prev {
+      background-color: var(--tab-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-tut.next {
+      background-color: var(--primary);
+      color: white;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
     
+    <div class="header-top">
+      <h1 class="app-title">🛒 Mis Listas</h1>
+      <button class="btn-help" onclick="abrirTutorial()">❓ ¿Cómo usar?</button>
+    </div>
+
     <div class="nav-tabs">
       <button class="nav-btn active" id="navMisListas" onclick="verSeccion('mis-listas')">📋 Mis Listas</button>
       <button class="nav-btn" id="navListaActiva" onclick="verSeccion('lista-activa')">🛒 Lista Actual</button>
@@ -468,10 +596,55 @@
 
   <div id="toast" class="toast">¡Mensaje del sistema!</div>
 
+  <!-- MODAL TUTORIAL INTERACTIVO -->
+  <div id="tutorialOverlay" class="tutorial-overlay">
+    <div class="tutorial-card">
+      <div id="tutIcon" class="tutorial-icon">👋</div>
+      <h3 id="tutTitle">¡Bienvenido!</h3>
+      <p id="tutDesc">Esta aplicación te ayudará a organizar tus compras del supermercado de forma muy fácil.</p>
+      
+      <div class="tutorial-dots">
+        <span class="dot active" id="dot0"></span>
+        <span class="dot" id="dot1"></span>
+        <span class="dot" id="dot2"></span>
+        <span class="dot" id="dot3"></span>
+      </div>
+
+      <div class="tutorial-actions">
+        <button id="btnTutPrev" class="btn-tut prev" onclick="pasoTutorial(-1)" style="display:none;">Anterior</button>
+        <button id="btnTutNext" class="btn-tut next" onclick="pasoTutorial(1)">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let coleccionListas = [];
     let idListaActiva = null;
     let filtroProductos = 'pendientes';
+    let pasoActualTutorial = 0;
+
+    const pasosTutorialData = [
+      {
+        icon: '👋',
+        title: '¡Bienvenido a tu Lista!',
+        desc: 'Te enseñamos en 3 simples pasos cómo usar tu nueva lista de compras para el supermercado.'
+      },
+      {
+        icon: '📝',
+        title: '1. Crea tu Lista',
+        desc: 'Escribe el nombre que quieras (ej: "Jumbo" o "Feria") en la casilla de arriba y presiona el botón azul "Crear".'
+      },
+      {
+        icon: '🥦',
+        title: '2. Agrega Productos',
+        desc: 'Escribe lo que necesites comprar. La aplicación organizará tus productos automáticamente por pasillos (Verduras, Lácteos, Pan, Aseo, etc.).'
+      },
+      {
+        icon: '🛒',
+        title: '3. En el Supermercado',
+        desc: 'Toca sobre el nombre de cada producto a medida que lo eches al carro. Se tachará y sabrás exactamente cuánto llevas gastado.'
+      }
+    ];
 
     const formatoCLP = new Intl.NumberFormat('es-CL', {
       style: 'currency',
@@ -511,9 +684,58 @@
       cargarOrdenCategorias();
       procesarListaRecibidaPorURL();
       renderizarListas();
+      comprobarTutorialPrimeraVez();
     });
 
-    /* --- VALIDACIÓN DE ACCESO A PESTAÑA --- */
+    /* --- LÓGICA DEL TUTORIAL --- */
+    function comprobarTutorialPrimeraVez() {
+      const visto = localStorage.getItem('tutorialVisto_v1');
+      if (!visto) {
+        abrirTutorial();
+      }
+    }
+
+    function abrirTutorial() {
+      pasoActualTutorial = 0;
+      actualizarTutorialUI();
+      document.getElementById('tutorialOverlay').classList.add('active');
+    }
+
+    function cerrarTutorial() {
+      document.getElementById('tutorialOverlay').classList.remove('active');
+      localStorage.setItem('tutorialVisto_v1', 'true');
+    }
+
+    function pasoTutorial(dir) {
+      pasoActualTutorial += dir;
+      if (pasoActualTutorial < 0) pasoActualTutorial = 0;
+
+      if (pasoActualTutorial >= pasosTutorialData.length) {
+        cerrarTutorial();
+        return;
+      }
+
+      actualizarTutorialUI();
+    }
+
+    function actualizarTutorialUI() {
+      const data = pasosTutorialData[pasoActualTutorial];
+      document.getElementById('tutIcon').textContent = data.icon;
+      document.getElementById('tutTitle').textContent = data.title;
+      document.getElementById('tutDesc').textContent = data.desc;
+
+      const btnPrev = document.getElementById('btnTutPrev');
+      const btnNext = document.getElementById('btnTutNext');
+
+      btnPrev.style.display = pasoActualTutorial === 0 ? 'none' : 'block';
+      btnNext.textContent = pasoActualTutorial === pasosTutorialData.length - 1 ? '¡Entendido!' : 'Siguiente';
+
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`dot${i}`);
+        if (dot) dot.classList.toggle('active', i === pasoActualTutorial);
+      }
+    }
+
     function verSeccion(seccion) {
       const secMisListas = document.getElementById('secMisListas');
       const secListaActiva = document.getElementById('secListaActiva');
@@ -527,7 +749,6 @@
         navListaActiva.classList.remove('active');
         renderizarListas();
       } else {
-        // Validación: Si no hay listas creadas, no permite entrar y avisa con un Toast
         if (coleccionListas.length === 0) {
           mostrarToast("⚠️ Primero debes crear una lista de compras");
           return;
