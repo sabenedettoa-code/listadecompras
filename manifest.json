@@ -1,0 +1,18 @@
+{
+  "name": "Mis Listas de Compras",
+  "short_name": "Compras",
+  "description": "Lista de compras inteligente adaptada para el supermercado en Chile.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%236366f1'/><g fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'><path d='M192 180 V 140 A 64 64 0 0 1 320 140 V 180'/><path d='M128 180 H 384 L 360 400 A 24 24 0 0 1 336 424 H 176 A 24 24 0 0 1 152 400 Z' fill='%23ffffff' fill-opacity='0.2'/><path d='M220 290 L 248 318 L 300 260' stroke-width='36'/></g></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

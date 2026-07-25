@@ -21,9 +21,10 @@
       --text-muted: #64748b;
       --danger: #ef4444;
       --success: #10b981;
-      --border: #e2e8f0;
+      --border: #cbd5e1;
       --tab-bg: #f1f5f9;
       --shadow: rgba(0, 0, 0, 0.05);
+      --font-scale: 1;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -32,7 +33,7 @@
         --card-bg: #1e293b;
         --text: #f8fafc;
         --text-muted: #94a3b8;
-        --border: #334155;
+        --border: #475569;
         --tab-bg: #0f172a;
         --shadow: rgba(0, 0, 0, 0.3);
       }
@@ -40,13 +41,17 @@
 
     * { box-sizing: border-box; }
 
+    html {
+      font-size: calc(16px * var(--font-scale));
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 20px 16px;
+      padding: 16px;
       margin: 0;
       transition: background-color 0.3s, color 0.3s;
     }
@@ -54,7 +59,7 @@
     .container {
       background: var(--card-bg);
       width: 100%;
-      max-width: 440px;
+      max-width: 460px;
       padding: 20px;
       border-radius: 20px;
       box-shadow: 0 10px 30px var(--shadow);
@@ -69,18 +74,49 @@
     }
 
     .app-title {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 700;
       margin: 0;
     }
 
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* CONTROLES DE ACCESIBILIDAD */
+    .font-size-controls {
+      display: flex;
+      background-color: var(--tab-bg);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 2px;
+    }
+
+    .btn-font {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.9rem;
+      min-width: 38px;
+      min-height: 38px;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+
+    .btn-font:hover { background-color: var(--border); }
+
     .btn-help {
       background-color: var(--tab-bg);
-      border: 1px solid var(--border);
+      border: 2px solid var(--border);
       color: var(--text);
       padding: 6px 12px;
+      min-height: 42px;
       border-radius: 20px;
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -93,29 +129,30 @@
     .nav-tabs {
       display: flex;
       gap: 6px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       background-color: var(--tab-bg);
       padding: 4px;
-      border-radius: 12px;
+      border-radius: 14px;
     }
 
     .nav-btn {
       flex: 1;
       background: none;
       border: none;
-      padding: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      padding: 12px 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
       color: var(--text-muted);
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 10px;
       transition: all 0.2s ease;
+      min-height: 48px;
     }
 
     .nav-btn.active {
       color: var(--primary);
       background-color: var(--card-bg);
-      box-shadow: 0 2px 4px var(--shadow);
+      box-shadow: 0 2px 6px var(--shadow);
     }
 
     .input-container {
@@ -131,9 +168,10 @@
       background-color: var(--card-bg);
       color: var(--text);
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       outline: none;
       min-width: 0;
+      min-height: 48px;
     }
 
     input[type="number"] {
@@ -142,13 +180,14 @@
       background-color: var(--card-bg);
       color: var(--text);
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       text-align: center;
       outline: none;
+      min-height: 48px;
     }
 
-    .qty-input { width: 45px; }
-    .price-input { width: 85px; }
+    .qty-input { width: 48px; }
+    .price-input { width: 90px; }
 
     input:focus { border-color: var(--primary); }
 
@@ -156,69 +195,112 @@
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 12px 14px;
+      padding: 12px 16px;
       border-radius: 12px;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 1.1rem;
       cursor: pointer;
+      min-height: 48px;
+      min-width: 48px;
     }
 
     .btn-main:hover { background-color: var(--primary-hover); }
+
+    /* BOTÓN MICRÓFONO */
+    .btn-mic {
+      background-color: var(--tab-bg);
+      color: var(--text);
+      border: 2px solid var(--border);
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      min-width: 48px;
+      transition: all 0.2s;
+    }
+
+    .btn-mic:hover { border-color: var(--primary); }
+
+    .btn-mic.listening {
+      background-color: #fee2e2;
+      border-color: var(--danger);
+      color: var(--danger);
+      animation: pulseMic 1.2s infinite;
+    }
+
+    @keyframes pulseMic {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
 
     .action-bar {
       display: flex;
       gap: 6px;
       margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     .btn-sec {
       flex: 1;
       background-color: var(--tab-bg);
       color: var(--text);
-      border: 1px solid var(--border);
-      padding: 8px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      border: 2px solid var(--border);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 6px;
+      min-height: 46px;
       transition: background 0.2s;
     }
 
     .btn-sec:hover { background-color: var(--border); }
+    .btn-sec.active-mode {
+      background-color: #dcfce7;
+      border-color: var(--success);
+      color: #15803d;
+    }
 
     .btn-share {
       background-color: #25d366;
       color: white;
       border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.85rem;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.88rem;
       cursor: pointer;
+      min-height: 44px;
     }
 
     .progress-container {
       margin-bottom: 16px;
       background: var(--tab-bg);
-      padding: 10px 12px;
+      padding: 12px;
       border-radius: 12px;
-      border: 1px solid var(--border);
+      border: 2px solid var(--border);
     }
 
     .progress-text {
       display: flex;
       justify-content: space-between;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
       margin-bottom: 6px;
     }
 
     .progress-track {
-      height: 8px;
+      height: 10px;
       background-color: var(--border);
       border-radius: 10px;
       overflow: hidden;
@@ -235,24 +317,25 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px;
+      padding: 16px;
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
       margin-bottom: 10px;
       cursor: pointer;
+      min-height: 56px;
     }
 
-    .list-info h4 { margin: 0 0 4px 0; font-size: 1rem; }
-    .list-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+    .list-info h4 { margin: 0 0 4px 0; font-size: 1.05rem; }
+    .list-info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
 
     .category-header {
-      font-size: 0.82rem;
-      font-weight: 700;
+      font-size: 0.88rem;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--primary);
-      margin: 16px 0 8px 4px;
+      margin: 20px 0 10px 4px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -264,90 +347,130 @@
       gap: 6px;
     }
 
-    .category-nav-btns {
-      display: flex;
-      gap: 2px;
-    }
+    .category-nav-btns { display: flex; gap: 4px; }
 
     .btn-cat-order {
-      background: none;
-      border: none;
-      color: var(--text-muted);
+      background: var(--tab-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
       cursor: pointer;
-      font-size: 0.75rem;
-      padding: 2px 4px;
-      border-radius: 4px;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      min-height: 36px;
+      min-width: 36px;
     }
-
-    .btn-cat-order:hover { background-color: var(--tab-bg); color: var(--text); }
 
     ul { list-style: none; padding: 0; margin: 0; }
 
     li {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px;
+      gap: 10px;
+      padding: 12px;
       background: var(--card-bg);
-      border-radius: 10px;
-      margin-bottom: 8px;
-      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border: 2px solid var(--border);
+      min-height: 54px;
     }
 
     .item-details { flex: 1; min-width: 0; cursor: pointer; }
-    .item-name { font-weight: 500; font-size: 0.95rem; word-break: break-word; }
-    .item-subtext { font-size: 0.78rem; color: var(--text-muted); }
+    .item-name { font-weight: 600; font-size: 1rem; word-break: break-word; }
+    .item-subtext { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
 
-    .comprado { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
+    .comprado { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
 
     .qty-controls {
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 4px;
       background: var(--tab-bg);
-      padding: 2px 4px;
-      border-radius: 8px;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
     }
 
-    .btn-qty { background: none; border: none; color: var(--text); cursor: pointer; font-weight: bold; padding: 2px 6px; }
-    .btn-delete { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; }
+    .btn-qty {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: bold;
+      padding: 4px;
+      min-width: 36px;
+      min-height: 36px;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .btn-delete {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+      min-width: 40px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .btn-delete:hover { color: var(--danger); }
 
     .inline-price {
-      width: 70px;
-      padding: 4px 6px;
+      width: 75px;
+      padding: 6px 8px;
       border: 1px solid var(--border);
       background-color: var(--card-bg);
       color: var(--text);
-      border-radius: 6px;
-      font-size: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
       text-align: right;
+      min-height: 40px;
     }
 
     .budget-summary {
-      margin-top: 16px;
-      padding: 12px 14px;
+      margin-top: 20px;
+      padding: 14px 16px;
       background: var(--tab-bg);
-      border-radius: 12px;
+      border-radius: 14px;
+      border: 2px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.88rem;
     }
 
     .budget-item { text-align: center; }
-    .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; }
-    .budget-val { font-weight: 700; font-size: 0.95rem; }
+    .budget-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px; }
+    .budget-val { font-weight: 800; font-size: 1rem; }
     .budget-val.spent { color: var(--success); }
 
     .sub-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
-    .sub-btn { background: none; border: none; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; padding: 4px 8px; border-radius: 6px; }
-    .sub-btn.active { background: var(--tab-bg); color: var(--text); font-weight: 600; }
+    .sub-btn {
+      background: none;
+      border: 1px solid transparent;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      min-height: 42px;
+      font-weight: 600;
+    }
+    .sub-btn.active {
+      background: var(--tab-bg);
+      border-color: var(--border);
+      color: var(--text);
+      font-weight: 700;
+    }
 
     .header-active { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 8px; }
-    .btn-back { background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; padding: 0; }
-    .empty-msg { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 30px; }
+    .btn-back { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; padding: 6px 0; font-size: 0.95rem; }
+    .empty-msg { text-align: center; color: var(--text-muted); font-size: 0.95rem; margin-top: 30px; }
 
+    /* TOAST Y NOTIFICACIÓN DESHACER */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -357,21 +480,33 @@
       color: var(--card-bg);
       padding: 12px 20px;
       border-radius: 30px;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 600;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
       opacity: 0;
       transition: all 0.3s ease;
       z-index: 1000;
-      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-    /* ESTILOS DEL MODAL TUTORIAL PARA ADULTOS MAYORES */
+    .btn-undo {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .tutorial-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.8);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -382,10 +517,7 @@
       transition: opacity 0.3s ease;
     }
 
-    .tutorial-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
 
     .tutorial-card {
       background: var(--card-bg);
@@ -394,72 +526,31 @@
       max-width: 380px;
       padding: 24px;
       border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
       text-align: center;
     }
 
-    .tutorial-icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-    }
-
-    .tutorial-card h3 {
-      margin: 0 0 10px 0;
-      font-size: 1.25rem;
-    }
-
-    .tutorial-card p {
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: var(--text-muted);
-      margin: 0 0 20px 0;
-    }
-
-    .tutorial-dots {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 20px;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-
-    .dot.active {
-      background: var(--primary);
-      width: 20px;
-      border-radius: 4px;
-    }
-
-    .tutorial-actions {
-      display: flex;
-      gap: 10px;
-    }
+    .tutorial-icon { font-size: 3rem; margin-bottom: 12px; }
+    .tutorial-card h3 { margin: 0 0 10px 0; font-size: 1.25rem; }
+    .tutorial-card p { font-size: 0.98rem; line-height: 1.5; color: var(--text-muted); margin: 0 0 20px 0; }
+    .tutorial-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+    .dot.active { background: var(--primary); width: 20px; border-radius: 4px; }
+    .tutorial-actions { display: flex; gap: 10px; }
 
     .btn-tut {
       flex: 1;
       padding: 12px;
       border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-weight: 700;
+      font-size: 0.95rem;
       cursor: pointer;
       border: none;
+      min-height: 48px;
     }
 
-    .btn-tut.prev {
-      background-color: var(--tab-bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-tut.next {
-      background-color: var(--primary);
-      color: white;
-    }
+    .btn-tut.prev { background-color: var(--tab-bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-tut.next { background-color: var(--primary); color: white; }
   </style>
 </head>
 <body>
@@ -468,7 +559,13 @@
     
     <div class="header-top">
       <h1 class="app-title">🛒 Mis Listas</h1>
-      <button class="btn-help" onclick="abrirTutorial()">❓ ¿Cómo usar?</button>
+      <div class="header-controls">
+        <div class="font-size-controls" title="Ajustar letra">
+          <button class="btn-font" onclick="cambiarTamanoLetra(-0.15)">A-</button>
+          <button class="btn-font" onclick="cambiarTamanoLetra(0.15)">A+</button>
+        </div>
+        <button class="btn-help" onclick="abrirTutorial()">❓ Ayuda</button>
+      </div>
     </div>
 
     <div class="nav-tabs">
@@ -479,13 +576,13 @@
     <!-- SECCIÓN 1: MIS LISTAS -->
     <div id="secMisListas">
       <div class="input-container">
-        <input type="text" id="nombreNuevaLista" placeholder="Ej: Mercado mensual, Asado del domingo...">
+        <input type="text" id="nombreNuevaLista" placeholder="Ej: Mercado mensual, Feria...">
         <button class="btn-main" onclick="crearNuevaLista()">Crear</button>
       </div>
 
       <div class="action-bar">
-        <button class="btn-sec" onclick="exportarBackup()">💾 Exportar Backup</button>
-        <button class="btn-sec" onclick="document.getElementById('importFileInput').click()">📂 Importar Backup</button>
+        <button class="btn-sec" onclick="exportarBackup()">💾 Respaldar</button>
+        <button class="btn-sec" onclick="document.getElementById('importFileInput').click()">📂 Cargar</button>
         <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importarBackup(event)">
       </div>
 
@@ -510,9 +607,12 @@
         </div>
       </div>
 
+      <!-- Formulario con Micrófono -->
       <div class="input-container">
         <input type="number" id="itemQty" class="qty-input" value="1" min="1" max="99" title="Cantidad">
         <input type="text" id="itemInput" list="sugerenciasGenericasChilenas" placeholder="Producto...">
+        <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz">🎤</button>
+        
         <datalist id="sugerenciasGenericasChilenas">
           <option value="Marraqueta"></option>
           <option value="Hallulla"></option>
@@ -529,19 +629,11 @@
           <option value="Yogur"></option>
           <option value="Carne molida"></option>
           <option value="Lomo vetado"></option>
-          <option value="Lomo liso"></option>
           <option value="Sobrecostilla"></option>
-          <option value="Huachalomo"></option>
-          <option value="Tapapecho"></option>
-          <option value="Abastero"></option>
-          <option value="Entraña"></option>
-          <option value="Pechuga de pollo"></option>
           <option value="Vienesas"></option>
           <option value="Longaniza"></option>
-          <option value="Choricillo"></option>
           <option value="Arroz"></option>
           <option value="Tallarines"></option>
-          <option value="Espaguetis"></option>
           <option value="Salsa de tomate"></option>
           <option value="Aceite de maravilla"></option>
           <option value="Jurel en tarro"></option>
@@ -555,21 +647,19 @@
           <option value="Limpiapisos"></option>
           <option value="Agua mineral"></option>
           <option value="Bebida"></option>
-          <option value="Jugo en sobre"></option>
-          <option value="Pisco"></option>
           <option value="Cerveza"></option>
           <option value="Vino tinto"></option>
-          <option value="Papas fritas"></option>
-          <option value="Ramitas"></option>
-          <option value="Maní salado"></option>
         </datalist>
         <input type="number" id="itemPrice" class="price-input" placeholder="$ CLP" min="0" step="1" title="Precio CLP">
         <button class="btn-main" onclick="agregarProducto()">+</button>
       </div>
 
+      <!-- Barra de Acciones de Accesibilidad Avanzadas -->
       <div class="action-bar">
-        <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar Lista</button>
-        <button class="btn-sec" onclick="copiarComoTexto()">📝 Copiar Texto</button>
+        <button id="btnWakeLock" class="btn-sec" onclick="togglePantallaEncendida()">💡 Pantalla Encendida</button>
+        <button class="btn-sec" onclick="leerListaEnVozAlta()">🔊 Leer Lista</button>
+        <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar</button>
+        <button class="btn-sec" onclick="copiarComoTexto()">📝 Copiar</button>
       </div>
 
       <div class="sub-tabs">
@@ -584,7 +674,7 @@
           <div class="budget-label">Llevas gastado</div>
           <div class="budget-val spent" id="valGastado">$0 CLP</div>
         </div>
-        <div style="height: 24px; width: 1px; background: var(--border);"></div>
+        <div style="height: 28px; width: 2px; background: var(--border);"></div>
         <div class="budget-item">
           <div class="budget-label">Total Estimado</div>
           <div class="budget-val" id="valTotal">$0 CLP</div>
@@ -594,7 +684,10 @@
 
   </div>
 
-  <div id="toast" class="toast">¡Mensaje del sistema!</div>
+  <div id="toast" class="toast">
+    <span id="toastMsg">Mensaje del sistema</span>
+    <button id="btnUndoToast" class="btn-undo" onclick="deshacerEliminacion()" style="display:none;">↩️ Deshacer</button>
+  </div>
 
   <!-- MODAL TUTORIAL INTERACTIVO -->
   <div id="tutorialOverlay" class="tutorial-overlay">
@@ -622,22 +715,26 @@
     let idListaActiva = null;
     let filtroProductos = 'pendientes';
     let pasoActualTutorial = 0;
+    let esEscuchandoVoz = false;
+    let escalaFuenteActual = 1;
+    let wakeLockSentinel = null;
+    let ultimoProductoEliminado = null;
 
     const pasosTutorialData = [
       {
         icon: '👋',
         title: '¡Bienvenido a tu Lista!',
-        desc: 'Te enseñamos en 3 simples pasos cómo usar tu nueva lista de compras para el supermercado.'
+        desc: 'Te enseñamos en pocos pasos cómo usar tu nueva lista de compras para el supermercado.'
       },
       {
         icon: '📝',
         title: '1. Crea tu Lista',
-        desc: 'Escribe el nombre que quieras (ej: "Jumbo" o "Feria") en la casilla de arriba y presiona el botón azul "Crear".'
+        desc: 'Escribe el nombre que quieras (ej: "Jumbo" o "Feria") en la casilla de arriba y presiona el botón "Crear".'
       },
       {
-        icon: '🥦',
-        title: '2. Agrega Productos',
-        desc: 'Escribe lo que necesites comprar. La aplicación organizará tus productos automáticamente por pasillos (Verduras, Lácteos, Pan, Aseo, etc.).'
+        icon: '🎤',
+        title: '2. Dicta o Escribe',
+        desc: 'Puedes escribir lo que necesites o presionar el botón del micrófono 🎤 para dictarlo por voz. Se ordenará solo por pasillos.'
       },
       {
         icon: '🛒',
@@ -672,14 +769,27 @@
       return CATEGORIAS.find(c => c.id === 'varios');
     }
 
-    function mostrarToast(mensaje) {
+    /* --- VIBRACIÓN HÁPTICA PARA ADULTOS MAYORES --- */
+    function vibrarConfirmacion() {
+      if (navigator.vibrate) {
+        navigator.vibrate(35); // impulso corto
+      }
+    }
+
+    function mostrarToast(mensaje, conUndo = false) {
       const toast = document.getElementById('toast');
-      toast.textContent = mensaje;
+      const toastMsg = document.getElementById('toastMsg');
+      const btnUndo = document.getElementById('btnUndoToast');
+
+      toastMsg.textContent = mensaje;
+      btnUndo.style.display = conUndo ? 'inline-block' : 'none';
+
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
+      setTimeout(() => toast.classList.remove('show'), 4000);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      cargarTamanoLetra();
       cargarStorage();
       cargarOrdenCategorias();
       procesarListaRecibidaPorURL();
@@ -687,34 +797,158 @@
       comprobarTutorialPrimeraVez();
     });
 
-    /* --- LÓGICA DEL TUTORIAL --- */
-    function comprobarTutorialPrimeraVez() {
-      const visto = localStorage.getItem('tutorialVisto_v1');
-      if (!visto) {
-        abrirTutorial();
+    /* --- MANTENER PANTALLA ENCENDIDA (WAKE LOCK) --- */
+    async function togglePantallaEncendida() {
+      vibrarConfirmacion();
+      const btn = document.getElementById('btnWakeLock');
+
+      if ('wakeLock' in navigator) {
+        try {
+          if (!wakeLockSentinel) {
+            wakeLockSentinel = await navigator.wakeLock.request('screen');
+            btn.classList.add('active-mode');
+            btn.textContent = '💡 Pantalla Encendida (ON)';
+            mostrarToast("💡 Pantalla fijada: No se apagará mientras compras");
+          } else {
+            await wakeLockSentinel.release();
+            wakeLockSentinel = null;
+            btn.classList.remove('active-mode');
+            btn.textContent = '💡 Pantalla Normal';
+            mostrarToast("💡 Pantalla devuelta a modo normal");
+          }
+        } catch (err) {
+          mostrarToast("⚠️ No se pudo bloquear el apague de pantalla");
+        }
+      } else {
+        mostrarToast("⚠️ Tu navegador no admite bloqueo de apagado");
       }
     }
 
+    /* --- LECTURA EN VOZ ALTA (TEXT-TO-SPEECH) --- */
+    function leerListaEnVozAlta() {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => l.id === idListaActiva);
+      if (!lista) return;
+
+      const pendientes = lista.items.filter(i => !i.comprado);
+      if (pendientes.length === 0) {
+        mostrarToast("🔊 No tienes productos pendientes por comprar");
+        return;
+      }
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Detener lecturas previas
+
+        let texto = `Tienes pendiente comprar ${pendientes.length} productos: `;
+        pendientes.forEach(i => {
+          texto += `${i.cantidad} ${i.texto}, `;
+        });
+
+        const utterance = new SpeechSynthesisUtterance(texto);
+        utterance.lang = 'es-CL';
+        utterance.rate = 0.9; // Velocidad pausada amigable
+        window.speechSynthesis.speak(utterance);
+        mostrarToast("🔊 Leyendo lista en voz alta...");
+      } else {
+        mostrarToast("⚠️ Tu dispositivo no admite lectura en voz alta");
+      }
+    }
+
+    /* --- CAMBIO DE TAMAÑO DE FUENTE --- */
+    function cambiarTamanoLetra(delta) {
+      vibrarConfirmacion();
+      escalaFuenteActual = Math.min(Math.max(0.85, escalaFuenteActual + delta), 1.45);
+      document.documentElement.style.setProperty('--font-scale', escalaFuenteActual);
+      localStorage.setItem('tamanoFuente_v1', escalaFuenteActual);
+    }
+
+    function cargarTamanoLetra() {
+      const guardada = localStorage.getItem('tamanoFuente_v1');
+      if (guardada) {
+        escalaFuenteActual = parseFloat(guardada);
+        document.documentElement.style.setProperty('--font-scale', escalaFuenteActual);
+      }
+    }
+
+    /* --- DICTADO POR VOZ --- */
+    function activarDictadoVoz() {
+      vibrarConfirmacion();
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        mostrarToast("⚠️ Tu navegador no soporta dictado por voz");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'es-CL';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      const btnMic = document.getElementById('btnMic');
+      const input = document.getElementById('itemInput');
+
+      if (esEscuchandoVoz) {
+        recognition.stop();
+        return;
+      }
+
+      recognition.start();
+      esEscuchandoVoz = true;
+      btnMic.classList.add('listening');
+      btnMic.textContent = '🔴';
+      mostrarToast("🎙️ Habla ahora (ej: 'Marraqueta')...");
+
+      recognition.onresult = function(event) {
+        const textoDictado = event.results[0][0].transcript;
+        if (textoDictado) {
+          input.value = textoDictado;
+          mostrarToast(`🗣️ Entendido: "${textoDictado}"`);
+        }
+      };
+
+      recognition.onspeechend = function() { recognition.stop(); };
+      recognition.onend = function() {
+        esEscuchandoVoz = false;
+        btnMic.classList.remove('listening');
+        btnMic.textContent = '🎤';
+      };
+      recognition.onerror = function(event) {
+        esEscuchandoVoz = false;
+        btnMic.classList.remove('listening');
+        btnMic.textContent = '🎤';
+        if (event.error !== 'no-speech') {
+          mostrarToast("⚠️ No se pudo entender la voz");
+        }
+      };
+    }
+
+    function comprobarTutorialPrimeraVez() {
+      const visto = localStorage.getItem('tutorialVisto_v1');
+      if (!visto) abrirTutorial();
+    }
+
     function abrirTutorial() {
+      vibrarConfirmacion();
       pasoActualTutorial = 0;
       actualizarTutorialUI();
       document.getElementById('tutorialOverlay').classList.add('active');
     }
 
     function cerrarTutorial() {
+      vibrarConfirmacion();
       document.getElementById('tutorialOverlay').classList.remove('active');
       localStorage.setItem('tutorialVisto_v1', 'true');
     }
 
     function pasoTutorial(dir) {
+      vibrarConfirmacion();
       pasoActualTutorial += dir;
       if (pasoActualTutorial < 0) pasoActualTutorial = 0;
-
       if (pasoActualTutorial >= pasosTutorialData.length) {
         cerrarTutorial();
         return;
       }
-
       actualizarTutorialUI();
     }
 
@@ -737,6 +971,7 @@
     }
 
     function verSeccion(seccion) {
+      vibrarConfirmacion();
       const secMisListas = document.getElementById('secMisListas');
       const secListaActiva = document.getElementById('secListaActiva');
       const navMisListas = document.getElementById('navMisListas');
@@ -767,6 +1002,7 @@
     }
 
     function exportarBackup() {
+      vibrarConfirmacion();
       if (coleccionListas.length === 0) {
         mostrarToast("⚠️ No hay listas para exportar");
         return;
@@ -782,6 +1018,7 @@
     }
 
     function importarBackup(e) {
+      vibrarConfirmacion();
       const file = e.target.files[0];
       if (!file) return;
 
@@ -793,10 +1030,8 @@
             coleccionListas = importadas;
             guardarStorage();
             renderizarListas();
-            mostrarToast("📂 Respaldo importado correctamente");
-          } else {
-            throw new Error();
-          }
+            mostrarToast("📂 Respaldo cargado correctamente");
+          } else { throw new Error(); }
         } catch (err) {
           mostrarToast("⚠️ Archivo de respaldo no válido");
         }
@@ -806,6 +1041,7 @@
     }
 
     function moverCategoria(index, direccion) {
+      vibrarConfirmacion();
       const nuevoIndex = index + direccion;
       if (nuevoIndex < 0 || nuevoIndex >= CATEGORIAS.length) return;
       
@@ -833,6 +1069,7 @@
     }
 
     function desmarcarTodos() {
+      vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (!lista || lista.items.length === 0) return;
 
@@ -843,6 +1080,7 @@
     }
 
     async function copiarComoTexto() {
+      vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (!lista || lista.items.length === 0) return;
 
@@ -865,15 +1103,14 @@
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(textoPlano);
           mostrarToast("📝 Lista copiada al portapapeles");
-        } else {
-          throw new Error();
-        }
+        } else { throw new Error(); }
       } catch (err) {
         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoPlano)}`, '_blank');
       }
     }
 
     async function compartirListaActiva() {
+      vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (!lista) return;
 
@@ -948,6 +1185,7 @@
     }
 
     function crearNuevaLista() {
+      vibrarConfirmacion();
       const input = document.getElementById('nombreNuevaLista');
       const nombre = input.value.trim();
       if (!nombre) return;
@@ -961,12 +1199,14 @@
     }
 
     function abrirLista(id) {
+      vibrarConfirmacion();
       idListaActiva = id;
       verSeccion('lista-activa');
     }
 
     function eliminarLista(e, id) {
       e.stopPropagation();
+      vibrarConfirmacion();
       coleccionListas = coleccionListas.filter(l => l.id !== id);
       if (idListaActiva === id) idListaActiva = null;
       guardarStorage();
@@ -999,6 +1239,7 @@
 
     function agregarProducto() {
       if (!idListaActiva) return;
+      vibrarConfirmacion();
 
       const input = document.getElementById('itemInput');
       const qtyInput = document.getElementById('itemQty');
@@ -1033,6 +1274,7 @@
     }
 
     function cambiarEstadoProducto(prodId) {
+      vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (lista) {
         const prod = lista.items.find(i => i.id === prodId);
@@ -1043,6 +1285,7 @@
     }
 
     function cambiarCantidadProducto(prodId, cambio) {
+      vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (lista) {
         const prod = lista.items.find(i => i.id === prodId);
@@ -1066,16 +1309,43 @@
       }
     }
 
+    /* --- ELIMINAR CON DESHACER (PREVENCIÓN DE ERRORES) --- */
     function eliminarProducto(prodId) {
+      vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (lista) {
-        lista.items = lista.items.filter(i => i.id !== prodId);
+        const prodIndex = lista.items.findIndex(i => i.id === prodId);
+        if (prodIndex !== -1) {
+          ultimoProductoEliminado = {
+            listaId: idListaActiva,
+            item: lista.items[prodIndex],
+            index: prodIndex
+          };
+
+          lista.items.splice(prodIndex, 1);
+          guardarStorage();
+          renderizarProductos();
+          mostrarToast(`🗑️ "${ultimoProductoEliminado.item.texto}" borrado`, true);
+        }
+      }
+    }
+
+    function deshacerEliminacion() {
+      vibrarConfirmacion();
+      if (!ultimoProductoEliminado) return;
+
+      const lista = coleccionListas.find(l => l.id === ultimoProductoEliminado.listaId);
+      if (lista) {
+        lista.items.splice(ultimoProductoEliminado.index, 0, ultimoProductoEliminado.item);
         guardarStorage();
         renderizarProductos();
+        mostrarToast(`↩️ Producto restaurado`);
+        ultimoProductoEliminado = null;
       }
     }
 
     function cambiarFiltro(filtro) {
+      vibrarConfirmacion();
       filtroProductos = filtro;
       document.getElementById('subTabPendientes').classList.toggle('active', filtro === 'pendientes');
       document.getElementById('subTabComprados').classList.toggle('active', filtro === 'comprados');
@@ -1187,6 +1457,17 @@
     ['itemInput', 'itemQty', 'itemPrice'].forEach(id => {
       document.getElementById(id).addEventListener('keypress', e => { if (e.key === 'Enter') agregarProducto(); });
     });
+  </script>
+
+  <!-- REGISTRO DEL SERVICE WORKER (PWA OFFLINE) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => console.log('PWA Service Worker listo:', reg.scope))
+          .catch((err) => console.log('Error registro SW:', err));
+      });
+    }
   </script>
 </body>
 </html>
