@@ -496,7 +496,7 @@
       color: var(--text-muted);
       border-top: 1px solid var(--border);
       padding-top: 14px;
-      line-height: 1.4;
+      line-height: 1.6;
     }
 
     .app-credits a {
@@ -609,6 +609,27 @@
 
     .btn-tut.prev { background-color: var(--tab-bg); color: var(--text); border: 2px solid var(--border); }
     .btn-tut.next { background-color: var(--primary); color: white; }
+
+    /* MODAL PRIVACIDAD */
+    .privacy-list {
+      text-align: left;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--text);
+      padding: 0;
+      margin: 16px 0;
+    }
+
+    .privacy-list li {
+      margin-bottom: 12px;
+      border: none;
+      padding: 0;
+      background: none;
+      min-height: auto;
+      display: list-item;
+      list-style-type: disc;
+      list-style-position: inside;
+    }
   </style>
 </head>
 <body>
@@ -758,9 +779,10 @@
       </div>
     </div>
 
-    <!-- FIRMA Y CRÉDITOS -->
+    <!-- FIRMA Y CRÉDITOS CON POLÍTICA DE PRIVACIDAD -->
     <div class="app-credits">
-      Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱
+      Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
+      <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a>
     </div>
 
   </div>
@@ -784,6 +806,23 @@
         <button id="btnTutPrev" class="btn-tut prev" onclick="pasoTutorial(-1)" style="display:none;">Anterior</button>
         <button id="btnTutNext" class="btn-tut next" onclick="pasoTutorial(1)">Siguiente</button>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL POLÍTICA DE PRIVACIDAD -->
+  <div id="privacyOverlay" class="tutorial-overlay">
+    <div class="tutorial-card">
+      <div class="tutorial-icon">🔒</div>
+      <h3>Política de Privacidad</h3>
+      
+      <ul class="privacy-list">
+        <li><strong>0% Registros:</strong> No te pedimos tu correo, ni teléfono, ni nombre. Tampoco requiere crear cuentas.</li>
+        <li><strong>Tus datos son tuyos:</strong> Tus listas de compras se guardan únicamente dentro de la memoria de tu celular (almacenamiento local).</li>
+        <li><strong>Uso del Micrófono:</strong> El dictado por voz usa el sistema nativo de tu teléfono únicamente cuando presionas el botón del micrófono 🎤. No se graban ni guardan audios.</li>
+        <li><strong>Sin Rastreo:</strong> La plataforma fue creada sin fines de lucro y no vende información a terceros.</li>
+      </ul>
+
+      <button class="btn-tut next" onclick="cerrarModalPrivacidad()" style="width: 100%;">¡Entendido y Claro! 👍</button>
     </div>
   </div>
 
@@ -857,7 +896,6 @@
       return CATEGORIAS.find(c => c.id === 'varios');
     }
 
-    /* --- VIBRACIÓN Y SONIDO SUAVE (AUDIO CONTEXT) --- */
     function vibrarConfirmacion() {
       if (navigator.vibrate) navigator.vibrate(35);
     }
@@ -871,8 +909,8 @@
         const gain = ctx.createGain();
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // Nota D5
-        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08); // Nota A5
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
 
         gain.gain.setValueAtTime(0.08, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
@@ -883,6 +921,16 @@
         osc.start();
         osc.stop(ctx.currentTime + 0.12);
       } catch (e) {}
+    }
+
+    function abrirModalPrivacidad() {
+      vibrarConfirmacion();
+      document.getElementById('privacyOverlay').classList.add('active');
+    }
+
+    function cerrarModalPrivacidad() {
+      vibrarConfirmacion();
+      document.getElementById('privacyOverlay').classList.remove('active');
     }
 
     function mostrarToast(mensaje, conUndo = false, callbackUndo = null) {
@@ -920,7 +968,6 @@
       comprobarTutorialPrimeraVez();
     });
 
-    /* --- DETECCIÓN INSTALACIÓN PWA EN CELULAR --- */
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       diferidoPromptInstalacion = e;
@@ -1222,7 +1269,6 @@
       mostrarToast("🔄 Lista desmarcada para una nueva compra");
     }
 
-    /* --- NUEVA FUNCIÓN: LIMPIAR PRODUCTOS COMPRADOS --- */
     function limpiarProductosComprados() {
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
@@ -1234,7 +1280,6 @@
         return;
       }
 
-      // Guardar respaldo por si quieren deshacer
       const copiaItemsPrevios = JSON.parse(JSON.stringify(lista.items));
 
       lista.items = lista.items.filter(i => !i.comprado);
@@ -1450,7 +1495,7 @@
         const prod = lista.items.find(i => i.id === prodId);
         if (prod) {
           prod.comprado = !prod.comprado;
-          if (prod.comprado) reproducirSonidoExito(); // Reproducir tono suave
+          if (prod.comprado) reproducirSonidoExito();
           guardarStorage();
           renderizarProductos();
 
@@ -1630,12 +1675,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V8 -->
+  <!-- SERVICE WORKER V9 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v8 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v9 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
