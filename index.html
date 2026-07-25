@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%236366f1'/><g fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'><path d='M192 180 V 140 A 64 64 0 0 1 320 140 V 180'/><path d='M128 180 H 384 L 360 400 A 24 24 0 0 1 336 424 H 176 A 24 24 0 0 1 152 400 Z' fill='%23ffffff' fill-opacity='0.2'/><path d='M220 290 L 248 318 L 300 260' stroke-width='36'/></g></svg>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,6 @@
       --text: #0f172a;
       --text-muted: #64748b;
       --danger: #ef4444;
-      --success: #22c55e;
       --border: #e2e8f0;
     }
 
@@ -271,7 +271,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       cargarStorage();
-      procesarListaRecibidaPorURL(); // Detecta si el usuario abrió un link compartido
+      procesarListaRecibidaPorURL();
       renderizarListas();
     });
 
@@ -299,61 +299,87 @@
       }
     }
 
-    /* --- COMPARTIR LISTAS VÍA ENLACE / WHATSAPP --- */
+    /* --- COMPARTIR LISTAS (OPTIMIZADO PARA VERCEL) --- */
     function compartirListaActiva() {
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (!lista) return;
 
-      // Codificar datos de la lista para la URL
-      const datosCodificados = encodeURIComponent(JSON.stringify({
-        nombre: lista.nombre,
-        items: lista.items
-      }));
+      try {
+        const datosJSON = JSON.stringify({
+          nombre: lista.nombre,
+          items: lista.items.map(i => ({ t: i.texto, c: i.cantidad, k: i.comprado }))
+        });
 
-      // URL final con los datos adjuntos
-      const urlCompartida = `${window.location.origin}${window.location.pathname}?listaShared=${datosCodificados}`;
+        // Codificación Base64 ligera para URLs cortas
+        const datosBase64 = btoa(encodeURIComponent(datosJSON));
+        const urlCompartida = `${window.location.origin}${window.location.pathname}?l=${datosBase64}`;
+        const textoMensaje = `Te comparto la lista de compras "${lista.nombre}":`;
 
-      // Usar la API nativa de compartir del teléfono si está disponible
-      if (navigator.share) {
-        navigator.share({
-          title: `Lista: ${lista.nombre}`,
-          text: `Te comparto la lista de compras "${lista.nombre}":`,
-          url: urlCompartida
-        }).catch(() => {});
-      } else {
-        // Enlace directo a WhatsApp como alternativa
-        const mensajeWA = `Te comparto la lista de compras "${lista.nombre}": ${urlCompartida}`;
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(mensajeWA)}`, '_blank');
+        if (navigator.share) {
+          navigator.share({
+            title: `Lista: ${lista.nombre}`,
+            text: textoMensaje,
+            url: urlCompartida
+          }).catch(() => {
+            copiarAlPortapapeles(urlCompartida);
+          });
+        } else {
+          copiarAlPortapapeles(urlCompartida);
+        }
+      } catch (error) {
+        alert("Error al generar el enlace para compartir.");
       }
+    }
+
+    function copiarAlPortapapeles(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        alert("¡Enlace copiado al portapapeles! Puedes pegarlo en WhatsApp o enviarlo a quien quieras.");
+      }).catch(() => {
+        const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista de compras: ${url}`)}`;
+        window.open(waUrl, '_blank');
+      });
     }
 
     function procesarListaRecibidaPorURL() {
       const urlParams = new URLSearchParams(window.location.search);
-      const listaShared = urlParams.get('listaShared');
+      const datosBase64 = urlParams.get('l') || urlParams.get('listaShared');
 
-      if (listaShared) {
+      if (datosBase64) {
         try {
-          const datos = JSON.parse(decodeURIComponent(listaShared));
+          let datos;
+          if (urlParams.get('l')) {
+            const jsonString = decodeURIComponent(atob(datosBase64));
+            datos = JSON.parse(jsonString);
+          } else {
+            datos = JSON.parse(decodeURIComponent(datosBase64));
+          }
           
-          if (datos && datos.nombre && Array.isArray(datos.items)) {
+          if (datos && datos.nombre) {
+            const itemsRestaurados = (datos.items || []).map(i => ({
+              id: Date.now() + Math.random(),
+              texto: i.t || i.texto,
+              cantidad: i.c || i.cantidad || 1,
+              icono: obtenerIcono(i.t || i.texto),
+              comprado: i.k || i.comprado || false
+            }));
+
             const nuevaListaImportada = {
               id: Date.now(),
               nombre: `${datos.nombre} (Compartida)`,
-              items: datos.items
+              items: itemsRestaurados
             };
 
             coleccionListas.push(nuevaListaImportada);
             guardarStorage();
             
-            // Limpiar los parámetros de la URL sin recargar la página
+            // Limpia los parámetros de la URL sin recargar
             window.history.replaceState({}, document.title, window.location.pathname);
             
-            // Abrir la lista recibida
             abrirLista(nuevaListaImportada.id);
             alert(`¡Has recibido la lista "${datos.nombre}" correctamente!`);
           }
         } catch (e) {
-          console.error("Error al procesar la lista recibida", e);
+          console.error("Error al procesar la lista recibida:", e);
         }
       }
     }
