@@ -85,7 +85,6 @@
       gap: 6px;
     }
 
-    /* CONTROLES DE ACCESIBILIDAD */
     .font-size-controls {
       display: flex;
       background-color: var(--tab-bg);
@@ -155,71 +154,114 @@
       box-shadow: 0 2px 6px var(--shadow);
     }
 
-    .input-container {
-      display: flex;
-      gap: 6px;
+    /* TARJETA DE AGREGAR PRODUCTO (AMPLIA Y LEGIBLE) */
+    .add-product-card {
+      background-color: var(--tab-bg);
+      border: 2px solid var(--border);
+      padding: 14px;
+      border-radius: 16px;
       margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    input[type="text"] {
+    .add-row-1 {
+      display: flex;
+      gap: 8px;
+    }
+
+    .add-row-2 {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .input-product-large {
       flex: 1;
-      padding: 12px;
+      padding: 12px 14px;
       border: 2px solid var(--border);
       background-color: var(--card-bg);
       color: var(--text);
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 1.05rem;
+      font-weight: 600;
       outline: none;
       min-width: 0;
-      min-height: 48px;
+      min-height: 50px;
     }
 
-    input[type="number"] {
-      padding: 12px 6px;
-      border: 2px solid var(--border);
+    .input-product-large:focus {
+      border-color: var(--primary);
+    }
+
+    .input-product-large::placeholder {
+      color: var(--text-muted);
+      opacity: 0.8;
+    }
+
+    .field-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       background-color: var(--card-bg);
-      color: var(--text);
+      border: 2px solid var(--border);
       border-radius: 12px;
-      font-size: 1rem;
-      text-align: center;
-      outline: none;
+      padding: 4px 8px;
       min-height: 48px;
     }
 
-    .qty-input { width: 48px; }
-    .price-input { width: 90px; }
+    .field-box label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
 
-    input:focus { border-color: var(--primary); }
+    .input-clean {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      outline: none;
+      text-align: center;
+    }
 
-    .btn-main {
+    .qty-clean { width: 36px; }
+    .price-clean { width: 70px; text-align: right; }
+
+    .btn-main-add {
+      flex: 1;
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1.1rem;
-      cursor: pointer;
-      min-height: 48px;
-      min-width: 48px;
-    }
-
-    .btn-main:hover { background-color: var(--primary-hover); }
-
-    /* BOTÓN MICRÓFONO */
-    .btn-mic {
-      background-color: var(--tab-bg);
-      color: var(--text);
-      border: 2px solid var(--border);
       padding: 12px;
       border-radius: 12px;
-      font-size: 1.2rem;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-main-add:hover { background-color: var(--primary-hover); }
+
+    .btn-mic {
+      background-color: var(--card-bg);
+      color: var(--text);
+      border: 2px solid var(--border);
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 1.25rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 48px;
-      min-width: 48px;
+      min-height: 50px;
+      min-width: 50px;
       transition: all 0.2s;
     }
 
@@ -470,7 +512,6 @@
     .btn-back { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; padding: 6px 0; font-size: 0.95rem; }
     .empty-msg { text-align: center; color: var(--text-muted); font-size: 0.95rem; margin-top: 30px; }
 
-    /* TOAST Y NOTIFICACIÓN DESHACER */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -575,9 +616,9 @@
 
     <!-- SECCIÓN 1: MIS LISTAS -->
     <div id="secMisListas">
-      <div class="input-container">
-        <input type="text" id="nombreNuevaLista" placeholder="Ej: Mercado mensual, Feria...">
-        <button class="btn-main" onclick="crearNuevaLista()">Crear</button>
+      <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
+        <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
+        <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
       </div>
 
       <div class="action-bar">
@@ -607,12 +648,29 @@
         </div>
       </div>
 
-      <!-- Formulario con Micrófono -->
-      <div class="input-container">
-        <input type="number" id="itemQty" class="qty-input" value="1" min="1" max="99" title="Cantidad">
-        <input type="text" id="itemInput" list="sugerenciasGenericasChilenas" placeholder="Producto...">
-        <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz">🎤</button>
+      <!-- TARJETA ESTRUCTURADA EN 2 FILAS PARA AGREGAR PRODUCTO -->
+      <div class="add-product-card">
+        <!-- FILA 1: CUADRO DE TEXTO GIGANTE Y MICRÓFONO -->
+        <div class="add-row-1">
+          <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta un producto...">
+          <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz">🎤</button>
+        </div>
         
+        <!-- FILA 2: CANTIDAD, PRECIO Y BOTÓN AGREGAR -->
+        <div class="add-row-2">
+          <div class="field-box">
+            <label for="itemQty">Cant:</label>
+            <input type="number" id="itemQty" class="input-clean qty-clean" value="1" min="1" max="99">
+          </div>
+
+          <div class="field-box">
+            <label for="itemPrice">$</label>
+            <input type="number" id="itemPrice" class="input-clean price-clean" placeholder="CLP" min="0" step="1">
+          </div>
+
+          <button class="btn-main-add" onclick="agregarProducto()">➕ Agregar</button>
+        </div>
+
         <datalist id="sugerenciasGenericasChilenas">
           <option value="Marraqueta"></option>
           <option value="Hallulla"></option>
@@ -650,11 +708,9 @@
           <option value="Cerveza"></option>
           <option value="Vino tinto"></option>
         </datalist>
-        <input type="number" id="itemPrice" class="price-input" placeholder="$ CLP" min="0" step="1" title="Precio CLP">
-        <button class="btn-main" onclick="agregarProducto()">+</button>
       </div>
 
-      <!-- Barra de Acciones de Accesibilidad Avanzadas -->
+      <!-- Barra de Acciones de Accesibilidad -->
       <div class="action-bar">
         <button id="btnWakeLock" class="btn-sec" onclick="togglePantallaEncendida()">💡 Pantalla Encendida</button>
         <button class="btn-sec" onclick="leerListaEnVozAlta()">🔊 Leer Lista</button>
@@ -769,10 +825,9 @@
       return CATEGORIAS.find(c => c.id === 'varios');
     }
 
-    /* --- VIBRACIÓN HÁPTICA PARA ADULTOS MAYORES --- */
     function vibrarConfirmacion() {
       if (navigator.vibrate) {
-        navigator.vibrate(35); // impulso corto
+        navigator.vibrate(35);
       }
     }
 
@@ -797,7 +852,6 @@
       comprobarTutorialPrimeraVez();
     });
 
-    /* --- MANTENER PANTALLA ENCENDIDA (WAKE LOCK) --- */
     async function togglePantallaEncendida() {
       vibrarConfirmacion();
       const btn = document.getElementById('btnWakeLock');
@@ -824,7 +878,6 @@
       }
     }
 
-    /* --- LECTURA EN VOZ ALTA (TEXT-TO-SPEECH) --- */
     function leerListaEnVozAlta() {
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
@@ -837,7 +890,7 @@
       }
 
       if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Detener lecturas previas
+        window.speechSynthesis.cancel();
 
         let texto = `Tienes pendiente comprar ${pendientes.length} productos: `;
         pendientes.forEach(i => {
@@ -846,7 +899,7 @@
 
         const utterance = new SpeechSynthesisUtterance(texto);
         utterance.lang = 'es-CL';
-        utterance.rate = 0.9; // Velocidad pausada amigable
+        utterance.rate = 0.9;
         window.speechSynthesis.speak(utterance);
         mostrarToast("🔊 Leyendo lista en voz alta...");
       } else {
@@ -854,7 +907,6 @@
       }
     }
 
-    /* --- CAMBIO DE TAMAÑO DE FUENTE --- */
     function cambiarTamanoLetra(delta) {
       vibrarConfirmacion();
       escalaFuenteActual = Math.min(Math.max(0.85, escalaFuenteActual + delta), 1.45);
@@ -870,7 +922,6 @@
       }
     }
 
-    /* --- DICTADO POR VOZ --- */
     function activarDictadoVoz() {
       vibrarConfirmacion();
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1309,7 +1360,6 @@
       }
     }
 
-    /* --- ELIMINAR CON DESHACER (PREVENCIÓN DE ERRORES) --- */
     function eliminarProducto(prodId) {
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
@@ -1455,17 +1505,18 @@
 
     document.getElementById('nombreNuevaLista').addEventListener('keypress', e => { if (e.key === 'Enter') crearNuevaLista(); });
     ['itemInput', 'itemQty', 'itemPrice'].forEach(id => {
-      document.getElementById(id).addEventListener('keypress', e => { if (e.key === 'Enter') agregarProducto(); });
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('keypress', e => { if (e.key === 'Enter') agregarProducto(); });
     });
   </script>
 
-  <!-- REGISTRO DEL SERVICE WORKER (PWA OFFLINE) -->
+  <!-- REGISTRO DEL SERVICE WORKER V3 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('PWA Service Worker listo:', reg.scope))
-          .catch((err) => console.log('Error registro SW:', err));
+          .then((reg) => console.log('Service Worker v3 listo:', reg.scope))
+          .catch((err) => console.log('Error en SW:', err));
       });
     }
   </script>
