@@ -549,6 +549,50 @@
       border: 2px solid var(--border);
     }
 
+    .btn-check-action {
+      background-color: var(--tab-bg);
+      border: 2px solid var(--border);
+      color: var(--success);
+      font-size: 1.2rem;
+      font-weight: 800;
+      min-width: 38px;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-check-action:hover {
+      background-color: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .btn-uncheck-action {
+      background-color: var(--tab-bg);
+      border: 2px solid var(--border);
+      color: var(--primary);
+      font-size: 1rem;
+      font-weight: 800;
+      min-width: 38px;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-uncheck-action:hover {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
     .item-details { flex: 1; min-width: 0; cursor: pointer; }
     .item-name { font-weight: 600; font-size: 0.98rem; word-break: break-word; }
     .item-subtext { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
@@ -875,7 +919,8 @@
 
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
-          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a>
+          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 26 de julio de 2026</span>
         </div>
       </div>
 
@@ -899,7 +944,8 @@
 
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
-          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a>
+          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 26 de julio de 2026</span>
         </div>
       </div>
 
@@ -1096,6 +1142,7 @@
     let escalaFuenteActual = 1;
     let wakeLockSentinel = null;
     let ultimaAccionDeshacer = null;
+    let timerToast = null;
     let diferidoPromptInstalacion = null;
     let textoBusquedaActual = '';
     let dbListenerRef = null;
@@ -1126,10 +1173,10 @@
         desc: 'Usa los botones [A+] arriba para ver más grande. Y en el supermercado, toca [💡 Pantalla Encendida] para que el teléfono no se apague solo.'
       },
       {
-        icon: '🔊',
+        icon: '✓',
         badge: 'Paso 4',
-        title: 'Escucha o Tacha productos',
-        desc: 'Si no ves bien, presiona [🔊 Leer Lista] para escuchar los productos. Cuando eches algo al carro, tócalo para tacharlo (¡y si te equivocas, usa [↩️ Deshacer]!).'
+        title: 'Marca productos como comprados',
+        desc: 'Toca el botón con el ícono [✓] ubicado entre el lápiz y la X para mover el producto a la pestaña [Comprados]. Si quieres devolverlo, puedes usar el botón [↩️] en la pestaña de Comprados o la opción [↩️ Deshacer] del mensaje de aviso.'
       }
     ];
 
@@ -1201,23 +1248,28 @@
       const toastMsg = document.getElementById('toastMsg');
       const btnUndo = document.getElementById('btnUndoToast');
 
+      if (timerToast) clearTimeout(timerToast);
+
       toastMsg.textContent = mensaje;
       btnUndo.style.display = conUndo ? 'inline-block' : 'none';
 
       if (conUndo && callbackUndo) {
         ultimaAccionDeshacer = callbackUndo;
-      } else if (!conUndo) {
+      } else {
         ultimaAccionDeshacer = null;
       }
 
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 4000);
+      timerToast = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4500);
     }
 
     function ejecutarAccionDeshacer() {
-      if (ultimaAccionDeshacer) {
-        ultimaAccionDeshacer();
+      if (typeof ultimaAccionDeshacer === 'function') {
+        const fn = ultimaAccionDeshacer;
         ultimaAccionDeshacer = null;
+        fn();
         document.getElementById('toast').classList.remove('show');
       }
     }
@@ -1608,11 +1660,14 @@
       renderizarProductos();
 
       mostrarToast(`🧹 ${comprados.length} comprados eliminados`, true, () => {
-        lista.items = copiaItemsPrevios;
-        guardarStorage();
-        sincronizarConFirebase();
-        renderizarProductos();
-        mostrarToast(`↩️ Eliminación de comprados deshacida`);
+        const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+        if (actual) {
+          actual.items = copiaItemsPrevios;
+          guardarStorage();
+          sincronizarConFirebase();
+          renderizarProductos();
+          mostrarToast(`↩️ Eliminación de comprados deshecha`);
+        }
       });
     }
 
@@ -1872,11 +1927,17 @@
           const iconoTxt = prod.comprado ? '✅' : '▫️';
 
           mostrarToast(`${iconoTxt} "${prod.texto}" marcado como ${accionTxt}`, true, () => {
-            prod.comprado = !prod.comprado;
-            guardarStorage();
-            sincronizarConFirebase();
-            renderizarProductos();
-            mostrarToast(`↩️ Cambio en "${prod.texto}" deshecho`);
+            const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+            if (actual && actual.items) {
+              const itemRevertir = actual.items.find(i => i.id === prodId);
+              if (itemRevertir) {
+                itemRevertir.comprado = !itemRevertir.comprado;
+                guardarStorage();
+                sincronizarConFirebase();
+                renderizarProductos();
+                mostrarToast(`↩️ Cambio en "${itemRevertir.texto}" deshecho`);
+              }
+            }
           });
         }
       }
@@ -1923,11 +1984,14 @@
           renderizarProductos();
 
           mostrarToast(`🗑️ "${itemEliminado.texto}" borrado`, true, () => {
-            lista.items.splice(prodIndex, 0, itemEliminado);
-            guardarStorage();
-            sincronizarConFirebase();
-            renderizarProductos();
-            mostrarToast(`↩️ "${itemEliminado.texto}" restaurado`);
+            const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+            if (actual && actual.items) {
+              actual.items.splice(prodIndex, 0, itemEliminado);
+              guardarStorage();
+              sincronizarConFirebase();
+              renderizarProductos();
+              mostrarToast(`↩️ "${itemEliminado.texto}" restaurado`);
+            }
           });
         }
       }
@@ -2031,6 +2095,21 @@
             const li = document.createElement('li');
             const subtotal = item.cantidad * (item.precio || 0);
 
+            let botonAccionPrincipal = '';
+            if (!item.comprado) {
+              botonAccionPrincipal = `
+                <button class="btn-check-action" onclick="cambiarEstadoProducto(${item.id})" title="Marcar como comprado">
+                  ✓
+                </button>
+              `;
+            } else {
+              botonAccionPrincipal = `
+                <button class="btn-uncheck-action" onclick="cambiarEstadoProducto(${item.id})" title="Devolver a Por Comprar">
+                  ↩️
+                </button>
+              `;
+            }
+
             li.innerHTML = `
               <div class="item-details ${item.comprado ? 'comprado' : ''}" onclick="cambiarEstadoProducto(${item.id})">
                 <div class="item-name">${escapeHtml(item.texto)}</div>
@@ -2047,6 +2126,9 @@
               </div>
 
               <button class="btn-action-icon" onclick="editarProducto(${item.id})" title="Editar producto">✏️</button>
+
+              ${botonAccionPrincipal}
+
               <button class="btn-action-icon" onclick="eliminarProducto(${item.id})" title="Borrar producto">✕</button>
             `;
             ul.appendChild(li);
@@ -2074,12 +2156,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V24 -->
+  <!-- SERVICE WORKER V27 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v24 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v27 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
