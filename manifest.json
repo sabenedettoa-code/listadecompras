@@ -21,3 +21,33 @@
     { "origin": "*.listadecompras.website" }
   ]
 }
+
+{
+  "name": "Mis Listas de Compras",
+  "short_name": "Mis Listas",
+  "description": "Plataforma gratuita y accesible para hacer las compras en Chile fácilmente.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
+  "capture_links": "existing-client-navigate",
+  "protocol_handlers": [
+    {
+      "protocol": "web+lista",
+      "url": "/?id=%s"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "scope_extensions": [
+    { "origin": "*.listadecompras.website" }
+  ]
+}
