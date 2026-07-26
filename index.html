@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- GOOGLE ANALYTICS (GTAG.JS) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V2PS8SERD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-9V2PS8SERD');
+  </script>
+
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#6366f1">
   <title>Mis Listas de Compras - listadecompras.website</title>
@@ -15,7 +26,7 @@
   <meta property="og:url" content="https://listadecompras.website">
   <meta property="og:type" content="website">
   
-  <!-- Favicon Integrado -->
+  <!-- FAVICON INTEGRADO -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%236366f1'/><g fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'><path d='M192 180 V 140 A 64 64 0 0 1 320 140 V 180'/><path d='M128 180 H 384 L 360 400 A 24 24 0 0 1 336 424 H 176 A 24 24 0 0 1 152 400 Z' fill='%23ffffff' fill-opacity='0.2'/><path d='M220 290 L 248 318 L 300 260' stroke-width='36'/></g></svg>">
 
   <style>
@@ -422,7 +433,7 @@
       color: #15803d;
     }
 
-    /* CABECERA DE LISTA ACTIVA & COMPARTIR CORREGIDOS */
+    /* CABECERA DE LISTA ACTIVA Y COMPARTIR */
     .header-active {
       display: flex;
       align-items: center;
@@ -609,7 +620,7 @@
       min-height: 40px;
     }
 
-    /* BOTONES POR COMPRAR / COMPRADOS */
+    /* BOTONES "POR COMPRAR" Y "COMPRADOS" */
     .sub-tabs { 
       display: flex; 
       gap: 6px; 
@@ -823,7 +834,7 @@
       <button class="nav-btn" id="navListaActiva" onclick="verSeccion('lista-activa')">🛒 Lista Actual</button>
     </div>
 
-    <!-- VISTA 0: PORTADA BIENVENIDA (SOLO APARECE LA 1RA VEZ PARA USUARIOS NUEVOS) -->
+    <!-- VISTA 0: PORTADA BIENVENIDA (SOLO 1RA VEZ PARA USUARIOS NUEVOS) -->
     <div id="secPortada" style="display: none;">
       <div class="welcome-hero">
         <div class="welcome-icon-box">🛒</div>
@@ -1390,7 +1401,7 @@
       });
     }
 
-    /* --- NAVEGACIÓN --- */
+    /* --- NAVEGACIÓN ENTRE VISTAS --- */
     function verSeccion(seccion) {
       vibrarConfirmacion();
       const secPortada = document.getElementById('secPortada');
@@ -1948,12 +1959,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V15 -->
+  <!-- SERVICE WORKER V16 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v15 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v16 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
