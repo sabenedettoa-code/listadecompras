@@ -24,14 +24,17 @@
   <link rel="manifest" href="manifest.json">
 
   <!-- VISTA PREVIA PARA WHATSAPP Y REDES SOCIALES -->
-  <meta property="og:title" content="🛒 Mis Listas de Compras">
-  <meta property="og:description" content="Plataforma gratuita y accesible creada sin fines de lucro para hacer las compras en Chile fácilmente. Funciona sin internet y con dictado por voz.">
-  <meta property="og:image" content="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://listadecompras.website">
-  <meta property="og:url" content="https://listadecompras.website">
   <meta property="og:type" content="website">
+  <meta property="og:title" content="🛒 Mis Listas de Compras">
+  <meta property="og:description" content="Lista de compras en vivo, accesible y gratuita para hacer las compras fácilmente en Chile.">
+  <meta property="og:image" content="https://listadecompras.website/icon-512.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:url" content="https://listadecompras.website">
   
   <!-- FAVICON INTEGRADO -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%236366f1'/><g fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'><path d='M192 180 V 140 A 64 64 0 0 1 320 140 V 180'/><path d='M128 180 H 384 L 360 400 A 24 24 0 0 1 336 424 H 176 A 24 24 0 0 1 152 400 Z' fill='%23ffffff' fill-opacity='0.2'/><path d='M220 290 L 248 318 L 300 260' stroke-width='36'/></g></svg>">
+  <link rel="icon" type="image/png" href="/icon-512.png">
 
   <style>
     :root {
@@ -2071,12 +2074,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V23 -->
+  <!-- SERVICE WORKER V24 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v23 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v24 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
