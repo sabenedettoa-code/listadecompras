@@ -475,6 +475,18 @@
       gap: 6px;
     }
 
+    .badge-code {
+      display: inline-block;
+      background-color: var(--tab-bg);
+      border: 1px dashed var(--primary);
+      color: var(--primary);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-top: 2px;
+    }
+
     .progress-container {
       margin-bottom: 16px;
       background: var(--tab-bg);
@@ -951,9 +963,16 @@
 
       <!-- VISTA 2: MIS LISTAS -->
       <div id="secMisListas" style="display: none;">
-        <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
+        <!-- CREAR LISTA -->
+        <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 10px;">
           <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
           <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
+        </div>
+
+        <!-- UNIRSE POR CÓDIGO CORTÓ -->
+        <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
+          <input type="text" id="codigoUnirseInput" class="input-product-large" placeholder="🔑 Ingresar código de lista (ej: A8K9P2)..." style="flex:1; text-transform: uppercase;">
+          <button class="btn-main-add" onclick="unirsePorCodigo()" style="flex: initial; min-width: 90px; background-color: #25d366;">Unirse</button>
         </div>
 
         <div class="action-bar">
@@ -969,7 +988,10 @@
       <div id="secListaActiva" style="display: none;">
         <div class="header-active">
           <button class="btn-back" onclick="verSeccion('mis-listas')">← Listas</button>
-          <h3 id="tituloListaActiva" style="margin: 0; text-align: center;">Lista</h3>
+          <div style="text-align: center;">
+            <h3 id="tituloListaActiva" style="margin: 0;">Lista</h3>
+            <span id="badgeCodigoLista" class="badge-code">CÓDIGO: ------</span>
+          </div>
           <button class="btn-share" onclick="compartirListaActiva()">📲 Compartir</button>
         </div>
 
@@ -1147,6 +1169,16 @@
     let textoBusquedaActual = '';
     let dbListenerRef = null;
 
+    function generarCodigoUnico() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let cod = '';
+      for (let i = 0; i < 6; i++) {
+        cod += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return cod;
+    }
+
+    // PASOS DEL TUTORIAL COMPLETO
     const pasosTutorialData = [
       {
         icon: '👋',
@@ -1155,10 +1187,10 @@
         desc: 'Esta plataforma fue creada sin fines de lucro por Santiago Benedetto (@sabenedettoa) para ayudarte a comprar sin estrés. Te enseñamos lo básico en 5 pasos.'
       },
       {
-        icon: '📝',
+        icon: '🔑',
         badge: 'Paso 1',
-        title: 'Crea tu primera lista',
-        desc: 'Escribe un nombre en la casilla (ej: "Jumbo" o "Feria") y presiona el botón [Crear]. Puedes tener varias listas a la vez.'
+        title: 'Crea o Únete con un Código',
+        desc: 'Escribe un nombre en la casilla (ej: "Feria") y presiona [Crear], o bien ingresa un CÓDIGO de 6 caracteres (ej: A8K9P2) en [🔑 Unirse] para conectarte a una lista.'
       },
       {
         icon: '🎤',
@@ -1170,13 +1202,19 @@
         icon: '👓',
         badge: 'Paso 3',
         title: 'Agranda la letra y fija la pantalla',
-        desc: 'Usa los botones [A+] arriba para ver más grande. Y en el supermercado, toca [💡 Pantalla Encendida] para que el teléfono no se apague solo.'
+        desc: 'Usa los botones [A+] arriba para ver más grande. Y en el supermercado, toca [💡 Pantalla Encendida] para que el teléfono no se apague solo mientras compras.'
+      },
+      {
+        icon: '📲',
+        badge: 'Paso 4',
+        title: 'Compartir Lista en Vivo',
+        desc: 'Puedes compartir tu lista enviando un ENLACE directo por WhatsApp con el botón [📲 Compartir], o simplemente dictando/compartiendo el CÓDIGO único de 6 caracteres.'
       },
       {
         icon: '✓',
-        badge: 'Paso 4',
-        title: 'Marca productos como comprados',
-        desc: 'Toca el botón con el ícono [✓] ubicado entre el lápiz y la X para mover el producto a la pestaña [Comprados]. Si quieres devolverlo, puedes usar el botón [↩️] en la pestaña de Comprados o la opción [↩️ Deshacer] del mensaje de aviso.'
+        badge: 'Paso 5',
+        title: 'Marca comprados y Deshaz cambios',
+        desc: 'Toca el botón [✓] (ubicado entre el lápiz y la X) para mover un producto a [Comprados]. Si te equivocas, usa el botón [↩️] en Comprados o la opción [↩️ Deshacer] en el aviso emergente.'
       }
     ];
 
@@ -1438,7 +1476,7 @@
     }
 
     function comprobarTutorialPrimeraVez() {
-      const visto = localStorage.getItem('tutorialVisto_v3');
+      const visto = localStorage.getItem('tutorialVisto_v6');
       if (!visto) abrirTutorial();
     }
 
@@ -1452,7 +1490,7 @@
     function cerrarTutorial() {
       vibrarConfirmacion();
       document.getElementById('tutorialOverlay').classList.remove('active');
-      localStorage.setItem('tutorialVisto_v3', 'true');
+      localStorage.setItem('tutorialVisto_v6', 'true');
     }
 
     function pasoTutorial(dir) {
@@ -1469,7 +1507,7 @@
     function actualizarTutorialUI() {
       const data = pasosTutorialData[pasoActualTutorial];
       document.getElementById('tutIcon').textContent = data.icon;
-      document.getElementById('tutBadge').textContent = data.badge;
+      document.getElementById('tutBadge').textContent = `${data.badge} de ${pasosTutorialData.length - 1}`;
       document.getElementById('tutTitle').textContent = data.title;
       document.getElementById('tutDesc').textContent = data.desc;
 
@@ -1720,12 +1758,13 @@
         });
 
         const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
+        const mensajeTexto = `🛒 Te comparto la lista "${lista.nombre}" en vivo.\n🔑 Código de acceso: ${lista.id}\n🔗 Enlace directo: ${urlCompartida}`;
 
         if (navigator.share) {
           try {
             await navigator.share({
               title: `Lista: ${lista.nombre}`,
-              text: `🛒 Te comparto la lista "${lista.nombre}" en vivo (sincronizada):`,
+              text: mensajeTexto,
               url: urlCompartida
             });
             return;
@@ -1733,21 +1772,55 @@
             if (e.name === 'AbortError') return;
           }
         }
-        await copiarEnlace(urlCompartida, lista.nombre);
+        await copiarEnlace(urlCompartida, lista.nombre, lista.id);
       } catch (error) {
         mostrarToast("⚠️ Error al sincronizar en la nube");
       }
     }
 
-    async function copiarEnlace(url, nombreLista) {
+    async function copiarEnlace(url, nombreLista, codigo) {
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(url);
-          mostrarToast(`📋 ¡Enlace corto en vivo copiado!`);
+          mostrarToast(`📋 ¡Enlace copiado! Código: ${codigo}`);
         } else { throw new Error(); }
       } catch (err) {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista "${nombreLista}": ${url}`)}`, '_blank');
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista "${nombreLista}" (Código: ${codigo}): ${url}`)}`, '_blank');
       }
+    }
+
+    function unirsePorCodigo() {
+      vibrarConfirmacion();
+      const input = document.getElementById('codigoUnirseInput');
+      const codigo = input.value.trim().toUpperCase();
+
+      if (!codigo) {
+        mostrarToast("⚠️ Escribe un código de 6 caracteres primero");
+        return;
+      }
+
+      mostrarToast("🔍 Buscando lista...");
+
+      db.ref('listas/' + codigo).once('value').then((snapshot) => {
+        const datos = snapshot.val();
+        if (datos) {
+          let local = coleccionListas.find(l => String(l.id) === String(codigo));
+          if (!local) {
+            coleccionListas.push({ id: codigo, nombre: datos.nombre, items: datos.items || [] });
+          } else {
+            local.nombre = datos.nombre;
+            local.items = datos.items || [];
+          }
+          guardarStorage();
+          input.value = '';
+          abrirLista(codigo);
+          mostrarToast(`🎉 ¡Conectado a "${datos.nombre}"!`);
+        } else {
+          mostrarToast("❌ Código no encontrado o no existe");
+        }
+      }).catch(() => {
+        mostrarToast("⚠️ Error al buscar el código");
+      });
     }
 
     function procesarListaRecibidaPorURL() {
@@ -1781,13 +1854,14 @@
       const nombre = input.value.trim();
       if (!nombre) return;
 
-      const nuevaLista = { id: 'l_' + Date.now(), nombre: nombre, items: [] };
+      const nuevoCodigo = generarCodigoUnico();
+      const nuevaLista = { id: nuevoCodigo, nombre: nombre, items: [] };
       coleccionListas.push(nuevaLista);
       guardarStorage();
       input.value = "";
       abrirLista(nuevaLista.id);
       sincronizarConFirebase();
-      mostrarToast(`✨ Lista creada`);
+      mostrarToast(`✨ Lista creada (Código: ${nuevoCodigo})`);
     }
 
     function editarNombreLista(e, id) {
@@ -1829,7 +1903,7 @@
       const contenedor = document.getElementById('contenedorListas');
       contenedor.innerHTML = "";
       if (coleccionListas.length === 0) {
-        contenedor.innerHTML = '<p class="empty-msg">No tienes listas creadas. ¡Crea una arriba!</p>';
+        contenedor.innerHTML = '<p class="empty-msg">No tienes listas creadas. ¡Crea una arriba o únete con un código!</p>';
         return;
       }
       coleccionListas.forEach(lista => {
@@ -1841,6 +1915,7 @@
           <div class="list-info">
             <h4>📌 ${escapeHtml(lista.nombre)}</h4>
             <p>${pendientes} pendientes de ${(lista.items || []).length} productos</p>
+            <span class="badge-code">CÓDIGO: ${lista.id}</span>
           </div>
           <div class="card-actions">
             <button class="btn-action-icon" onclick="editarNombreLista(event, '${lista.id}')" title="Editar nombre">✏️</button>
@@ -2048,12 +2123,14 @@
     function renderizarProductos() {
       const contenedor = document.getElementById('contenedorProductosCategorizados');
       const titulo = document.getElementById('tituloListaActiva');
+      const badgeCod = document.getElementById('badgeCodigoLista');
       contenedor.innerHTML = "";
 
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista) return;
 
       titulo.textContent = lista.nombre;
+      badgeCod.textContent = `CÓDIGO: ${lista.id}`;
       actualizarPresupuestoYProgreso(lista);
 
       const items = lista.items || [];
@@ -2150,18 +2227,19 @@
     }
 
     document.getElementById('nombreNuevaLista').addEventListener('keypress', e => { if (e.key === 'Enter') crearNuevaLista(); });
+    document.getElementById('codigoUnirseInput').addEventListener('keypress', e => { if (e.key === 'Enter') unirsePorCodigo(); });
     ['itemInput', 'itemQty', 'itemPrice'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('keypress', e => { if (e.key === 'Enter') agregarProducto(); });
     });
   </script>
 
-  <!-- SERVICE WORKER V27 -->
+  <!-- SERVICE WORKER V31 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v27 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v31 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
