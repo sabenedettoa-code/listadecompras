@@ -175,6 +175,10 @@
       flex-shrink: 0;
     }
 
+    @media (display-mode: standalone) {
+      .btn-install-app { display: none !important; }
+    }
+
     .nav-tabs {
       display: flex;
       gap: 4px;
@@ -963,16 +967,16 @@
 
       <!-- VISTA 2: MIS LISTAS -->
       <div id="secMisListas" style="display: none;">
-        <!-- CREAR LISTA -->
+        <!-- UNIRSE POR CÓDIGO CORTO (ARRIBA) -->
         <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 10px;">
-          <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
-          <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
-        </div>
-
-        <!-- UNIRSE POR CÓDIGO CORTÓ -->
-        <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
           <input type="text" id="codigoUnirseInput" class="input-product-large" placeholder="🔑 Ingresar código de lista (ej: A8K9P2)..." style="flex:1; text-transform: uppercase;">
           <button class="btn-main-add" onclick="unirsePorCodigo()" style="flex: initial; min-width: 90px; background-color: #25d366;">Unirse</button>
+        </div>
+
+        <!-- CREAR LISTA NUEVA (ABAJO) -->
+        <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
+          <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
+          <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
         </div>
 
         <div class="action-bar">
@@ -1178,7 +1182,6 @@
       return cod;
     }
 
-    // PASOS DEL TUTORIAL COMPLETO
     const pasosTutorialData = [
       {
         icon: '👋',
@@ -1190,7 +1193,7 @@
         icon: '🔑',
         badge: 'Paso 1',
         title: 'Crea o Únete con un Código',
-        desc: 'Escribe un nombre en la casilla (ej: "Feria") y presiona [Crear], o bien ingresa un CÓDIGO de 6 caracteres (ej: A8K9P2) en [🔑 Unirse] para conectarte a una lista.'
+        desc: 'Ingresa un CÓDIGO de 6 caracteres (ej: A8K9P2) en [🔑 Unirse] para conectarte a la lista de un familiar, o escribe un nombre abajo y presiona [Crear] para crear una lista nueva.'
       },
       {
         icon: '🎤',
@@ -1318,6 +1321,11 @@
       cargarOrdenCategorias();
       procesarListaRecibidaPorURL();
 
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btnInstalar = document.getElementById('btnInstalarPWA');
+        if (btnInstalar) btnInstalar.style.display = 'none';
+      }
+
       const portadaVista = localStorage.getItem('portadaVista_v1');
       if (!portadaVista) {
         verSeccion('portada');
@@ -1335,6 +1343,9 @@
     }
 
     window.addEventListener('beforeinstallprompt', (e) => {
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        return;
+      }
       e.preventDefault();
       diferidoPromptInstalacion = e;
       const btnInstalar = document.getElementById('btnInstalarPWA');
@@ -1758,7 +1769,7 @@
         });
 
         const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
-        const mensajeTexto = `🛒 Te comparto la lista "${lista.nombre}" en vivo.\n🔑 Código de acceso: ${lista.id}\n🔗 Enlace directo: ${urlCompartida}`;
+        const mensajeTexto = `🛒 Te comparto la lista "${lista.nombre}" en vivo.\n🔑 Código de acceso: ${lista.id}`;
 
         if (navigator.share) {
           try {
@@ -2234,12 +2245,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V31 -->
+  <!-- SERVICE WORKER V33 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v31 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v33 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
