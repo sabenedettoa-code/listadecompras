@@ -14,8 +14,9 @@
     gtag('config', 'G-9V2PS8SERD');
   </script>
 
-  <!-- LIBRERÍA DE COMPRESIÓN DE URL (LZ-STRING) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+  <!-- FIREBASE COMPAT SDKS -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#ffffff">
@@ -1071,6 +1072,19 @@
   </div>
 
   <script>
+    // CONFIGURACIÓN DE FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyAAA0FMRmg69mhIBiHrpCoXvhXa8qBRFa0",
+      authDomain: "lista-de-compras-8e59d.firebaseapp.com",
+      projectId: "lista-de-compras-8e59d",
+      storageBucket: "lista-de-compras-8e59d.firebasestorage.app",
+      messagingSenderId: "708116875550",
+      appId: "1:708116875550:web:ae6c6960c5807911d8e10f"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     let coleccionListas = [];
     let idListaActiva = null;
     let filtroProductos = 'pendientes';
@@ -1081,6 +1095,7 @@
     let ultimaAccionDeshacer = null;
     let diferidoPromptInstalacion = null;
     let textoBusquedaActual = '';
+    let dbListenerRef = null;
 
     const pasosTutorialData = [
       {
@@ -1276,7 +1291,7 @@
       const lista = coleccionListas.find(l => l.id === idListaActiva);
       if (!lista) return;
 
-      const pendientes = lista.items.filter(i => !i.comprado);
+      const pendientes = (lista.items || []).filter(i => !i.comprado);
       if (pendientes.length === 0) {
         mostrarToast("🔊 No tienes productos pendientes por comprar");
         return;
@@ -1467,6 +1482,7 @@
         secListaActiva.style.display = 'block';
         barraNavegacion.style.display = 'flex';
         navListaActiva.classList.add('active');
+        escucharSincronizacionFirebase(idListaActiva);
         renderizarProductos();
       }
     }
@@ -1477,14 +1493,14 @@
 
       if (coleccionListas.length > 0) {
         const ultima = coleccionListas[coleccionListas.length - 1];
-        const pendientes = ultima.items.filter(i => !i.comprado).length;
+        const pendientes = (ultima.items || []).filter(i => !i.comprado).length;
 
         widget.innerHTML = `
-          <div class="recent-list-widget" onclick="abrirLista(${ultima.id})">
+          <div class="recent-list-widget" onclick="abrirLista('${ultima.id}')">
             <h4>📌 Continuar con tu última lista</h4>
             <div style="font-weight: 800; font-size: 1.1rem; color: var(--text);">${escapeHtml(ultima.nombre)}</div>
             <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
-              ${pendientes} productos pendientes de ${ultima.items.length} en total. ➔
+              ${pendientes} productos pendientes de ${(ultima.items || []).length} en total. ➔
             </div>
           </div>
         `;
@@ -1560,19 +1576,20 @@
 
     function desmarcarTodos() {
       vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (!lista || lista.items.length === 0) return;
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !lista.items || lista.items.length === 0) return;
 
       lista.items.forEach(i => i.comprado = false);
       guardarStorage();
+      sincronizarConFirebase();
       renderizarProductos();
       mostrarToast("🔄 Lista desmarcada para una nueva compra");
     }
 
     function limpiarProductosComprados() {
       vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (!lista) return;
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !lista.items) return;
 
       const comprados = lista.items.filter(i => i.comprado);
       if (comprados.length === 0) {
@@ -1584,67 +1601,73 @@
 
       lista.items = lista.items.filter(i => !i.comprado);
       guardarStorage();
+      sincronizarConFirebase();
       renderizarProductos();
 
       mostrarToast(`🧹 ${comprados.length} comprados eliminados`, true, () => {
         lista.items = copiaItemsPrevios;
         guardarStorage();
+        sincronizarConFirebase();
         renderizarProductos();
         mostrarToast(`↩️ Eliminación de comprados deshacida`);
       });
     }
 
-    async function copiarComoTexto() {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (!lista || lista.items.length === 0) return;
+    /* FIREBASE EN TIEMPO REAL */
+    function escucharSincronizacionFirebase(listaId) {
+      if (dbListenerRef) dbListenerRef.off();
 
-      let textoPlano = `🛒 *Lista: ${lista.nombre}*\n\n`;
-      let totalEstimado = 0;
-
-      lista.items.forEach(item => {
-        const subtotal = item.cantidad * (item.precio || 0);
-        totalEstimado += subtotal;
-        const precioTxt = subtotal > 0 ? ` (${formatoCLP.format(subtotal)})` : '';
-        const check = item.comprado ? '✅' : '▫️';
-        textoPlano += `${check} ${item.cantidad}x ${item.texto}${precioTxt}\n`;
+      dbListenerRef = db.ref('listas/' + listaId);
+      dbListenerRef.on('value', (snapshot) => {
+        const datosNube = snapshot.val();
+        if (datosNube) {
+          let listaLocal = coleccionListas.find(l => String(l.id) === String(listaId));
+          if (!listaLocal) {
+            listaLocal = { id: listaId, nombre: datosNube.nombre, items: datosNube.items || [] };
+            coleccionListas.push(listaLocal);
+          } else {
+            listaLocal.nombre = datosNube.nombre;
+            listaLocal.items = datosNube.items || [];
+          }
+          guardarStorage();
+          if (String(idListaActiva) === String(listaId)) {
+            renderizarProductos();
+          }
+        }
       });
+    }
 
-      if (totalEstimado > 0) {
-        textoPlano += `\n*Total estimado: ${formatoCLP.format(totalEstimado)}*`;
-      }
-
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(textoPlano);
-          mostrarToast("📝 Lista copiada al portapapeles");
-        } else { throw new Error(); }
-      } catch (err) {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoPlano)}`, '_blank');
+    function sincronizarConFirebase() {
+      if (!idListaActiva) return;
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista) {
+        db.ref('listas/' + lista.id).set({
+          nombre: lista.nombre,
+          items: lista.items || []
+        });
       }
     }
 
-    /* COMPARTIR LISTA CON COMPRESIÓN DE URL (LZ-STRING) */
     async function compartirListaActiva() {
       vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista) return;
 
+      mostrarToast("☁️ Guardando en la nube para sincronizar...");
+
       try {
-        const datosJSON = JSON.stringify({
-          n: lista.nombre,
-          i: lista.items.map(item => [item.texto, item.cantidad, item.precio || 0, item.comprado ? 1 : 0])
+        await db.ref('listas/' + lista.id).set({
+          nombre: lista.nombre,
+          items: lista.items || []
         });
 
-        // Comprime el string a formato seguro de URL de forma ultra-eficiente
-        let datosComprimidos = window.LZString ? LZString.compressToEncodedURIComponent(datosJSON) : btoa(encodeURIComponent(datosJSON));
-        const urlCompartida = `${window.location.origin}${window.location.pathname}?c=${datosComprimidos}`;
+        const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
 
         if (navigator.share) {
           try {
             await navigator.share({
               title: `Lista: ${lista.nombre}`,
-              text: `Te comparto la lista de compras "${lista.nombre}":`,
+              text: `🛒 Te comparto la lista "${lista.nombre}" en vivo (sincronizada):`,
               url: urlCompartida
             });
             return;
@@ -1654,7 +1677,7 @@
         }
         await copiarEnlace(urlCompartida, lista.nombre);
       } catch (error) {
-        mostrarToast("⚠️ Error al compartir");
+        mostrarToast("⚠️ Error al sincronizar en la nube");
       }
     }
 
@@ -1662,61 +1685,35 @@
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(url);
-          mostrarToast(`📋 ¡Enlace corto copiado!`);
+          mostrarToast(`📋 ¡Enlace corto en vivo copiado!`);
         } else { throw new Error(); }
       } catch (err) {
         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista "${nombreLista}": ${url}`)}`, '_blank');
       }
     }
 
-    /* DESCOMPRIMIR Y PROCESAR LISTA AL ABRIR UN ENLACE */
     function procesarListaRecibidaPorURL() {
       const urlParams = new URLSearchParams(window.location.search);
-      const datosComprimidos = urlParams.get('c');
-      const datosBase64Antiguos = urlParams.get('l') || urlParams.get('listaShared');
+      const listaIdURL = urlParams.get('id');
 
-      if (datosComprimidos || datosBase64Antiguos) {
-        try {
-          let datos = null;
-
-          if (datosComprimidos && window.LZString) {
-            const descompreso = LZString.decompressFromEncodedURIComponent(datosComprimidos);
-            datos = JSON.parse(descompreso);
-          } else if (datosBase64Antiguos) {
-            datos = JSON.parse(urlParams.get('l') ? decodeURIComponent(atob(datosBase64Antiguos)) : decodeURIComponent(datosBase64Antiguos));
-          }
-
+      if (listaIdURL) {
+        idListaActiva = listaIdURL;
+        db.ref('listas/' + listaIdURL).once('value').then((snapshot) => {
+          const datos = snapshot.val();
           if (datos) {
-            let nombreLista = datos.n || datos.nombre || "Lista Importada";
-            let rawItems = datos.i || datos.items || [];
-
-            const itemsRestaurados = rawItems.map(i => {
-              const esFormatoNuevo = Array.isArray(i);
-              const textoProd = esFormatoNuevo ? i[0] : (i.t || i.texto);
-              const cantProd = esFormatoNuevo ? i[1] : (i.c || i.cantidad || 1);
-              const precioProd = esFormatoNuevo ? i[2] : (i.p || i.precio || 0);
-              const compradoProd = esFormatoNuevo ? (i[3] === 1) : (i.k || i.comprado || false);
-
-              const catInfo = clasificarProducto(textoProd);
-              return {
-                id: Date.now() + Math.random(),
-                texto: textoProd,
-                cantidad: cantProd,
-                precio: Math.round(precioProd),
-                categoriaId: catInfo.id,
-                icono: catInfo.icono,
-                comprado: compradoProd
-              };
-            });
-
-            const nuevaLista = { id: Date.now(), nombre: `${nombreLista} (Compartida)`, items: itemsRestaurados };
-            coleccionListas.push(nuevaLista);
+            let local = coleccionListas.find(l => String(l.id) === String(listaIdURL));
+            if (!local) {
+              coleccionListas.push({ id: listaIdURL, nombre: datos.nombre, items: datos.items || [] });
+            } else {
+              local.nombre = datos.nombre;
+              local.items = datos.items || [];
+            }
             guardarStorage();
             window.history.replaceState({}, document.title, window.location.pathname);
-            abrirLista(nuevaLista.id);
-            mostrarToast(`🎉 ¡Lista "${nombreLista}" importada!`);
+            abrirLista(listaIdURL);
+            mostrarToast(`🎉 ¡Lista "${datos.nombre}" conectada en vivo!`);
           }
-        } catch (e) { console.error(e); }
+        });
       }
     }
 
@@ -1726,27 +1723,29 @@
       const nombre = input.value.trim();
       if (!nombre) return;
 
-      const nuevaLista = { id: Date.now(), nombre: nombre, items: [] };
+      const nuevaLista = { id: 'l_' + Date.now(), nombre: nombre, items: [] };
       coleccionListas.push(nuevaLista);
       guardarStorage();
       input.value = "";
       abrirLista(nuevaLista.id);
+      sincronizarConFirebase();
       mostrarToast(`✨ Lista creada`);
     }
 
     function editarNombreLista(e, id) {
       e.stopPropagation();
       vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === id);
+      const lista = coleccionListas.find(l => String(l.id) === String(id));
       if (!lista) return;
 
       const nuevoNombre = prompt("Editar nombre de la lista:", lista.nombre);
       if (nuevoNombre !== null && nuevoNombre.trim() !== "") {
         lista.nombre = nuevoNombre.trim();
         guardarStorage();
+        sincronizarConFirebase();
         renderizarListas();
         renderizarInicio();
-        if (idListaActiva === id) renderizarProductos();
+        if (String(idListaActiva) === String(id)) renderizarProductos();
         mostrarToast("✏️ Nombre de la lista actualizado");
       }
     }
@@ -1760,8 +1759,8 @@
     function eliminarLista(e, id) {
       e.stopPropagation();
       vibrarConfirmacion();
-      coleccionListas = coleccionListas.filter(l => l.id !== id);
-      if (idListaActiva === id) idListaActiva = null;
+      coleccionListas = coleccionListas.filter(l => String(l.id) !== String(id));
+      if (String(idListaActiva) === String(id)) idListaActiva = null;
       guardarStorage();
       renderizarListas();
       renderizarInicio();
@@ -1776,18 +1775,18 @@
         return;
       }
       coleccionListas.forEach(lista => {
-        const pendientes = lista.items.filter(i => !i.comprado).length;
+        const pendientes = (lista.items || []).filter(i => !i.comprado).length;
         const div = document.createElement('div');
         div.className = 'list-card';
         div.onclick = () => abrirLista(lista.id);
         div.innerHTML = `
           <div class="list-info">
             <h4>📌 ${escapeHtml(lista.nombre)}</h4>
-            <p>${pendientes} pendientes de ${lista.items.length} productos</p>
+            <p>${pendientes} pendientes de ${(lista.items || []).length} productos</p>
           </div>
           <div class="card-actions">
-            <button class="btn-action-icon" onclick="editarNombreLista(event, ${lista.id})" title="Editar nombre">✏️</button>
-            <button class="btn-action-icon" onclick="eliminarLista(event, ${lista.id})" title="Eliminar lista">🗑️</button>
+            <button class="btn-action-icon" onclick="editarNombreLista(event, '${lista.id}')" title="Editar nombre">✏️</button>
+            <button class="btn-action-icon" onclick="eliminarLista(event, '${lista.id}')" title="Eliminar lista">🗑️</button>
           </div>
         `;
         contenedor.appendChild(div);
@@ -1808,8 +1807,9 @@
 
       if (!texto) return;
 
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (lista) {
+        if (!lista.items) lista.items = [];
         const catInfo = clasificarProducto(texto);
         lista.items.push({
           id: Date.now(),
@@ -1822,6 +1822,7 @@
         });
 
         guardarStorage();
+        sincronizarConFirebase();
         renderizarProductos();
         input.value = "";
         qtyInput.value = "1";
@@ -1832,8 +1833,8 @@
 
     function editarProducto(prodId) {
       vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (!lista) return;
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !lista.items) return;
 
       const prod = lista.items.find(i => i.id === prodId);
       if (!prod) return;
@@ -1846,6 +1847,7 @@
         prod.icono = catInfo.icono;
 
         guardarStorage();
+        sincronizarConFirebase();
         renderizarProductos();
         mostrarToast("✏️ Producto actualizado");
       }
@@ -1853,13 +1855,14 @@
 
     function cambiarEstadoProducto(prodId) {
       vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (lista) {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista && lista.items) {
         const prod = lista.items.find(i => i.id === prodId);
         if (prod) {
           prod.comprado = !prod.comprado;
           if (prod.comprado) reproducirSonidoExito();
           guardarStorage();
+          sincronizarConFirebase();
           renderizarProductos();
 
           const accionTxt = prod.comprado ? 'comprado' : 'pendiente';
@@ -1868,6 +1871,7 @@
           mostrarToast(`${iconoTxt} "${prod.texto}" marcado como ${accionTxt}`, true, () => {
             prod.comprado = !prod.comprado;
             guardarStorage();
+            sincronizarConFirebase();
             renderizarProductos();
             mostrarToast(`↩️ Cambio en "${prod.texto}" deshecho`);
           });
@@ -1877,24 +1881,26 @@
 
     function cambiarCantidadProducto(prodId, cambio) {
       vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (lista) {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista && lista.items) {
         const prod = lista.items.find(i => i.id === prodId);
         if (prod) {
           prod.cantidad = Math.max(1, prod.cantidad + cambio);
           guardarStorage();
+          sincronizarConFirebase();
           renderizarProductos();
         }
       }
     }
 
     function actualizarPrecioProducto(prodId, nuevoPrecio) {
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (lista) {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista && lista.items) {
         const prod = lista.items.find(i => i.id === prodId);
         if (prod) {
           prod.precio = Math.max(0, Math.round(parseFloat(nuevoPrecio) || 0));
           guardarStorage();
+          sincronizarConFirebase();
           renderizarProductos();
         }
       }
@@ -1902,19 +1908,21 @@
 
     function eliminarProducto(prodId) {
       vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (lista) {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista && lista.items) {
         const prodIndex = lista.items.findIndex(i => i.id === prodId);
         if (prodIndex !== -1) {
           const itemEliminado = lista.items[prodIndex];
 
           lista.items.splice(prodIndex, 1);
           guardarStorage();
+          sincronizarConFirebase();
           renderizarProductos();
 
           mostrarToast(`🗑️ "${itemEliminado.texto}" borrado`, true, () => {
             lista.items.splice(prodIndex, 0, itemEliminado);
             guardarStorage();
+            sincronizarConFirebase();
             renderizarProductos();
             mostrarToast(`↩️ "${itemEliminado.texto}" restaurado`);
           });
@@ -1949,9 +1957,10 @@
       let gastado = 0;
       let total = 0;
       let compradosCount = 0;
-      const totalItems = lista.items.length;
+      const items = lista.items || [];
+      const totalItems = items.length;
 
-      lista.items.forEach(item => {
+      items.forEach(item => {
         const subtotal = item.cantidad * Math.round(item.precio || 0);
         total += subtotal;
         if (item.comprado) {
@@ -1974,13 +1983,14 @@
       const titulo = document.getElementById('tituloListaActiva');
       contenedor.innerHTML = "";
 
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista) return;
 
       titulo.textContent = lista.nombre;
       actualizarPresupuestoYProgreso(lista);
 
-      const filtrados = lista.items.filter(item => {
+      const items = lista.items || [];
+      const filtrados = items.filter(item => {
         const cumpleEstado = filtroProductos === 'pendientes' ? !item.comprado : item.comprado;
         const cumpleBusqueda = !textoBusquedaActual || item.texto.toLowerCase().includes(textoBusquedaActual);
         return cumpleEstado && cumpleBusqueda;
@@ -2061,12 +2071,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V22 -->
+  <!-- SERVICE WORKER V23 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v22 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v23 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
