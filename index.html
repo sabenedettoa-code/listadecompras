@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
   <!-- GOOGLE ANALYTICS (GTAG.JS) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V2PS8SERD"></script>
@@ -59,7 +59,11 @@
 
     * { box-sizing: border-box; }
 
-    html { font-size: calc(16px * var(--font-scale)); }
+    html { 
+      font-size: calc(16px * var(--font-scale));
+      height: 100%;
+      overflow: hidden; /* Bloquea el scroll general */
+    }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -67,25 +71,34 @@
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 0; /* Sin relleno exterior */
+      padding: 0;
       margin: 0;
+      height: 100vh;
+      height: 100dvh; /* Alto exacto del área visible del teléfono */
+      overflow: hidden; /* Sin scroll exterior */
       transition: background-color 0.3s, color 0.3s;
-      min-height: 100vh;
     }
 
     .container {
       background: var(--card-bg);
       width: 100%;
-      max-width: 100%; /* Ocupa todo el ancho */
-      min-height: 100vh; /* Ocupa todo el alto */
+      max-width: 100%;
+      height: 100%;
       padding: 16px;
-      padding-top: max(16px, env(safe-area-inset-top)); /* Compatible con notch */
+      padding-top: max(16px, env(safe-area-inset-top));
       padding-bottom: max(16px, env(safe-area-inset-bottom));
-      border-radius: 0; /* Sin bordes redondeados afuera */
-      box-shadow: none; /* Sin sombras exteriores */
-      position: relative;
       display: flex;
       flex-direction: column;
+      justify-content: space-between; /* Empuja el footer bien abajo */
+      position: relative;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto; /* Solo permite scroll interno si el contenido supera la pantalla */
+      -webkit-overflow-scrolling: touch;
     }
 
     .header-top {
@@ -93,6 +106,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
+      flex-shrink: 0;
     }
 
     .app-title { font-size: 1.2rem; font-weight: 700; margin: 0; }
@@ -152,6 +166,7 @@
       cursor: pointer;
       text-align: center;
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      flex-shrink: 0;
     }
 
     .nav-tabs {
@@ -161,6 +176,7 @@
       background-color: var(--tab-bg);
       padding: 4px;
       border-radius: 14px;
+      flex-shrink: 0;
     }
 
     .nav-btn {
@@ -183,10 +199,10 @@
       box-shadow: 0 2px 6px var(--shadow);
     }
 
-    /* PORTADA DE BIENVENIDA */
-    .welcome-hero { text-align: center; padding: 10px 0 20px 0; }
-    .welcome-icon-box { font-size: 3.8rem; margin-bottom: 8px; }
-    .welcome-title { font-size: 1.55rem; font-weight: 900; color: var(--text); margin: 0 0 6px 0; }
+    /* PORTADA BIENVENIDA */
+    .welcome-hero { text-align: center; padding: 10px 0; }
+    .welcome-icon-box { font-size: 3.5rem; margin-bottom: 6px; }
+    .welcome-title { font-size: 1.5rem; font-weight: 900; color: var(--text); margin: 0 0 4px 0; }
 
     .welcome-domain {
       display: inline-block;
@@ -197,28 +213,28 @@
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.85rem;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    .welcome-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
+    .welcome-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; }
 
     .welcome-features-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       text-align: left;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     .feature-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       background: var(--tab-bg);
       border: 1px solid var(--border);
-      padding: 12px 14px;
-      border-radius: 14px;
-      font-size: 0.92rem;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.88rem;
       font-weight: 600;
     }
 
@@ -229,7 +245,7 @@
       border: none;
       padding: 16px;
       border-radius: 16px;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 800;
       cursor: pointer;
       display: flex;
@@ -244,34 +260,33 @@
       background: var(--tab-bg);
       border: 2px solid var(--border);
       border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 16px;
+      padding: 18px;
       text-align: center;
     }
 
-    .home-card h2 { margin: 0 0 8px 0; font-size: 1.3rem; color: var(--text); }
-    .home-card p { margin: 0 0 16px 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.4; }
+    .home-card h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--text); }
+    .home-card p { margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
 
     .home-actions {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .btn-home-action {
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 16px;
+      padding: 15px;
       border-radius: 14px;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
     }
 
@@ -286,15 +301,15 @@
       background-color: var(--card-bg);
       border: 2px solid var(--primary);
       border-radius: 14px;
-      padding: 14px;
+      padding: 12px;
       text-align: left;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .recent-list-widget h4 {
       margin: 0 0 4px 0;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--primary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -309,6 +324,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      flex-shrink: 0;
     }
 
     .add-row-1 { display: flex; gap: 8px; }
@@ -329,7 +345,6 @@
     }
 
     .input-product-large:focus { border-color: var(--primary); }
-    .input-product-large::placeholder { color: var(--text-muted); opacity: 0.8; }
 
     .field-box {
       display: flex;
@@ -374,8 +389,6 @@
       gap: 6px;
     }
 
-    .btn-main-add:hover { background-color: var(--primary-hover); }
-
     .btn-mic {
       background-color: var(--card-bg);
       color: var(--text);
@@ -389,22 +402,6 @@
       justify-content: center;
       min-height: 50px;
       min-width: 50px;
-      transition: all 0.2s;
-    }
-
-    .btn-mic:hover { border-color: var(--primary); }
-
-    .btn-mic.listening {
-      background-color: #fee2e2;
-      border-color: var(--danger);
-      color: var(--danger);
-      animation: pulseMic 1.2s infinite;
-    }
-
-    @keyframes pulseMic {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-      100% { transform: scale(1); }
     }
 
     .action-bar {
@@ -412,6 +409,7 @@
       gap: 6px;
       margin-bottom: 12px;
       flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
     .btn-sec {
@@ -429,23 +427,15 @@
       justify-content: center;
       gap: 6px;
       min-height: 46px;
-      transition: background 0.2s;
     }
 
-    .btn-sec:hover { background-color: var(--border); }
-    .btn-sec.active-mode {
-      background-color: #dcfce7;
-      border-color: var(--success);
-      color: #15803d;
-    }
-
-    /* CABECERA DE LISTA ACTIVA */
     .header-active {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       gap: 10px;
+      flex-shrink: 0;
     }
 
     .btn-back {
@@ -463,8 +453,6 @@
       gap: 4px;
     }
 
-    .btn-back:hover { background-color: var(--border); }
-
     .btn-share {
       background-color: #25d366;
       color: white;
@@ -479,7 +467,6 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      box-shadow: 0 2px 6px rgba(37, 211, 102, 0.2);
     }
 
     .progress-container {
@@ -488,6 +475,7 @@
       padding: 12px;
       border-radius: 12px;
       border: 2px solid var(--border);
+      flex-shrink: 0;
     }
 
     .progress-text {
@@ -517,13 +505,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px;
+      padding: 14px;
       background: var(--card-bg);
       border: 2px solid var(--border);
       border-radius: 14px;
       margin-bottom: 10px;
       cursor: pointer;
-      min-height: 56px;
     }
 
     .list-info h4 { margin: 0 0 4px 0; font-size: 1.05rem; }
@@ -535,25 +522,10 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--primary);
-      margin: 20px 0 10px 4px;
+      margin: 16px 0 8px 4px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-
-    .category-title { display: flex; align-items: center; gap: 6px; }
-    .category-nav-btns { display: flex; gap: 4px; }
-
-    .btn-cat-order {
-      background: var(--tab-bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      cursor: pointer;
-      font-size: 0.8rem;
-      padding: 4px 8px;
-      border-radius: 6px;
-      min-height: 36px;
-      min-width: 36px;
     }
 
     ul { list-style: none; padding: 0; margin: 0; }
@@ -562,17 +534,16 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 12px;
+      padding: 10px;
       background: var(--card-bg);
       border-radius: 12px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       border: 2px solid var(--border);
-      min-height: 54px;
     }
 
     .item-details { flex: 1; min-width: 0; cursor: pointer; }
-    .item-name { font-weight: 600; font-size: 1rem; word-break: break-word; }
-    .item-subtext { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+    .item-name { font-weight: 600; font-size: 0.98rem; word-break: break-word; }
+    .item-subtext { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
     .comprado { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
 
@@ -581,8 +552,8 @@
       align-items: center;
       gap: 4px;
       background: var(--tab-bg);
-      padding: 4px;
-      border-radius: 10px;
+      padding: 2px 4px;
+      border-radius: 8px;
       border: 1px solid var(--border);
     }
 
@@ -592,11 +563,10 @@
       color: var(--text);
       cursor: pointer;
       font-weight: bold;
-      padding: 4px;
-      min-width: 36px;
-      min-height: 36px;
+      padding: 2px;
+      min-width: 32px;
+      min-height: 32px;
       border-radius: 6px;
-      font-size: 1rem;
     }
 
     .btn-delete {
@@ -604,87 +574,76 @@
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 1.2rem;
-      min-width: 40px;
-      min-height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 1.1rem;
+      min-width: 36px;
+      min-height: 36px;
     }
 
-    .btn-delete:hover { color: var(--danger); }
-
     .inline-price {
-      width: 75px;
-      padding: 6px 8px;
+      width: 70px;
+      padding: 4px 6px;
       border: 1px solid var(--border);
       background-color: var(--card-bg);
       color: var(--text);
       border-radius: 8px;
       font-size: 0.85rem;
       text-align: right;
-      min-height: 40px;
     }
 
-    .sub-tabs { 
-      display: flex; 
-      gap: 6px; 
-      margin-bottom: 12px; 
-    }
+    .sub-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-shrink: 0; }
 
     .sub-btn {
       flex: 1;
       background: var(--tab-bg);
       border: 2px solid var(--border);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 10px;
+      padding: 8px;
       border-radius: 12px;
-      min-height: 44px;
       font-weight: 700;
       text-align: center;
-      transition: all 0.2s;
     }
 
     .sub-btn.active {
       background: var(--card-bg);
       border-color: var(--primary);
       color: var(--primary);
-      box-shadow: 0 2px 6px var(--shadow);
     }
 
     .budget-summary {
-      margin-top: auto; /* Se empuja hacia abajo si la pantalla es alta */
-      padding: 14px 16px;
+      padding: 12px 16px;
       background: var(--tab-bg);
       border-radius: 14px;
       border: 2px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-shrink: 0;
+      margin-top: 10px;
     }
 
     .budget-item { text-align: center; }
-    .budget-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2px; }
-    .budget-val { font-weight: 800; font-size: 1rem; }
+    .budget-label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 2px; }
+    .budget-val { font-weight: 800; font-size: 0.95rem; }
     .budget-val.spent { color: var(--success); }
 
+    /* PIE DE PÁGINA FIXO EN EL FONDO DE LA PANTALLA */
     .app-credits {
-      margin-top: 24px;
+      margin-top: auto; /* Se adhiere al fondo exacto de la pantalla */
       text-align: center;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
       border-top: 1px solid var(--border);
-      padding-top: 14px;
-      line-height: 1.6;
+      padding-top: 12px;
+      line-height: 1.5;
+      flex-shrink: 0;
     }
 
     .app-credits a {
       color: var(--primary);
       text-decoration: none;
       font-weight: 700;
-      transition: opacity 0.2s;
     }
 
     .toast {
@@ -718,7 +677,6 @@
       font-size: 0.85rem;
       font-weight: 800;
       cursor: pointer;
-      white-space: nowrap;
     }
 
     .tutorial-overlay {
@@ -749,7 +707,7 @@
       border: 3px solid var(--primary);
     }
 
-    .tutorial-icon { font-size: 3.2rem; margin-bottom: 8px; }
+    .tutorial-icon { font-size: 3rem; margin-bottom: 8px; }
 
     .tutorial-badge {
       display: inline-block;
@@ -757,16 +715,16 @@
       border: 2px solid var(--border);
       color: var(--primary);
       font-weight: 800;
-      padding: 6px 14px;
+      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 0.95rem;
-      margin-bottom: 12px;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
     }
 
-    .tutorial-card h3 { margin: 0 0 10px 0; font-size: 1.3rem; font-weight: 800; }
-    .tutorial-card p { font-size: 1rem; line-height: 1.5; color: var(--text-muted); margin: 0 0 20px 0; }
+    .tutorial-card h3 { margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 800; }
+    .tutorial-card p { font-size: 0.95rem; line-height: 1.4; color: var(--text-muted); margin: 0 0 18px 0; }
 
-    .tutorial-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .tutorial-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
     .dot.active { background: var(--primary); width: 24px; border-radius: 6px; }
 
@@ -774,13 +732,13 @@
 
     .btn-tut {
       flex: 1;
-      padding: 14px;
+      padding: 12px;
       border-radius: 14px;
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
       border: none;
-      min-height: 52px;
+      min-height: 48px;
     }
 
     .btn-tut.prev { background-color: var(--tab-bg); color: var(--text); border: 2px solid var(--border); }
@@ -788,19 +746,18 @@
 
     .privacy-list {
       text-align: left;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       line-height: 1.5;
       color: var(--text);
       padding: 0;
-      margin: 16px 0;
+      margin: 14px 0;
     }
 
     .privacy-list li {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       border: none;
       padding: 0;
       background: none;
-      min-height: auto;
       display: list-item;
       list-style-type: disc;
       list-style-position: inside;
@@ -834,180 +791,185 @@
       <button class="nav-btn" id="navListaActiva" onclick="verSeccion('lista-activa')">🛒 Lista Actual</button>
     </div>
 
-    <!-- VISTA 0: PORTADA BIENVENIDA (SOLO 1RA VEZ PARA USUARIOS NUEVOS) -->
-    <div id="secPortada" style="display: none;">
-      <div class="welcome-hero">
-        <div class="welcome-icon-box">🛒</div>
-        <h2 class="welcome-title">Mis Listas de Compras</h2>
-        <div class="welcome-domain">listadecompras.website</div>
-        
-        <p class="welcome-desc">
-          Tu asistente personal para el supermercado en Chile. Diseñado para ser fácil, claro y muy cómodo de usar.
-        </p>
+    <!-- CONTENEDOR DE CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+      
+      <!-- VISTA 0: PORTADA BIENVENIDA (SOLO 1RA VEZ PARA USUARIOS NUEVOS) -->
+      <div id="secPortada" style="display: none;">
+        <div class="welcome-hero">
+          <div class="welcome-icon-box">🛒</div>
+          <h2 class="welcome-title">Mis Listas de Compras</h2>
+          <div class="welcome-domain">listadecompras.website</div>
+          
+          <p class="welcome-desc">
+            Tu asistente personal para el supermercado en Chile. Diseñado para ser fácil, claro y muy cómodo de usar.
+          </p>
 
-        <div class="welcome-features-list">
-          <div class="feature-item">
-            <span>🎤</span> <span>Dicta tus productos hablando</span>
+          <div class="welcome-features-list">
+            <div class="feature-item">
+              <span>🎤</span> <span>Dicta tus productos hablando</span>
+            </div>
+            <div class="feature-item">
+              <span>🥦</span> <span>Ordena solo por pasillos</span>
+            </div>
+            <div class="feature-item">
+              <span>👓</span> <span>Letra grande y legible</span>
+            </div>
+            <div class="feature-item">
+              <span>📶</span> <span>Funciona 100% sin Internet</span>
+            </div>
           </div>
-          <div class="feature-item">
-            <span>🥦</span> <span>Ordena solo por pasillos</span>
-          </div>
-          <div class="feature-item">
-            <span>👓</span> <span>Letra grande y legible</span>
-          </div>
-          <div class="feature-item">
-            <span>📶</span> <span>Funciona 100% sin Internet</span>
-          </div>
-        </div>
 
-        <button class="btn-start-large" onclick="ingresarAppDesdePortada()">
-          🚀 Entrar a Mis Listas ➔
-        </button>
-      </div>
-    </div>
-
-    <!-- VISTA 1: PANTALLA DE INICIO HABITUAL (HOME PARA TODOS LOS USUARIOS) -->
-    <div id="secInicio">
-      <div class="home-card">
-        <h2>👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
-        <p>Tu asistente inteligente para el supermercado. Elige una opción para comenzar:</p>
-        
-        <div class="home-actions">
-          <button class="btn-home-action" onclick="verSeccion('mis-listas')">
-            ➕ Crear o Ver mis Listas
-          </button>
-          <button class="btn-home-action sec" onclick="abrirTutorial()">
-            ❓ Ver Tutorial de Uso
+          <button class="btn-start-large" onclick="ingresarAppDesdePortada()">
+            🚀 Entrar a Mis Listas ➔
           </button>
         </div>
-
-        <div id="widgetUltimaLista"></div>
-      </div>
-    </div>
-
-    <!-- VISTA 2: MIS LISTAS -->
-    <div id="secMisListas" style="display: none;">
-      <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
-        <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
-        <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
       </div>
 
-      <div class="action-bar">
-        <button class="btn-sec" onclick="exportarBackup()">💾 Respaldar</button>
-        <button class="btn-sec" onclick="document.getElementById('importFileInput').click()">📂 Cargar</button>
-        <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importarBackup(event)">
-      </div>
-
-      <div id="contenedorListas"></div>
-    </div>
-
-    <!-- VISTA 3: DETALLE DE LISTA ACTIVA -->
-    <div id="secListaActiva" style="display: none;">
-      <div class="header-active">
-        <button class="btn-back" onclick="verSeccion('mis-listas')">← Listas</button>
-        <h3 id="tituloListaActiva" style="margin: 0; text-align: center;">Lista</h3>
-        <button class="btn-share" onclick="compartirListaActiva()">📲 Compartir</button>
-      </div>
-
-      <div class="progress-container">
-        <div class="progress-text">
-          <span id="txtProgresoEstado">0 de 0 productos en el carro</span>
-          <span id="txtProgresoPorcentaje">0%</span>
-        </div>
-        <div class="progress-track">
-          <div id="fillProgreso" class="progress-fill"></div>
-        </div>
-      </div>
-
-      <!-- Formulario de Entrada -->
-      <div class="add-product-card">
-        <div class="add-row-1">
-          <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta un producto...">
-          <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz">🎤</button>
-        </div>
-        
-        <div class="add-row-2">
-          <div class="field-box">
-            <label for="itemQty">Cant:</label>
-            <input type="number" id="itemQty" class="input-clean qty-clean" value="1" min="1" max="99">
+      <!-- VISTA 1: PANTALLA DE INICIO HABITUAL (HOME PARA TODOS LOS USUARIOS) -->
+      <div id="secInicio">
+        <div class="home-card">
+          <h2>👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
+          <p>Tu asistente inteligente para el supermercado. Elige una opción para comenzar:</p>
+          
+          <div class="home-actions">
+            <button class="btn-home-action" onclick="verSeccion('mis-listas')">
+              ➕ Crear o Ver mis Listas
+            </button>
+            <button class="btn-home-action sec" onclick="abrirTutorial()">
+              ❓ Ver Tutorial de Uso
+            </button>
           </div>
 
-          <div class="field-box">
-            <label for="itemPrice">$</label>
-            <input type="number" id="itemPrice" class="input-clean price-clean" placeholder="CLP" min="0" step="1">
+          <div id="widgetUltimaLista"></div>
+        </div>
+      </div>
+
+      <!-- VISTA 2: MIS LISTAS -->
+      <div id="secMisListas" style="display: none;">
+        <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
+          <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
+          <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn-sec" onclick="exportarBackup()">💾 Respaldar</button>
+          <button class="btn-sec" onclick="document.getElementById('importFileInput').click()">📂 Cargar</button>
+          <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importarBackup(event)">
+        </div>
+
+        <div id="contenedorListas"></div>
+      </div>
+
+      <!-- VISTA 3: DETALLE DE LISTA ACTIVA -->
+      <div id="secListaActiva" style="display: none;">
+        <div class="header-active">
+          <button class="btn-back" onclick="verSeccion('mis-listas')">← Listas</button>
+          <h3 id="tituloListaActiva" style="margin: 0; text-align: center;">Lista</h3>
+          <button class="btn-share" onclick="compartirListaActiva()">📲 Compartir</button>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-text">
+            <span id="txtProgresoEstado">0 de 0 productos en el carro</span>
+            <span id="txtProgresoPorcentaje">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="fillProgreso" class="progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- Formulario de Entrada -->
+        <div class="add-product-card">
+          <div class="add-row-1">
+            <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta un producto...">
+            <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz">🎤</button>
+          </div>
+          
+          <div class="add-row-2">
+            <div class="field-box">
+              <label for="itemQty">Cant:</label>
+              <input type="number" id="itemQty" class="input-clean qty-clean" value="1" min="1" max="99">
+            </div>
+
+            <div class="field-box">
+              <label for="itemPrice">$</label>
+              <input type="number" id="itemPrice" class="input-clean price-clean" placeholder="CLP" min="0" step="1">
+            </div>
+
+            <button class="btn-main-add" onclick="agregarProducto()">➕ Agregar</button>
           </div>
 
-          <button class="btn-main-add" onclick="agregarProducto()">➕ Agregar</button>
+          <datalist id="sugerenciasGenericasChilenas">
+            <option value="Marraqueta"></option>
+            <option value="Hallulla"></option>
+            <option value="Pan de molde"></option>
+            <option value="Palta hass"></option>
+            <option value="Tomate"></option>
+            <option value="Leche entera"></option>
+            <option value="Leche descremada"></option>
+            <option value="Huevos"></option>
+            <option value="Queso gauda"></option>
+            <option value="Quesillo"></option>
+            <option value="Mantequilla"></option>
+            <option value="Manjar"></option>
+            <option value="Yogur"></option>
+            <option value="Carne molida"></option>
+            <option value="Lomo vetado"></option>
+            <option value="Sobrecostilla"></option>
+            <option value="Vienesas"></option>
+            <option value="Longaniza"></option>
+            <option value="Arroz"></option>
+            <option value="Tallarines"></option>
+            <option value="Salsa de tomate"></option>
+            <option value="Aceite de maravilla"></option>
+            <option value="Jurel en tarro"></option>
+            <option value="Atún en lata"></option>
+            <option value="Detergente"></option>
+            <option value="Cloro gel"></option>
+            <option value="Lavaloza"></option>
+            <option value="Toalla nova"></option>
+            <option value="Papel higiénico"></option>
+            <option value="Limpiavidrios"></option>
+            <option value="Limpiapisos"></option>
+            <option value="Agua mineral"></option>
+            <option value="Bebida"></option>
+            <option value="Cerveza"></option>
+            <option value="Vino tinto"></option>
+          </datalist>
         </div>
 
-        <datalist id="sugerenciasGenericasChilenas">
-          <option value="Marraqueta"></option>
-          <option value="Hallulla"></option>
-          <option value="Pan de molde"></option>
-          <option value="Palta hass"></option>
-          <option value="Tomate"></option>
-          <option value="Leche entera"></option>
-          <option value="Leche descremada"></option>
-          <option value="Huevos"></option>
-          <option value="Queso gauda"></option>
-          <option value="Quesillo"></option>
-          <option value="Mantequilla"></option>
-          <option value="Manjar"></option>
-          <option value="Yogur"></option>
-          <option value="Carne molida"></option>
-          <option value="Lomo vetado"></option>
-          <option value="Sobrecostilla"></option>
-          <option value="Vienesas"></option>
-          <option value="Longaniza"></option>
-          <option value="Arroz"></option>
-          <option value="Tallarines"></option>
-          <option value="Salsa de tomate"></option>
-          <option value="Aceite de maravilla"></option>
-          <option value="Jurel en tarro"></option>
-          <option value="Atún en lata"></option>
-          <option value="Detergente"></option>
-          <option value="Cloro gel"></option>
-          <option value="Lavaloza"></option>
-          <option value="Toalla nova"></option>
-          <option value="Papel higiénico"></option>
-          <option value="Limpiavidrios"></option>
-          <option value="Limpiapisos"></option>
-          <option value="Agua mineral"></option>
-          <option value="Bebida"></option>
-          <option value="Cerveza"></option>
-          <option value="Vino tinto"></option>
-        </datalist>
-      </div>
-
-      <!-- Barra de Acciones de Accesibilidad -->
-      <div class="action-bar">
-        <button id="btnWakeLock" class="btn-sec" onclick="togglePantallaEncendida()">💡 Pantalla Encendida</button>
-        <button class="btn-sec" onclick="leerListaEnVozAlta()">🔊 Leer Lista</button>
-        <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar</button>
-        <button class="btn-sec" onclick="limpiarProductosComprados()">🧹 Limpiar Comprados</button>
-      </div>
-
-      <div class="sub-tabs">
-        <button class="sub-btn active" id="subTabPendientes" onclick="cambiarFiltro('pendientes')">Por comprar</button>
-        <button class="sub-btn" id="subTabComprados" onclick="cambiarFiltro('comprados')">Comprados</button>
-      </div>
-
-      <div id="contenedorProductosCategorizados"></div>
-
-      <div class="budget-summary" id="panelPresupuesto">
-        <div class="budget-item">
-          <div class="budget-label">Llevas gastado</div>
-          <div class="budget-val spent" id="valGastado">$0 CLP</div>
+        <!-- Barra de Acciones de Accesibilidad -->
+        <div class="action-bar">
+          <button id="btnWakeLock" class="btn-sec" onclick="togglePantallaEncendida()">💡 Pantalla Encendida</button>
+          <button class="btn-sec" onclick="leerListaEnVozAlta()">🔊 Leer Lista</button>
+          <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar</button>
+          <button class="btn-sec" onclick="limpiarProductosComprados()">🧹 Limpiar Comprados</button>
         </div>
-        <div style="height: 28px; width: 2px; background: var(--border);"></div>
-        <div class="budget-item">
-          <div class="budget-label">Total Estimado</div>
-          <div class="budget-val" id="valTotal">$0 CLP</div>
+
+        <div class="sub-tabs">
+          <button class="sub-btn active" id="subTabPendientes" onclick="cambiarFiltro('pendientes')">Por comprar</button>
+          <button class="sub-btn" id="subTabComprados" onclick="cambiarFiltro('comprados')">Comprados</button>
+        </div>
+
+        <div id="contenedorProductosCategorizados"></div>
+
+        <div class="budget-summary" id="panelPresupuesto">
+          <div class="budget-item">
+            <div class="budget-label">Llevas gastado</div>
+            <div class="budget-val spent" id="valGastado">$0 CLP</div>
+          </div>
+          <div style="height: 28px; width: 2px; background: var(--border);"></div>
+          <div class="budget-item">
+            <div class="budget-label">Total Estimado</div>
+            <div class="budget-val" id="valTotal">$0 CLP</div>
+          </div>
         </div>
       </div>
+
     </div>
 
-    <!-- FIRMA Y CRÉDITOS CON POLÍTICA DE PRIVACIDAD -->
+    <!-- FIRMA Y CRÉDITOS EN EL FONDO -->
     <div class="app-credits">
       Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
       <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a>
@@ -1401,7 +1363,7 @@
       });
     }
 
-    /* --- NAVEGACIÓN ENTRE VISTAS --- */
+    /* --- NAVEGACIÓN --- */
     function verSeccion(seccion) {
       vibrarConfirmacion();
       const secPortada = document.getElementById('secPortada');
@@ -1959,12 +1921,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V17 -->
+  <!-- SERVICE WORKER V18 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v17 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v18 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
