@@ -62,7 +62,7 @@
     html { 
       font-size: calc(16px * var(--font-scale));
       height: 100%;
-      overflow: hidden; /* Bloquea el scroll general */
+      overflow: hidden;
     }
 
     body {
@@ -74,8 +74,8 @@
       padding: 0;
       margin: 0;
       height: 100vh;
-      height: 100dvh; /* Alto exacto del área visible del teléfono */
-      overflow: hidden; /* Sin scroll exterior */
+      height: 100dvh;
+      overflow: hidden;
       transition: background-color 0.3s, color 0.3s;
     }
 
@@ -89,7 +89,7 @@
       padding-bottom: max(16px, env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
-      justify-content: space-between; /* Empuja el footer bien abajo */
+      justify-content: space-between;
       position: relative;
     }
 
@@ -97,7 +97,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow-y: auto; /* Solo permite scroll interno si el contenido supera la pantalla */
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -516,6 +516,11 @@
     .list-info h4 { margin: 0 0 4px 0; font-size: 1.05rem; }
     .list-info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
 
+    .card-actions {
+      display: flex;
+      gap: 4px;
+    }
+
     .category-header {
       font-size: 0.88rem;
       font-weight: 800;
@@ -533,7 +538,7 @@
     li {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       padding: 10px;
       background: var(--card-bg);
       border-radius: 12px;
@@ -569,14 +574,23 @@
       border-radius: 6px;
     }
 
-    .btn-delete {
+    .btn-action-icon {
       background: none;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
       font-size: 1.1rem;
-      min-width: 36px;
-      min-height: 36px;
+      min-width: 34px;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    .btn-action-icon:hover {
+      background-color: var(--tab-bg);
+      color: var(--primary);
     }
 
     .inline-price {
@@ -628,9 +642,8 @@
     .budget-val { font-weight: 800; font-size: 0.95rem; }
     .budget-val.spent { color: var(--success); }
 
-    /* PIE DE PÁGINA FIXO EN EL FONDO DE LA PANTALLA */
     .app-credits {
-      margin-top: auto; /* Se adhiere al fondo exacto de la pantalla */
+      margin-top: auto;
       text-align: center;
       font-size: 0.76rem;
       color: var(--text-muted);
@@ -794,7 +807,7 @@
     <!-- CONTENEDOR DE CONTENIDO PRINCIPAL -->
     <div class="main-content">
       
-      <!-- VISTA 0: PORTADA BIENVENIDA (SOLO 1RA VEZ PARA USUARIOS NUEVOS) -->
+      <!-- VISTA 0: PORTADA BIENVENIDA -->
       <div id="secPortada" style="display: none;">
         <div class="welcome-hero">
           <div class="welcome-icon-box">🛒</div>
@@ -826,7 +839,7 @@
         </div>
       </div>
 
-      <!-- VISTA 1: PANTALLA DE INICIO HABITUAL (HOME PARA TODOS LOS USUARIOS) -->
+      <!-- VISTA 1: PANTALLA DE INICIO HABITUAL -->
       <div id="secInicio">
         <div class="home-card">
           <h2>👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
@@ -1658,6 +1671,24 @@
       mostrarToast(`✨ Lista creada`);
     }
 
+    /* EDITAR NOMBRE DE LISTA */
+    function editarNombreLista(e, id) {
+      e.stopPropagation();
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => l.id === id);
+      if (!lista) return;
+
+      const nuevoNombre = prompt("Editar nombre de la lista:", lista.nombre);
+      if (nuevoNombre !== null && nuevoNombre.trim() !== "") {
+        lista.nombre = nuevoNombre.trim();
+        guardarStorage();
+        renderizarListas();
+        renderizarInicio();
+        if (idListaActiva === id) renderizarProductos();
+        mostrarToast("✏️ Nombre de la lista actualizado");
+      }
+    }
+
     function abrirLista(id) {
       vibrarConfirmacion();
       idListaActiva = id;
@@ -1692,7 +1723,10 @@
             <h4>📌 ${escapeHtml(lista.nombre)}</h4>
             <p>${pendientes} pendientes de ${lista.items.length} productos</p>
           </div>
-          <button class="btn-delete" onclick="eliminarLista(event, ${lista.id})">🗑️</button>
+          <div class="card-actions">
+            <button class="btn-action-icon" onclick="editarNombreLista(event, ${lista.id})" title="Editar nombre">✏️</button>
+            <button class="btn-action-icon" onclick="eliminarLista(event, ${lista.id})" title="Eliminar lista">🗑️</button>
+          </div>
         `;
         contenedor.appendChild(div);
       });
@@ -1731,6 +1765,28 @@
         qtyInput.value = "1";
         priceInput.value = "";
         input.focus();
+      }
+    }
+
+    /* EDITAR NOMBRE DE UN PRODUCTO */
+    function editarProducto(prodId) {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => l.id === idListaActiva);
+      if (!lista) return;
+
+      const prod = lista.items.find(i => i.id === prodId);
+      if (!prod) return;
+
+      const nuevoTexto = prompt("Editar producto:", prod.texto);
+      if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
+        prod.texto = nuevoTexto.trim();
+        const catInfo = clasificarProducto(prod.texto);
+        prod.categoriaId = catInfo.id;
+        prod.icono = catInfo.icono;
+
+        guardarStorage();
+        renderizarProductos();
+        mostrarToast("✏️ Producto actualizado");
       }
     }
 
@@ -1894,7 +1950,9 @@
                 <span>${item.cantidad}</span>
                 <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, 1)">+</button>
               </div>
-              <button class="btn-delete" onclick="eliminarProducto(${item.id})">✕</button>
+
+              <button class="btn-action-icon" onclick="editarProducto(${item.id})" title="Editar producto">✏️</button>
+              <button class="btn-action-icon" onclick="eliminarProducto(${item.id})" title="Borrar producto">✕</button>
             `;
             ul.appendChild(li);
           });
@@ -1921,12 +1979,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V18 -->
+  <!-- SERVICE WORKER V19 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v18 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v19 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }

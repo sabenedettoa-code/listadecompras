@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mi-lista-compras-v18';
+const CACHE_NAME = 'mi-lista-compras-v19';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
