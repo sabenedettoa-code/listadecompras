@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <!-- GOOGLE ANALYTICS (GTAG.JS) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V2PS8SERD"></script>
@@ -15,7 +15,7 @@
   </script>
 
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#6366f1">
+  <meta name="theme-color" content="#ffffff">
   <title>Mis Listas de Compras - listadecompras.website</title>
   <link rel="manifest" href="manifest.json">
 
@@ -33,7 +33,7 @@
     :root {
       --primary: #6366f1;
       --primary-hover: #4f46e5;
-      --bg: #f8fafc;
+      --bg: #ffffff;
       --card-bg: #ffffff;
       --text: #0f172a;
       --text-muted: #64748b;
@@ -48,11 +48,11 @@
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #0f172a;
-        --card-bg: #1e293b;
+        --card-bg: #0f172a;
         --text: #f8fafc;
         --text-muted: #94a3b8;
         --border: #475569;
-        --tab-bg: #0f172a;
+        --tab-bg: #1e293b;
         --shadow: rgba(0, 0, 0, 0.3);
       }
     }
@@ -67,19 +67,25 @@
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 16px;
+      padding: 0; /* Sin relleno exterior */
       margin: 0;
       transition: background-color 0.3s, color 0.3s;
+      min-height: 100vh;
     }
 
     .container {
       background: var(--card-bg);
       width: 100%;
-      max-width: 460px;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px var(--shadow);
+      max-width: 100%; /* Ocupa todo el ancho */
+      min-height: 100vh; /* Ocupa todo el alto */
+      padding: 16px;
+      padding-top: max(16px, env(safe-area-inset-top)); /* Compatible con notch */
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      border-radius: 0; /* Sin bordes redondeados afuera */
+      box-shadow: none; /* Sin sombras exteriores */
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
     .header-top {
@@ -177,7 +183,7 @@
       box-shadow: 0 2px 6px var(--shadow);
     }
 
-    /* PORTADA DE BIENVENIDA (SOLO 1RA VEZ) */
+    /* PORTADA DE BIENVENIDA */
     .welcome-hero { text-align: center; padding: 10px 0 20px 0; }
     .welcome-icon-box { font-size: 3.8rem; margin-bottom: 8px; }
     .welcome-title { font-size: 1.55rem; font-weight: 900; color: var(--text); margin: 0 0 6px 0; }
@@ -233,7 +239,7 @@
       box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
     }
 
-    /* PANTALLA DE INICIO HABITUAL (HOME) */
+    /* PANTALLA DE INICIO (HOME) */
     .home-card {
       background: var(--tab-bg);
       border: 2px solid var(--border);
@@ -433,7 +439,7 @@
       color: #15803d;
     }
 
-    /* CABECERA DE LISTA ACTIVA Y COMPARTIR */
+    /* CABECERA DE LISTA ACTIVA */
     .header-active {
       display: flex;
       align-items: center;
@@ -620,7 +626,6 @@
       min-height: 40px;
     }
 
-    /* BOTONES "POR COMPRAR" Y "COMPRADOS" */
     .sub-tabs { 
       display: flex; 
       gap: 6px; 
@@ -650,7 +655,7 @@
     }
 
     .budget-summary {
-      margin-top: 20px;
+      margin-top: auto; /* Se empuja hacia abajo si la pantalla es alta */
       padding: 14px 16px;
       background: var(--tab-bg);
       border-radius: 14px;
@@ -680,11 +685,6 @@
       text-decoration: none;
       font-weight: 700;
       transition: opacity 0.2s;
-    }
-
-    .app-credits a:hover {
-      text-decoration: underline;
-      opacity: 0.85;
     }
 
     .toast {
@@ -1959,12 +1959,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V16 -->
+  <!-- SERVICE WORKER V17 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v16 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v17 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
