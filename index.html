@@ -8,7 +8,7 @@
   <title>Mis Listas de Compras - listadecompras.website</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- VISTA PREVIA PARA WHATSAPP Y REDES SOCIALES (OPEN GRAPH) -->
+  <!-- VISTA PREVIA PARA WHATSAPP Y REDES SOCIALES -->
   <meta property="og:title" content="🛒 Mis Listas de Compras">
   <meta property="og:description" content="Plataforma gratuita y accesible creada sin fines de lucro para hacer las compras en Chile fácilmente. Funciona sin internet y con dictado por voz.">
   <meta property="og:image" content="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://listadecompras.website">
@@ -132,7 +132,6 @@
 
     .btn-help:hover { background-color: var(--border); }
 
-    /* BOTÓN INSTALAR APP EN PANTALLA */
     .btn-install-app {
       display: none;
       width: 100%;
@@ -151,7 +150,7 @@
 
     .nav-tabs {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       margin-bottom: 16px;
       background-color: var(--tab-bg);
       padding: 4px;
@@ -162,20 +161,141 @@
       flex: 1;
       background: none;
       border: none;
-      padding: 12px 8px;
-      font-size: 0.95rem;
+      padding: 10px 4px;
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--text-muted);
       cursor: pointer;
       border-radius: 10px;
       transition: all 0.2s ease;
-      min-height: 48px;
+      min-height: 46px;
     }
 
     .nav-btn.active {
       color: var(--primary);
       background-color: var(--card-bg);
       box-shadow: 0 2px 6px var(--shadow);
+    }
+
+    /* PORTADA DE BIENVENIDA (SOLO 1RA VEZ) */
+    .welcome-hero {
+      text-align: center;
+      padding: 10px 0 20px 0;
+    }
+
+    .welcome-icon-box { font-size: 3.8rem; margin-bottom: 8px; }
+    .welcome-title { font-size: 1.55rem; font-weight: 900; color: var(--text); margin: 0 0 6px 0; }
+
+    .welcome-domain {
+      display: inline-block;
+      background-color: var(--tab-bg);
+      border: 1px solid var(--border);
+      color: var(--primary);
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+
+    .welcome-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
+
+    .welcome-features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      margin-bottom: 22px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--tab-bg);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .btn-start-large {
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+    }
+
+    /* PANTALLA DE INICIO HABITUAL (HOME) */
+    .home-card {
+      background: var(--tab-bg);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .home-card h2 { margin: 0 0 8px 0; font-size: 1.3rem; color: var(--text); }
+    .home-card p { margin: 0 0 16px 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.4; }
+
+    .home-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .btn-home-action {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+    }
+
+    .btn-home-action.sec {
+      background-color: var(--card-bg);
+      color: var(--text);
+      border: 2px solid var(--border);
+      box-shadow: none;
+    }
+
+    .recent-list-widget {
+      background-color: var(--card-bg);
+      border: 2px solid var(--primary);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .recent-list-widget h4 {
+      margin: 0 0 4px 0;
+      font-size: 0.85rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .add-product-card {
@@ -610,7 +730,6 @@
     .btn-tut.prev { background-color: var(--tab-bg); color: var(--text); border: 2px solid var(--border); }
     .btn-tut.next { background-color: var(--primary); color: white; }
 
-    /* MODAL PRIVACIDAD */
     .privacy-list {
       text-align: left;
       font-size: 0.92rem;
@@ -652,13 +771,66 @@
       📲 Instalar Aplicación en la pantalla de inicio
     </button>
 
-    <div class="nav-tabs">
-      <button class="nav-btn active" id="navMisListas" onclick="verSeccion('mis-listas')">📋 Mis Listas</button>
+    <!-- NAVEGACIÓN PRINCIPAL -->
+    <div class="nav-tabs" id="barraNavegacion">
+      <button class="nav-btn active" id="navInicio" onclick="verSeccion('inicio')">🏠 Inicio</button>
+      <button class="nav-btn" id="navMisListas" onclick="verSeccion('mis-listas')">📋 Mis Listas</button>
       <button class="nav-btn" id="navListaActiva" onclick="verSeccion('lista-activa')">🛒 Lista Actual</button>
     </div>
 
-    <!-- SECCIÓN 1: MIS LISTAS -->
-    <div id="secMisListas">
+    <!-- VISTA 0: PORTADA BIENVENIDA (SOLO APARECE LA 1RA VEZ PARA USUARIOS NUEVOS) -->
+    <div id="secPortada" style="display: none;">
+      <div class="welcome-hero">
+        <div class="welcome-icon-box">🛒</div>
+        <h2 class="welcome-title">Mis Listas de Compras</h2>
+        <div class="welcome-domain">listadecompras.website</div>
+        
+        <p class="welcome-desc">
+          Tu asistente personal para el supermercado en Chile. Diseñado para ser fácil, claro y muy cómodo de usar.
+        </p>
+
+        <div class="welcome-features-list">
+          <div class="feature-item">
+            <span>🎤</span> <span>Dicta tus productos hablando</span>
+          </div>
+          <div class="feature-item">
+            <span>🥦</span> <span>Ordena solo por pasillos</span>
+          </div>
+          <div class="feature-item">
+            <span>👓</span> <span>Letra grande y legible</span>
+          </div>
+          <div class="feature-item">
+            <span>📶</span> <span>Funciona 100% sin Internet</span>
+          </div>
+        </div>
+
+        <button class="btn-start-large" onclick="ingresarAppDesdePortada()">
+          🚀 Entrar a Mis Listas ➔
+        </button>
+      </div>
+    </div>
+
+    <!-- VISTA 1: PANTALLA DE INICIO HABITUAL (HOME PARA TODOS LOS USUARIOS) -->
+    <div id="secInicio">
+      <div class="home-card">
+        <h2>👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
+        <p>Tu asistente inteligente para el supermercado. Elige una opción para comenzar:</p>
+        
+        <div class="home-actions">
+          <button class="btn-home-action" onclick="verSeccion('mis-listas')">
+            ➕ Crear o Ver mis Listas
+          </button>
+          <button class="btn-home-action sec" onclick="abrirTutorial()">
+            ❓ Ver Tutorial de Uso
+          </button>
+        </div>
+
+        <div id="widgetUltimaLista"></div>
+      </div>
+    </div>
+
+    <!-- VISTA 2: MIS LISTAS -->
+    <div id="secMisListas" style="display: none;">
       <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
         <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
         <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
@@ -673,7 +845,7 @@
       <div id="contenedorListas"></div>
     </div>
 
-    <!-- SECCIÓN 2: DETALLE DE LISTA ACTIVA -->
+    <!-- VISTA 3: DETALLE DE LISTA ACTIVA -->
     <div id="secListaActiva" style="display: none;">
       <div class="header-active">
         <button class="btn-back" onclick="verSeccion('mis-listas')">← Listas</button>
@@ -959,14 +1131,28 @@
       }
     }
 
+    /* --- EVALUAR SI ES USUARIO NUEVO O HABITUAL AL CARGAR --- */
     document.addEventListener('DOMContentLoaded', () => {
       cargarTamanoLetra();
       cargarStorage();
       cargarOrdenCategorias();
       procesarListaRecibidaPorURL();
-      renderizarListas();
+
+      const portadaVista = localStorage.getItem('portadaVista_v1');
+      if (!portadaVista) {
+        verSeccion('portada'); // Primera vez: Muestra la portada
+      } else {
+        verSeccion('inicio');  // Usuario recurrente: Abre directo en el Inicio
+      }
+
       comprobarTutorialPrimeraVez();
     });
+
+    function ingresarAppDesdePortada() {
+      vibrarConfirmacion();
+      localStorage.setItem('portadaVista_v1', 'true');
+      verSeccion('inicio');
+    }
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -1160,22 +1346,45 @@
       });
     }
 
+    /* --- NAVEGACIÓN ENTRE VISTAS --- */
     function verSeccion(seccion) {
       vibrarConfirmacion();
+      const secPortada = document.getElementById('secPortada');
+      const secInicio = document.getElementById('secInicio');
       const secMisListas = document.getElementById('secMisListas');
       const secListaActiva = document.getElementById('secListaActiva');
+
+      const barraNavegacion = document.getElementById('barraNavegacion');
+      const navInicio = document.getElementById('navInicio');
       const navMisListas = document.getElementById('navMisListas');
       const navListaActiva = document.getElementById('navListaActiva');
 
-      if (seccion === 'mis-listas') {
+      secPortada.style.display = 'none';
+      secInicio.style.display = 'none';
+      secMisListas.style.display = 'none';
+      secListaActiva.style.display = 'none';
+
+      navInicio.classList.remove('active');
+      navMisListas.classList.remove('active');
+      navListaActiva.classList.remove('active');
+
+      if (seccion === 'portada') {
+        secPortada.style.display = 'block';
+        barraNavegacion.style.display = 'none'; // Ocultar pestañas en la portada inicial
+      } else if (seccion === 'inicio') {
+        secInicio.style.display = 'block';
+        barraNavegacion.style.display = 'flex';
+        navInicio.classList.add('active');
+        renderizarInicio();
+      } else if (seccion === 'mis-listas') {
         secMisListas.style.display = 'block';
-        secListaActiva.style.display = 'none';
+        barraNavegacion.style.display = 'flex';
         navMisListas.classList.add('active');
-        navListaActiva.classList.remove('active');
         renderizarListas();
       } else {
         if (coleccionListas.length === 0) {
           mostrarToast("⚠️ Primero debes crear una lista de compras");
+          verSeccion('mis-listas');
           return;
         }
 
@@ -1183,11 +1392,30 @@
           idListaActiva = coleccionListas[0].id;
         }
 
-        secMisListas.style.display = 'none';
         secListaActiva.style.display = 'block';
-        navMisListas.classList.remove('active');
+        barraNavegacion.style.display = 'flex';
         navListaActiva.classList.add('active');
         renderizarProductos();
+      }
+    }
+
+    function renderizarInicio() {
+      const widget = document.getElementById('widgetUltimaLista');
+      widget.innerHTML = "";
+
+      if (coleccionListas.length > 0) {
+        const ultima = coleccionListas[coleccionListas.length - 1];
+        const pendientes = ultima.items.filter(i => !i.comprado).length;
+
+        widget.innerHTML = `
+          <div class="recent-list-widget" onclick="abrirLista(${ultima.id})">
+            <h4>📌 Continuar con tu última lista</h4>
+            <div style="font-weight: 800; font-size: 1.1rem; color: var(--text);">${escapeHtml(ultima.nombre)}</div>
+            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
+              ${pendientes} productos pendientes de ${ultima.items.length} en total. ➔
+            </div>
+          </div>
+        `;
       }
     }
 
@@ -1675,12 +1903,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V9 -->
+  <!-- SERVICE WORKER V12 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v9 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v12 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
