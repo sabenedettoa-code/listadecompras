@@ -14,6 +14,9 @@
     gtag('config', 'G-9V2PS8SERD');
   </script>
 
+  <!-- LIBRERÍA DE COMPRESIÓN DE URL (LZ-STRING) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#ffffff">
   <title>Mis Listas de Compras - listadecompras.website</title>
@@ -89,7 +92,6 @@
       padding-bottom: max(16px, env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       position: relative;
     }
 
@@ -516,10 +518,7 @@
     .list-info h4 { margin: 0 0 4px 0; font-size: 1.05rem; }
     .list-info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
 
-    .card-actions {
-      display: flex;
-      gap: 4px;
-    }
+    .card-actions { display: flex; gap: 4px; }
 
     .category-header {
       font-size: 0.88rem;
@@ -604,7 +603,7 @@
       text-align: right;
     }
 
-    .sub-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-shrink: 0; }
+    .sub-tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-shrink: 0; }
 
     .sub-btn {
       flex: 1;
@@ -625,6 +624,39 @@
       color: var(--primary);
     }
 
+    .search-box-container {
+      position: relative;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .input-search-product {
+      width: 100%;
+      padding: 10px 36px 10px 12px;
+      border: 2px solid var(--border);
+      background-color: var(--card-bg);
+      color: var(--text);
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .input-search-product:focus { border-color: var(--primary); }
+
+    .btn-clear-search {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: none;
+    }
+
     .budget-summary {
       padding: 12px 16px;
       background: var(--tab-bg);
@@ -634,7 +666,7 @@
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
-      margin-top: 10px;
+      margin-top: auto;
     }
 
     .budget-item { text-align: center; }
@@ -643,14 +675,13 @@
     .budget-val.spent { color: var(--success); }
 
     .app-credits {
-      margin-top: auto;
+      margin-top: 20px;
       text-align: center;
       font-size: 0.76rem;
       color: var(--text-muted);
       border-top: 1px solid var(--border);
       padding-top: 12px;
       line-height: 1.5;
-      flex-shrink: 0;
     }
 
     .app-credits a {
@@ -837,6 +868,11 @@
             🚀 Entrar a Mis Listas ➔
           </button>
         </div>
+
+        <div class="app-credits">
+          Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
+          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a>
+        </div>
       </div>
 
       <!-- VISTA 1: PANTALLA DE INICIO HABITUAL -->
@@ -855,6 +891,11 @@
           </div>
 
           <div id="widgetUltimaLista"></div>
+        </div>
+
+        <div class="app-credits">
+          Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
+          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a>
         </div>
       </div>
 
@@ -965,6 +1006,12 @@
           <button class="sub-btn" id="subTabComprados" onclick="cambiarFiltro('comprados')">Comprados</button>
         </div>
 
+        <!-- CAMPO DE BÚSQUEDA -->
+        <div class="search-box-container">
+          <input type="text" id="searchInput" class="input-search-product" placeholder="🔍 Buscar en esta lista..." oninput="filtrarProductosPorBusqueda()">
+          <button id="btnClearSearch" class="btn-clear-search" onclick="limpiarBusqueda()">✕</button>
+        </div>
+
         <div id="contenedorProductosCategorizados"></div>
 
         <div class="budget-summary" id="panelPresupuesto">
@@ -980,12 +1027,6 @@
         </div>
       </div>
 
-    </div>
-
-    <!-- FIRMA Y CRÉDITOS EN EL FONDO -->
-    <div class="app-credits">
-      Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
-      <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a>
     </div>
 
   </div>
@@ -1039,6 +1080,7 @@
     let wakeLockSentinel = null;
     let ultimaAccionDeshacer = null;
     let diferidoPromptInstalacion = null;
+    let textoBusquedaActual = '';
 
     const pasosTutorialData = [
       {
@@ -1582,6 +1624,7 @@
       }
     }
 
+    /* COMPARTIR LISTA CON COMPRESIÓN DE URL (LZ-STRING) */
     async function compartirListaActiva() {
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
@@ -1589,12 +1632,13 @@
 
       try {
         const datosJSON = JSON.stringify({
-          nombre: lista.nombre,
-          items: lista.items.map(i => ({ t: i.texto, c: i.cantidad, p: i.precio || 0, k: i.comprado }))
+          n: lista.nombre,
+          i: lista.items.map(item => [item.texto, item.cantidad, item.precio || 0, item.comprado ? 1 : 0])
         });
 
-        const datosBase64 = btoa(encodeURIComponent(datosJSON));
-        const urlCompartida = `${window.location.origin}${window.location.pathname}?l=${datosBase64}`;
+        // Comprime el string a formato seguro de URL de forma ultra-eficiente
+        let datosComprimidos = window.LZString ? LZString.compressToEncodedURIComponent(datosJSON) : btoa(encodeURIComponent(datosJSON));
+        const urlCompartida = `${window.location.origin}${window.location.pathname}?c=${datosComprimidos}`;
 
         if (navigator.share) {
           try {
@@ -1618,40 +1662,59 @@
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(url);
-          mostrarToast(`📋 ¡Enlace copiado!`);
+          mostrarToast(`📋 ¡Enlace corto copiado!`);
         } else { throw new Error(); }
       } catch (err) {
         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista "${nombreLista}": ${url}`)}`, '_blank');
       }
     }
 
+    /* DESCOMPRIMIR Y PROCESAR LISTA AL ABRIR UN ENLACE */
     function procesarListaRecibidaPorURL() {
       const urlParams = new URLSearchParams(window.location.search);
-      const datosBase64 = urlParams.get('l') || urlParams.get('listaShared');
+      const datosComprimidos = urlParams.get('c');
+      const datosBase64Antiguos = urlParams.get('l') || urlParams.get('listaShared');
 
-      if (datosBase64) {
+      if (datosComprimidos || datosBase64Antiguos) {
         try {
-          let datos = JSON.parse(urlParams.get('l') ? decodeURIComponent(atob(datosBase64)) : decodeURIComponent(datosBase64));
-          if (datos && datos.nombre) {
-            const itemsRestaurados = (datos.items || []).map(i => {
-              const catInfo = clasificarProducto(i.t || i.texto);
+          let datos = null;
+
+          if (datosComprimidos && window.LZString) {
+            const descompreso = LZString.decompressFromEncodedURIComponent(datosComprimidos);
+            datos = JSON.parse(descompreso);
+          } else if (datosBase64Antiguos) {
+            datos = JSON.parse(urlParams.get('l') ? decodeURIComponent(atob(datosBase64Antiguos)) : decodeURIComponent(datosBase64Antiguos));
+          }
+
+          if (datos) {
+            let nombreLista = datos.n || datos.nombre || "Lista Importada";
+            let rawItems = datos.i || datos.items || [];
+
+            const itemsRestaurados = rawItems.map(i => {
+              const esFormatoNuevo = Array.isArray(i);
+              const textoProd = esFormatoNuevo ? i[0] : (i.t || i.texto);
+              const cantProd = esFormatoNuevo ? i[1] : (i.c || i.cantidad || 1);
+              const precioProd = esFormatoNuevo ? i[2] : (i.p || i.precio || 0);
+              const compradoProd = esFormatoNuevo ? (i[3] === 1) : (i.k || i.comprado || false);
+
+              const catInfo = clasificarProducto(textoProd);
               return {
                 id: Date.now() + Math.random(),
-                texto: i.t || i.texto,
-                cantidad: i.c || i.cantidad || 1,
-                precio: Math.round(i.p || i.precio || 0),
+                texto: textoProd,
+                cantidad: cantProd,
+                precio: Math.round(precioProd),
                 categoriaId: catInfo.id,
                 icono: catInfo.icono,
-                comprado: i.k || i.comprado || false
+                comprado: compradoProd
               };
             });
 
-            const nuevaLista = { id: Date.now(), nombre: `${datos.nombre} (Compartida)`, items: itemsRestaurados };
+            const nuevaLista = { id: Date.now(), nombre: `${nombreLista} (Compartida)`, items: itemsRestaurados };
             coleccionListas.push(nuevaLista);
             guardarStorage();
             window.history.replaceState({}, document.title, window.location.pathname);
             abrirLista(nuevaLista.id);
-            mostrarToast(`🎉 ¡Lista "${datos.nombre}" importada!`);
+            mostrarToast(`🎉 ¡Lista "${nombreLista}" importada!`);
           }
         } catch (e) { console.error(e); }
       }
@@ -1671,7 +1734,6 @@
       mostrarToast(`✨ Lista creada`);
     }
 
-    /* EDITAR NOMBRE DE LISTA */
     function editarNombreLista(e, id) {
       e.stopPropagation();
       vibrarConfirmacion();
@@ -1768,7 +1830,6 @@
       }
     }
 
-    /* EDITAR NOMBRE DE UN PRODUCTO */
     function editarProducto(prodId) {
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => l.id === idListaActiva);
@@ -1869,6 +1930,21 @@
       renderizarProductos();
     }
 
+    function filtrarProductosPorBusqueda() {
+      const searchInput = document.getElementById('searchInput');
+      const btnClear = document.getElementById('btnClearSearch');
+      textoBusquedaActual = searchInput.value.toLowerCase().trim();
+
+      btnClear.style.display = textoBusquedaActual ? 'block' : 'none';
+      renderizarProductos();
+    }
+
+    function limpiarBusqueda() {
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = '';
+      filtrarProductosPorBusqueda();
+    }
+
     function actualizarPresupuestoYProgreso(lista) {
       let gastado = 0;
       let total = 0;
@@ -1904,12 +1980,18 @@
       titulo.textContent = lista.nombre;
       actualizarPresupuestoYProgreso(lista);
 
-      const filtrados = lista.items.filter(item => 
-        filtroProductos === 'pendientes' ? !item.comprado : item.comprado
-      );
+      const filtrados = lista.items.filter(item => {
+        const cumpleEstado = filtroProductos === 'pendientes' ? !item.comprado : item.comprado;
+        const cumpleBusqueda = !textoBusquedaActual || item.texto.toLowerCase().includes(textoBusquedaActual);
+        return cumpleEstado && cumpleBusqueda;
+      });
 
       if (filtrados.length === 0) {
-        contenedor.innerHTML = `<p class="empty-msg">${filtroProductos === 'pendientes' ? '¡Todo comprado!' : 'No hay productos comprados.'}</p>`;
+        if (textoBusquedaActual) {
+          contenedor.innerHTML = `<p class="empty-msg">No se encontraron productos para "${escapeHtml(textoBusquedaActual)}"</p>`;
+        } else {
+          contenedor.innerHTML = `<p class="empty-msg">${filtroProductos === 'pendientes' ? '¡Todo comprado!' : 'No hay productos comprados.'}</p>`;
+        }
         return;
       }
 
@@ -1979,12 +2061,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V19 -->
+  <!-- SERVICE WORKER V22 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v19 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v22 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
