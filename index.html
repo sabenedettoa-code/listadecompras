@@ -10,9 +10,12 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-9V2PS8SERD');
   </script>
+
+  <!-- LIBRERÍAS EXTERNAS (CÁMARA Y GRÁFICOS) -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- FIREBASE COMPAT SDKS -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -33,7 +36,6 @@
   <meta property="og:image:height" content="512">
   <meta property="og:url" content="https://listadecompras.website">
   
-  <!-- FAVICON INTEGRADO -->
   <link rel="icon" type="image/png" href="/icon-512.png">
 
   <style>
@@ -113,16 +115,42 @@
       align-items: center;
       margin-bottom: 12px;
       flex-shrink: 0;
+      gap: 6px;
     }
 
-    .app-title { font-size: 1.2rem; font-weight: 700; margin: 0; }
-    .header-controls { display: flex; align-items: center; gap: 6px; }
+    .app-title { font-size: 1.15rem; font-weight: 800; margin: 0; white-space: nowrap; }
+    .header-controls { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .btn-header-tool {
+      background-color: var(--tab-bg);
+      border: 2px solid var(--border);
+      color: var(--text);
+      padding: 4px 8px;
+      min-height: 38px;
+      border-radius: 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-header-tool:hover { background-color: var(--border); }
+
+    .btn-header-tool.active-mode {
+      background-color: #f59e0b;
+      color: white;
+      border-color: #d97706;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+    }
 
     .font-size-controls {
       display: flex;
       background-color: var(--tab-bg);
       border: 2px solid var(--border);
-      border-radius: 20px;
+      border-radius: 14px;
       padding: 2px;
     }
 
@@ -131,32 +159,15 @@
       border: none;
       color: var(--text);
       font-weight: 700;
-      font-size: 0.9rem;
-      min-width: 38px;
-      min-height: 38px;
+      font-size: 0.85rem;
+      min-width: 32px;
+      min-height: 32px;
       cursor: pointer;
-      border-radius: 12px;
+      border-radius: 10px;
       transition: background 0.2s;
     }
 
     .btn-font:hover { background-color: var(--border); }
-
-    .btn-help {
-      background-color: var(--tab-bg);
-      border: 2px solid var(--border);
-      color: var(--text);
-      padding: 6px 12px;
-      min-height: 42px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .btn-help:hover { background-color: var(--border); }
 
     .btn-install-app {
       display: none;
@@ -399,7 +410,7 @@
       gap: 6px;
     }
 
-    .btn-mic {
+    .btn-mic, .btn-scanner {
       background-color: var(--card-bg);
       color: var(--text);
       border: 2px solid var(--border);
@@ -498,6 +509,12 @@
       border-radius: 12px;
       border: 2px solid var(--border);
       flex-shrink: 0;
+      transition: border-color 0.3s;
+    }
+
+    .progress-container.exceeded {
+      border-color: var(--danger);
+      background-color: rgba(239, 68, 68, 0.1);
     }
 
     .progress-text {
@@ -520,7 +537,11 @@
       height: 100%;
       background-color: var(--success);
       width: 0%;
-      transition: width 0.3s ease;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .progress-fill.exceeded {
+      background-color: var(--danger);
     }
 
     .list-card {
@@ -813,6 +834,8 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.35);
       text-align: center;
       border: 3px solid var(--primary);
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .tutorial-icon { font-size: 3rem; margin-bottom: 8px; }
@@ -870,20 +893,55 @@
       list-style-type: disc;
       list-style-position: inside;
     }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .recipe-item-card {
+      background: var(--tab-bg);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .recipe-item-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .recipe-item-card h4 { margin: 6px 0 2px 0; font-size: 0.92rem; }
+    .recipe-item-card p { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
+
+    #reader {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
     
+    <!-- HEADER SUPERIOR CON BOTONES REUBICADOS -->
     <div class="header-top">
       <h1 class="app-title">🛒 Mis Listas</h1>
       <div class="header-controls">
+        <button id="btnWakeLock" class="btn-header-tool" onclick="togglePantallaEncendida()" title="Bloquear apagado">💡 Encendida</button>
+        <button class="btn-header-tool" onclick="leerListaEnVozAlta()" title="Leer lista">🔊 Leer</button>
         <div class="font-size-controls" title="Ajustar letra">
           <button class="btn-font" onclick="cambiarTamanoLetra(-0.15)">A-</button>
           <button class="btn-font" onclick="cambiarTamanoLetra(0.15)">A+</button>
         </div>
-        <button class="btn-help" onclick="abrirTutorial()">❓ Ayuda</button>
+        <button class="btn-header-tool" onclick="abrirTutorial()">❓ Ayuda</button>
       </div>
     </div>
 
@@ -918,6 +976,12 @@
               <span>🎤</span> <span>Dicta tus productos hablando</span>
             </div>
             <div class="feature-item">
+              <span>📸</span> <span>Escáner de código de barras integrado</span>
+            </div>
+            <div class="feature-item">
+              <span>🍳</span> <span>Carga recetas chilenas automáticas</span>
+            </div>
+            <div class="feature-item">
               <span>🥦</span> <span>Ordena solo por pasillos</span>
             </div>
             <div class="feature-item">
@@ -936,7 +1000,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 26 de julio de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 29 de julio de 2026</span>
         </div>
       </div>
 
@@ -950,6 +1014,9 @@
             <button class="btn-home-action" onclick="verSeccion('mis-listas')">
               ➕ Crear o Ver mis Listas
             </button>
+            <button class="btn-home-action sec" onclick="abrirModalRecetas()">
+              🍳 Cargar Recetas Chilenas
+            </button>
             <button class="btn-home-action sec" onclick="abrirTutorial()">
               ❓ Ver Tutorial de Uso
             </button>
@@ -961,19 +1028,19 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 26 de julio de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 29 de julio de 2026</span>
         </div>
       </div>
 
       <!-- VISTA 2: MIS LISTAS -->
       <div id="secMisListas" style="display: none;">
-        <!-- UNIRSE POR CÓDIGO CORTO (ARRIBA) -->
+        <!-- UNIRSE POR CÓDIGO CORTO -->
         <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 10px;">
           <input type="text" id="codigoUnirseInput" class="input-product-large" placeholder="🔑 Ingresar código de lista (ej: A8K9P2)..." style="flex:1; text-transform: uppercase;">
           <button class="btn-main-add" onclick="unirsePorCodigo()" style="flex: initial; min-width: 90px; background-color: #25d366;">Unirse</button>
         </div>
 
-        <!-- CREAR LISTA NUEVA (ABAJO) -->
+        <!-- CREAR LISTA NUEVA -->
         <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
           <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
           <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
@@ -999,7 +1066,7 @@
           <button class="btn-share" onclick="compartirListaActiva()">📲 Compartir</button>
         </div>
 
-        <div class="progress-container">
+        <div id="panelProgreso" class="progress-container">
           <div class="progress-text">
             <span id="txtProgresoEstado">0 de 0 productos en el carro</span>
             <span id="txtProgresoPorcentaje">0%</span>
@@ -1009,11 +1076,12 @@
           </div>
         </div>
 
-        <!-- Formulario de Entrada -->
+        <!-- Formulario de Entrada con Escáner -->
         <div class="add-product-card">
           <div class="add-row-1">
             <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta un producto...">
             <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz">🎤</button>
+            <button class="btn-scanner" onclick="abrirEscanerBarras()" title="Escanear código de barras">📸</button>
           </div>
           
           <div class="add-row-2">
@@ -1069,12 +1137,13 @@
           </datalist>
         </div>
 
-        <!-- Barra de Acciones de Accesibilidad -->
+        <!-- Barra de Acciones y Herramientas (AHORA MÁS LIMPIA) -->
         <div class="action-bar">
-          <button id="btnWakeLock" class="btn-sec" onclick="togglePantallaEncendida()">💡 Pantalla Encendida</button>
-          <button class="btn-sec" onclick="leerListaEnVozAlta()">🔊 Leer Lista</button>
+          <button class="btn-sec" onclick="abrirModalGrafico()">📊 Gráfico Gastos</button>
+          <button class="btn-sec" onclick="fijarLimitePresupuesto()">🚨 Tope Gastos</button>
+          <button class="btn-sec" onclick="exportarExcel()">📑 Excel</button>
           <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar</button>
-          <button class="btn-sec" onclick="limpiarProductosComprados()">🧹 Limpiar Comprados</button>
+          <button class="btn-sec" onclick="limpiarProductosComprados()">🧹 Limpiar</button>
         </div>
 
         <div class="sub-tabs">
@@ -1116,7 +1185,7 @@
   <div id="tutorialOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div id="tutIcon" class="tutorial-icon">👋</div>
-      <div id="tutBadge" class="tutorial-badge">Paso 1 de 5</div>
+      <div id="tutBadge" class="tutorial-badge">Paso 1 de 6</div>
       <h3 id="tutTitle">¡Bienvenido!</h3>
       <p id="tutDesc">Esta aplicación te ayudará a hacer tus compras de forma fácil y ordenada.</p>
       
@@ -1138,11 +1207,104 @@
       <ul class="privacy-list">
         <li><strong>0% Registros:</strong> No te pedimos tu correo, ni teléfono, ni nombre. Tampoco requiere crear cuentas.</li>
         <li><strong>Tus datos son tuyos:</strong> Tus listas de compras se guardan únicamente dentro de la memoria de tu celular (almacenamiento local).</li>
-        <li><strong>Uso del Micrófono:</strong> El dictado por voz usa el sistema nativo de tu teléfono únicamente cuando presionas el botón del micrófono 🎤. No se graban ni guardan audios.</li>
+        <li><strong>Uso del Micrófono y Cámara:</strong> Se activan únicamente cuando presionas sus respectivos botones para dictar o escanear productos.</li>
         <li><strong>Sin Rastreo:</strong> La plataforma fue creada sin fines de lucro y no vende información a terceros.</li>
       </ul>
 
       <button class="btn-tut next" onclick="cerrarModalPrivacidad()" style="width: 100%;">¡Entendido y Claro! 👍</button>
+    </div>
+  </div>
+
+  <!-- MODAL ALERTA: SIN LISTA ACTIVA -->
+  <div id="noListOverlay" class="tutorial-overlay">
+    <div class="tutorial-card">
+      <div class="tutorial-icon">⚠️</div>
+      <h3>¡Primero selecciona una Lista!</h3>
+      <p>Para agregar ingredientes o usar el escáner necesitas tener una lista abierta o crear una nueva.</p>
+      
+      <button class="btn-tut next" onclick="cerrarModalSinLista(); verSeccion('mis-listas');" style="width: 100%;">📋 Crear o Elegir Lista ➔</button>
+    </div>
+  </div>
+
+  <!-- MODAL RECETAS CHILENAS -->
+  <div id="recetasOverlay" class="tutorial-overlay">
+    <div class="tutorial-card">
+      <div class="tutorial-icon">🍳</div>
+      <h3>Recetas Chilenas</h3>
+      <p>Selecciona un plato típico para cargar todos sus ingredientes automáticamente:</p>
+
+      <div class="recipe-grid">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('cazuela')">
+          <div style="font-size: 2rem;">🍲</div>
+          <h4>Cazuela de Vacuno</h4>
+          <p>6 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pastel')">
+          <div style="font-size: 2rem;">🌽</div>
+          <h4>Pastel de Choclo</h4>
+          <p>7 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('empanadas')">
+          <div style="font-size: 2rem;">🥟</div>
+          <h4>Empanadas de Pino</h4>
+          <p>8 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('charquican')">
+          <div style="font-size: 2rem;">🍳</div>
+          <h4>Charquicán con Huevo</h4>
+          <p>6 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('porotos')">
+          <div style="font-size: 2rem;">🫘</div>
+          <h4>Porotos c/ Riendas</h4>
+          <p>6 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('tomatican')">
+          <div style="font-size: 2rem;">🍅</div>
+          <h4>Tomaticán Tradicional</h4>
+          <p>5 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pantrucas')">
+          <div style="font-size: 2rem;">🍵</div>
+          <h4>Pantrucas Caseras</h4>
+          <p>6 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('piscosour')">
+          <div style="font-size: 2rem;">🍸</div>
+          <h4>Pisco Sour & Picoteo</h4>
+          <p>5 ingredientes</p>
+        </div>
+      </div>
+
+      <button class="btn-tut prev" onclick="cerrarModalRecetas()" style="width: 100%;">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- MODAL ESCÁNER BARRAS -->
+  <div id="scannerOverlay" class="tutorial-overlay">
+    <div class="tutorial-card">
+      <div class="tutorial-icon">📸</div>
+      <h3>Escáner de Código de Barras</h3>
+      <p style="font-size: 0.85rem;">Apunta con la cámara al código del producto:</p>
+      
+      <div id="reader"></div>
+
+      <button class="btn-tut prev" onclick="cerrarEscanerBarras()" style="width: 100%;">Cancelar Escaneo</button>
+    </div>
+  </div>
+
+  <!-- MODAL GRÁFICO GASTOS -->
+  <div id="graficoOverlay" class="tutorial-overlay">
+    <div class="tutorial-card">
+      <div class="tutorial-icon">📊</div>
+      <h3>Desglose de Gastos por Pasillo</h3>
+      <p style="font-size: 0.82rem;">Distribución de tu dinero en esta lista:</p>
+      
+      <div style="width: 100%; max-width: 280px; margin: 0 auto 14px auto;">
+        <canvas id="chartGastos"></canvas>
+      </div>
+
+      <button class="btn-tut prev" onclick="cerrarModalGrafico()" style="width: 100%;">Cerrar Gráfico</button>
     </div>
   </div>
 
@@ -1172,6 +1334,256 @@
     let diferidoPromptInstalacion = null;
     let textoBusquedaActual = '';
     let dbListenerRef = null;
+    let html5QrcodeScanner = null;
+    let chartGastosInstance = null;
+    let limitePresupuestoActual = 0;
+
+    /* PASOS TUTORIAL INTERACTIVO (6 PASOS CORREGIDOS CON 'ESCRIBIR') */
+    const pasosTutorialData = [
+      {
+        icon: '👋',
+        title: '¡Bienvenid@ a tu Lista!',
+        desc: 'Esta plataforma fue creada sin fines de lucro por Santiago Benedetto (@sabenedettoa) para ayudarte a comprar sin estrés. Te enseñamos lo básico en 6 pasos.'
+      },
+      {
+        icon: '🔑',
+        title: 'Crea o Únete con un Código',
+        desc: 'Ingresa un CÓDIGO de 6 caracteres (ej: A8K9P2) en [🔑 Unirse] para conectarte a la lista de un familiar, o escribe un nombre abajo y presiona [Crear] para crear una lista nueva.'
+      },
+      {
+        icon: '🎤',
+        title: 'Escribe, Dicta por Voz 🎤 o Escanea 📸',
+        desc: 'Escribe en la casilla, toca el micrófono 🎤 para dictar hablando o usa la cámara 📸 para escanear el código de barras de cualquier producto. La app ordenará todo automáticamente por pasillos.'
+      },
+      {
+        icon: '🍳',
+        title: 'Carga Recetas Chilenas',
+        desc: 'Presiona [🍳 Cargar Recetas] para agregar al instante todos los ingredientes de platos típicos como Cazuela, Pastel de Choclo, Porotos, Empanadas y más.'
+      },
+      {
+        icon: '📊',
+        title: 'Tope de Gastos y Gráficos',
+        desc: 'Fija un presupuesto máximo con [🚨 Tope Gastos] para que la app te avise si te pasas, mira el desglose en [📊 Gráfico Gastos] o descarga tu planilla en [📑 Excel].'
+      },
+      {
+        icon: '👓',
+        title: 'Agranda la letra y fija la pantalla',
+        desc: 'Usa los botones [A+] arriba para ver más grande. Y en el supermercado, toca [💡 Encendida] arriba para que el teléfono no se apague solo mientras compras.'
+      }
+    ];
+
+    function abrirModalSinLista() {
+      vibrarConfirmacion();
+      document.getElementById('noListOverlay').classList.add('active');
+    }
+
+    function cerrarModalSinLista() {
+      vibrarConfirmacion();
+      document.getElementById('noListOverlay').classList.remove('active');
+    }
+
+    /* FUNCIONALIDAD 1: ESCÁNER DE BARRAS */
+    function abrirEscanerBarras() {
+      vibrarConfirmacion();
+
+      if (!idListaActiva) {
+        abrirModalSinLista();
+        return;
+      }
+
+      document.getElementById('scannerOverlay').classList.add('active');
+      html5QrcodeScanner = new Html5Qrcode("reader");
+      html5QrcodeScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 250, height: 150 } },
+        async (barcode) => {
+          vibrarConfirmacion();
+          reproducirSonidoExito();
+          cerrarEscanerBarras();
+          mostrarToast("🔍 Buscando producto en la base de datos...");
+
+          try {
+            const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+            const data = await response.json();
+
+            if (data.status === 1 && data.product) {
+              const prod = data.product;
+              const nombreEncontrado = prod.product_name_es || prod.product_name || prod.brands || '';
+              if (nombreEncontrado) {
+                document.getElementById('itemInput').value = nombreEncontrado;
+                mostrarToast(`✨ Producto encontrado: ${nombreEncontrado}`);
+                return;
+              }
+            }
+            throw new Error('Producto no en base de datos');
+          } catch (err) {
+            const manualName = prompt(`Código ${barcode} detectado. Ingrese el nombre del producto:`, '');
+            if (manualName && manualName.trim()) {
+              document.getElementById('itemInput').value = manualName.trim();
+            }
+          }
+        },
+        () => {}
+      ).catch(() => mostrarToast("⚠️ No se pudo acceder a la cámara"));
+    }
+
+    function cerrarEscanerBarras() {
+      if (html5QrcodeScanner) {
+        html5QrcodeScanner.stop().then(() => {
+          document.getElementById('scannerOverlay').classList.remove('active');
+        }).catch(() => document.getElementById('scannerOverlay').classList.remove('active'));
+      } else {
+        document.getElementById('scannerOverlay').classList.remove('active');
+      }
+    }
+
+    /* FUNCIONALIDAD 2: GRÁFICO DE GASTOS */
+    function abrirModalGrafico() {
+      vibrarConfirmacion();
+
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !lista.items || lista.items.length === 0) {
+        mostrarToast("⚠️ La lista está vacía");
+        return;
+      }
+
+      document.getElementById('graficoOverlay').classList.add('active');
+      
+      const totalesPorCat = {};
+      lista.items.forEach(i => {
+        const cat = clasificarProducto(i.texto).nombre;
+        totalesPorCat[cat] = (totalesPorCat[cat] || 0) + (i.cantidad * (i.precio || 0));
+      });
+
+      const labels = Object.keys(totalesPorCat);
+      const data = Object.values(totalesPorCat);
+
+      const ctx = document.getElementById('chartGastos').getContext('2d');
+      if (chartGastosInstance) chartGastosInstance.destroy();
+
+      chartGastosInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6']
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+
+    function cerrarModalGrafico() {
+      document.getElementById('graficoOverlay').classList.remove('active');
+    }
+
+    /* FUNCIONALIDAD 3: ALERTA DE PRESUPUESTO */
+    function fijarLimitePresupuesto() {
+      vibrarConfirmacion();
+
+      const actual = limitePresupuestoActual ? limitePresupuestoActual : '';
+      const resp = prompt("Ingresa tu presupuesto máximo para esta compra ($ CLP):", actual);
+      if (resp !== null) {
+        limitePresupuestoActual = parseInt(resp) || 0;
+        renderizarProductos();
+        if (limitePresupuestoActual > 0) {
+          mostrarToast(`🚨 Límite fijado en $${formatoCLP.format(limitePresupuestoActual)}`);
+        } else {
+          mostrarToast("🚨 Límite desactivado");
+        }
+      }
+    }
+
+    /* FUNCIONALIDAD 4: RECETAS CHILENAS */
+    function abrirModalRecetas() {
+      vibrarConfirmacion();
+
+      if (!idListaActiva) {
+        abrirModalSinLista();
+        return;
+      }
+
+      document.getElementById('recetasOverlay').classList.add('active');
+    }
+
+    function cerrarModalRecetas() {
+      document.getElementById('recetasOverlay').classList.remove('active');
+    }
+
+    function cargarIngredientesReceta(recetaKey) {
+      vibrarConfirmacion();
+      
+      if (!idListaActiva) { 
+        cerrarModalRecetas();
+        abrirModalSinLista();
+        return; 
+      }
+
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista) return;
+
+      const recetas = {
+        cazuela: ["Posta negra 1kg", "Papas 1kg", "Zapallo", "Choclo", "Zanahoria", "Cilantro"],
+        pastel: ["Choclo picado", "Carne molida", "Pechuga de pollo", "Cebolla", "Huevos", "Aceitunas", "Pasas"],
+        empanadas: ["Harina 1kg", "Carne picada 1kg", "Cebolla 1kg", "Manteca", "Huevos", "Aceitunas", "Comino", "Ají color"],
+        charquican: ["Carne molida", "Papas 1kg", "Zapallo", "Choclo", "Huevo 12un", "Cebolla"],
+        porotos: ["Porotos hallados", "Tallarines", "Zapallo", "Cebolla", "Longaniza", "Ajo"],
+        tomatican: ["Tomates 1kg", "Choclo picado", "Carne picada", "Cebolla", "Orégano"],
+        pantrucas: ["Harina 1kg", "Carne molida", "Cebolla", "Zanahoria", "Huevos", "Perejil"],
+        piscosour: ["Pisco tinto/blanco", "Limones 1kg", "Azúcar flor", "Huevo (Claras)", "Hielo"]
+      };
+
+      const ingredientes = recetas[recetaKey] || [];
+      ingredientes.forEach(ing => {
+        const catInfo = clasificarProducto(ing);
+        lista.items.push({
+          id: Date.now() + Math.random(),
+          texto: ing,
+          cantidad: 1,
+          precio: 0,
+          categoriaId: catInfo.id,
+          icono: catInfo.icono,
+          comprado: false
+        });
+      });
+
+      guardarStorage();
+      sincronizarConFirebase();
+      renderizarProductos();
+      cerrarModalRecetas();
+      verSeccion('lista-activa');
+      mostrarToast(`🍳 ¡Ingredientes cargados a tu lista!`);
+    }
+
+    /* FUNCIONALIDAD 5: EXPORTAR A EXCEL / CSV */
+    function exportarExcel() {
+      vibrarConfirmacion();
+
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !lista.items || lista.items.length === 0) {
+        mostrarToast("⚠️ La lista está vacía");
+        return;
+      }
+
+      let csv = "Producto,Pasillo,Cantidad,Precio Unitario CLP,Subtotal CLP,Estado\n";
+      lista.items.forEach(i => {
+        const pasillo = clasificarProducto(i.texto).nombre;
+        const subtotal = i.cantidad * (i.precio || 0);
+        const estado = i.comprado ? "Comprado" : "Pendiente";
+        csv += `"${i.texto}","${pasillo}",${i.cantidad},${i.precio || 0},${subtotal},"${estado}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Lista_${lista.nombre}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      mostrarToast("📑 Planilla descargada con éxito");
+    }
 
     function generarCodigoUnico() {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -1181,45 +1593,6 @@
       }
       return cod;
     }
-
-    const pasosTutorialData = [
-      {
-        icon: '👋',
-        badge: '¡Hola!',
-        title: '¡Bienvenid@ a tu Lista!',
-        desc: 'Esta plataforma fue creada sin fines de lucro por Santiago Benedetto (@sabenedettoa) para ayudarte a comprar sin estrés. Te enseñamos lo básico en 5 pasos.'
-      },
-      {
-        icon: '🔑',
-        badge: 'Paso 1',
-        title: 'Crea o Únete con un Código',
-        desc: 'Ingresa un CÓDIGO de 6 caracteres (ej: A8K9P2) en [🔑 Unirse] para conectarte a la lista de un familiar, o escribe un nombre abajo y presiona [Crear] para crear una lista nueva.'
-      },
-      {
-        icon: '🎤',
-        badge: 'Paso 2',
-        title: 'Dicta o Escribe productos',
-        desc: 'Toca el micrófono 🎤 para decir lo que necesitas (ej: "Dos kilos de palta"). La app ordenará todo automáticamente por pasillos (Verduras, Panadería, Aseo, etc.).'
-      },
-      {
-        icon: '👓',
-        badge: 'Paso 3',
-        title: 'Agranda la letra y fija la pantalla',
-        desc: 'Usa los botones [A+] arriba para ver más grande. Y en el supermercado, toca [💡 Pantalla Encendida] para que el teléfono no se apague solo mientras compras.'
-      },
-      {
-        icon: '📲',
-        badge: 'Paso 4',
-        title: 'Compartir Lista en Vivo',
-        desc: 'Puedes compartir tu lista enviando un ENLACE directo por WhatsApp con el botón [📲 Compartir], o simplemente dictando/compartiendo el CÓDIGO único de 6 caracteres.'
-      },
-      {
-        icon: '✓',
-        badge: 'Paso 5',
-        title: 'Marca comprados y Deshaz cambios',
-        desc: 'Toca el botón [✓] (ubicado entre el lápiz y la X) para mover un producto a [Comprados]. Si te equivocas, usa el botón [↩️] en Comprados o la opción [↩️ Deshacer] en el aviso emergente.'
-      }
-    ];
 
     const formatoCLP = new Intl.NumberFormat('es-CL', {
       style: 'currency',
@@ -1233,7 +1606,7 @@
       { id: 'carnes', nombre: 'Carnes, Pescados y Mariscos', icono: '🥩', regex: /(carne|carnes|lomo|aloyado|lomo vetado|lomo liso|lomo carnudo|asado|asado carnicero|costillar|pollo|pechuga|muslo|truto|trutos|ala|alas|cerdo|pescado|reineta|salmon|salmón|atun|atún|merluza|carne molida|posta|posta negra|posta rosada|chuleta|sobrecostilla|huachalomo|tapapecho|abastero|entraña|entrañita|palanca|plateada|punta de ganso|punta picana|tapacostilla|choclillo|ganso|asado de tira|malaya|churrasco|churrascos|escalopa|milanesa|albondiga|albóndiga|hamburguesa|hamburguesas|pavo|pavo deshuesado|cordero|chivo|conejo|guatitas|lengua|chunchules|molleja|mollejas|hígado|higado|corazon|corazón|marisco|mariscos|chorito|choritos|almeja|almejas|macha|machas|ostion|ostión|ostiones|camaron|camarón|camarones|jaiba|centolla|pulpo|calamar|calamares|piure|picoroco|loco|locos|cochayuyo|luche|erizo|erizos|navajuela|sardina|sardinas|sierra|corvina|lenguado)/i },
       { id: 'panaderia', nombre: 'Panadería y Cereal', icono: '🍞', regex: /(pan|pancito|marraqueta|marraquetas|hallulla|hallullas|dobladita|dobladitas|galleta|galletas|harina|arroz|fideos|tallarines|espageti|espagueti|pasta|pastas|cereal|cereales|avena|tostadas|pan de molde|pan frica|pan de hot dog|pan pita|pan ciabatta|pan baguette|pan de masa madre|pan integral|pan amasado|coliza|bocado de dama|sopaipilla|sopaipillas|empanada|empanadas|pino|queso empanada|tortilla|tortillas|rapiditas|croissant|medialuna|medialunas|dona|donas|muffin|muffins|queque|queques|brownie|brownies|panqueque|panqueques|corbatitas|espirales|lasaña|lasagna|ñoquis|sémola|semola|harina tostada|quinoa|quínoa|mote|granola)/i },
       { id: 'despensa', nombre: 'Despensa y Abarrotes', icono: '🥫', regex: /(aceite|sal|azucar|azúcar|lenteja|lentejas|poroto|porotos|garbanzo|garbanzos|salsa|ketchup|kétchup|mostaza|mayonesa|mayo|conserva|jurel|atun en lata|atún en lata|sopa|sopas|caldo|caldos|salsa de tomate|salsas|aderezo|aliño|aliño completo|comino|pimienta|orégano|oregano|paprika|pimentón en polvo|curry|cúrcuma|curcuma|laurel|vinagre|salsa de soya|salsa inglesa|salsa de ajo|ají color|aji color|puré|pure|puré de papas|palmitos|palmito|aceitunas|aceituna|pepinillos|alcaparras|salsa barbacoa|mermelada|mermeladas|miel|miel de abeja|leche condensada|leche evaporada|polvo de hornear|polvos de hornear|bicarbonato|esencia de vainilla|levadura|cobertura de chocolate|maicena|chuño|gelatina|jalea|flan|saborizante|coco rallado)/i },
-      { id: 'limpieza', nombre: 'Limpieza e Higiene', icono: '🧹', regex: /(jabón|jabon|detergente|cloro|desinfectante|papel|suavizante|limpiador|limpiavidrios|limpia vidrios|limpiapisos|lustramuebles|desengrasante|esponja|esponjas|shampoo|champú|champu|acondicionador|papel higienico|papel higiénico|toalla nova|toallas nova|toalla absorbente|desodorante|pasta de dientes|crema dental|cepillo de dientes|lavaloza|mopa|escoba|escobillón|escobillon|pala|bolsa de basura|bolsas de basura|virutilla|cera para piso|pastilla wc|trapero|paño|paños|paño microfibra|guantes|guantes para loza|cotonitos|toallitas húmedas|toallitas humedas|pañal|pañales|toalla higiénica|toallas higienicas|protector diario|tampones|tampón|rasuradora|prestobarba|espuma de afeitar|hilo dental|enjuague bucal|bloqueador|bloqueador solar|crema humectante|crema corporal|talco|algodón|algodon|parche curita|agua oxigenada|alcohol|alcohol gel|preservativo|preservativos|condón|condones)/i },
+      { id: 'limpieza', nombre: 'Limpieza e Higiene', icono: '🧹', regex: /(jabón|jabon|detergente|cloro|desinfectante|papel|suavizante|limpiador|limpiavidrios|limpia vidrios|limpiapisos|lustramuebles|desengrasante|esponja|esponjas|shampoo|champú|champu|acondicionador|papel higienico|papel higiénico|toalla nova|toallas nova|toalla absorbente|desodorante|pasta de dientes|crema dental|cepillo de dientes|lavaloza|mopa|escoba|escobillón|escobillon|pala|bolsa de basura|bolsas de basura|virutilla|cera para piso|pastilla wc|trapero|paño|paños|paño microfibra|guantes|guantes para loza|cotonitos|toallitas húmedas|toallitas humedas|pañal|pañales|toalla higiénica|toallas higienicas|tampones|tampón|rasuradora|prestobarba|espuma de afeitar|hilo dental|enjuague bucal|bloqueador|bloqueador solar|crema humectante|crema corporal|talco|algodón|algodon|parche curita|agua oxigenada|alcohol|alcohol gel|preservativo|preservativos|condón|condones)/i },
       { id: 'bebidas', nombre: 'Bebidas y Bares', icono: '🥤', regex: /(agua|agua mineral|jugo|jugos|refresco|gaseosa|bebida|bebidas|cerveza|cervezas|vino|vinos|pisco|piscola|ron|vodka|gin|whisky|whiskey|tequila|fernet|licor|champagne|espumante|espumoso|sangria|sangría|borgoña|clery|navegado|terremoto|pipeño|chicha|ginger ale|agua tónica|agua tonica|energetica|energética|jugo en sobre|jugo en polvo|jugo concentrado|cafe|café|cafe descafeinado|cafe molido|cafe en grano|\bte\b|\bté\b|té en bolsa|té de hierbas|manzanilla|anis|anís|boldo|hierba mate|mate)/i },
       { id: 'snack', nombre: 'Snacks y Dulces', icono: '🍫', regex: /(chocolate|chocolates|dulce|dulces|caramelo|caramelos|helado|helados|pastel|pasteles|torta|tortas|papas fritas|maní|mani|snack|snacks|ramitas|gomitas|chocolatina|barrita de cereal|frutos secos|almendras|nueces|castañas de caju|pistachos|avellanas|semillas de girasol|maravilla|bocadillos|tortillas de maíz|nachos|cabritas|popcorn|pretzels|chicle|chicles|chupete|chupetes|malvaviscos|cuchufli|cuchuflí|turron|turrón|alfajor|alfajores|obleas|caluga|calugas)/i },
       { id: 'libreria', nombre: 'Hogar, Mascotas y Librería', icono: '🐾', regex: /(comida de perro|comida de gato|alimento para perro|alimento para gato|arena de gato|arena sanitaria|juguete mascota|collar|correa|plato mascota|cuaderno|cuadernos|lápiz|lapiz|lápices|lapices|corrector|goma|sacapuntas|regla|tijeras|pegamento|estuche|mochila|hojas|resma|vela|velas|fósforo|fósforos|encendedor|pila|pilas|ampolleta|ampolletas|zapatilla eléctrica|cinta adhesiva|papel aluminio|alusa plas|film transparente|servilleta|servilletas|plato desechable|vaso desechable|cubiertos desechables|bombilla|bombillas|carbón|carbon|iniciador de fuego|parrilla|maceta|tierra de hojas)/i },
@@ -1373,13 +1746,13 @@
           if (!wakeLockSentinel) {
             wakeLockSentinel = await navigator.wakeLock.request('screen');
             btn.classList.add('active-mode');
-            btn.textContent = '💡 Pantalla Encendida (ON)';
+            btn.textContent = '💡 Encendida (ON)';
             mostrarToast("💡 Pantalla fijada: No se apagará mientras compras");
           } else {
             await wakeLockSentinel.release();
             wakeLockSentinel = null;
             btn.classList.remove('active-mode');
-            btn.textContent = '💡 Pantalla Normal';
+            btn.textContent = '💡 Encendida';
             mostrarToast("💡 Pantalla devuelta a modo normal");
           }
         } catch (err) {
@@ -1487,7 +1860,7 @@
     }
 
     function comprobarTutorialPrimeraVez() {
-      const visto = localStorage.getItem('tutorialVisto_v6');
+      const visto = localStorage.getItem('tutorialVisto_v10');
       if (!visto) abrirTutorial();
     }
 
@@ -1501,7 +1874,7 @@
     function cerrarTutorial() {
       vibrarConfirmacion();
       document.getElementById('tutorialOverlay').classList.remove('active');
-      localStorage.setItem('tutorialVisto_v6', 'true');
+      localStorage.setItem('tutorialVisto_v10', 'true');
     }
 
     function pasoTutorial(dir) {
@@ -1518,7 +1891,7 @@
     function actualizarTutorialUI() {
       const data = pasosTutorialData[pasoActualTutorial];
       document.getElementById('tutIcon').textContent = data.icon;
-      document.getElementById('tutBadge').textContent = `${data.badge} de ${pasosTutorialData.length - 1}`;
+      document.getElementById('tutBadge').textContent = `Paso ${pasoActualTutorial + 1} de ${pasosTutorialData.length}`;
       document.getElementById('tutTitle').textContent = data.title;
       document.getElementById('tutDesc').textContent = data.desc;
 
@@ -1956,7 +2329,7 @@
         if (!lista.items) lista.items = [];
         const catInfo = clasificarProducto(texto);
         lista.items.push({
-          id: Date.now(),
+          id: Date.now() + Math.random(),
           texto: texto,
           cantidad: cantidad,
           precio: precio,
@@ -2125,10 +2498,22 @@
       document.getElementById('valGastado').textContent = formatoCLP.format(gastado);
       document.getElementById('valTotal').textContent = formatoCLP.format(total);
 
+      const panelProgreso = document.getElementById('panelProgreso');
+      const fillProgreso = document.getElementById('fillProgreso');
+
+      if (limitePresupuestoActual > 0 && gastado > limitePresupuestoActual) {
+        panelProgreso.classList.add('exceeded');
+        fillProgreso.classList.add('exceeded');
+        document.getElementById('txtProgresoEstado').textContent = `🚨 ¡TE PASASTE DEL LÍMITE! ($${formatoCLP.format(gastado)})`;
+      } else {
+        panelProgreso.classList.remove('exceeded');
+        fillProgreso.classList.remove('exceeded');
+        document.getElementById('txtProgresoEstado').textContent = `${compradosCount} de ${totalItems} productos en el carro`;
+      }
+
       const pct = totalItems > 0 ? Math.round((compradosCount / totalItems) * 100) : 0;
-      document.getElementById('txtProgresoEstado').textContent = `${compradosCount} de ${totalItems} productos en el carro`;
       document.getElementById('txtProgresoPorcentaje').textContent = `${pct}%`;
-      document.getElementById('fillProgreso').style.width = `${pct}%`;
+      fillProgreso.style.width = `${pct}%`;
     }
 
     function renderizarProductos() {
@@ -2245,12 +2630,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V33 -->
+  <!-- SERVICE WORKER V45 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v33 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v45 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
