@@ -931,7 +931,7 @@
 
   <div class="container">
     
-    <!-- HEADER SUPERIOR CON BOTONES REUBICADOS -->
+    <!-- HEADER SUPERIOR -->
     <div class="header-top">
       <h1 class="app-title">🛒 Mis Listas</h1>
       <div class="header-controls">
@@ -976,7 +976,7 @@
               <span>🎤</span> <span>Dicta tus productos hablando</span>
             </div>
             <div class="feature-item">
-              <span>📸</span> <span>Escáner de código de barras integrado</span>
+              <span>📸</span> <span>Escáner de código de barras e historial de precios</span>
             </div>
             <div class="feature-item">
               <span>🍳</span> <span>Carga recetas chilenas automáticas</span>
@@ -1079,7 +1079,7 @@
         <!-- Formulario de Entrada con Escáner -->
         <div class="add-product-card">
           <div class="add-row-1">
-            <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta un producto...">
+            <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta un producto..." onchange="buscarPrecioEnMemoriaPorTexto(this.value)">
             <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz">🎤</button>
             <button class="btn-scanner" onclick="abrirEscanerBarras()" title="Escanear código de barras">📸</button>
           </div>
@@ -1137,7 +1137,7 @@
           </datalist>
         </div>
 
-        <!-- Barra de Acciones y Herramientas (AHORA MÁS LIMPIA) -->
+        <!-- Barra de Acciones y Herramientas -->
         <div class="action-bar">
           <button class="btn-sec" onclick="abrirModalGrafico()">📊 Gráfico Gastos</button>
           <button class="btn-sec" onclick="fijarLimitePresupuesto()">🚨 Tope Gastos</button>
@@ -1181,7 +1181,7 @@
     <button id="btnUndoToast" class="btn-undo" onclick="ejecutarAccionDeshacer()" style="display:none;">↩️ Deshacer</button>
   </div>
 
-  <!-- MODAL TUTORIAL INTERACTIVO -->
+  <!-- MODAL TUTORIAL INTERACTIVO DE 6 PASOS -->
   <div id="tutorialOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div id="tutIcon" class="tutorial-icon">👋</div>
@@ -1337,8 +1337,36 @@
     let html5QrcodeScanner = null;
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
+    let memoriaPreciosLocal = {};
 
-    /* PASOS TUTORIAL INTERACTIVO (6 PASOS CORREGIDOS CON 'ESCRIBIR') */
+    /* SISTEMA DE MEMORIA LOCAL DE PRECIOS */
+    function cargarMemoriaPrecios() {
+      const datos = localStorage.getItem('memoriaPrecios_v1');
+      if (datos) {
+        try { memoriaPreciosLocal = JSON.parse(datos); } catch (e) { memoriaPreciosLocal = {}; }
+      }
+    }
+
+    function guardarPrecioEnMemoria(claveKey, precio) {
+      if (!claveKey || !precio) return;
+      const keyNormalizada = claveKey.toLowerCase().trim();
+      memoriaPreciosLocal[keyNormalizada] = precio;
+      localStorage.setItem('memoriaPrecios_v1', JSON.stringify(memoriaPreciosLocal));
+    }
+
+    function buscarPrecioEnMemoriaPorTexto(texto) {
+      if (!texto) return;
+      const keyNormalizada = texto.toLowerCase().trim();
+      if (memoriaPreciosLocal[keyNormalizada]) {
+        const inputPrice = document.getElementById('itemPrice');
+        if (inputPrice && !inputPrice.value) {
+          inputPrice.value = memoriaPreciosLocal[keyNormalizada];
+          mostrarToast(`💡 Precio sugerido: $${formatoCLP.format(memoriaPreciosLocal[keyNormalizada])}`);
+        }
+      }
+    }
+
+    /* PASOS TUTORIAL INTERACTIVO */
     const pasosTutorialData = [
       {
         icon: '👋',
@@ -1353,7 +1381,7 @@
       {
         icon: '🎤',
         title: 'Escribe, Dicta por Voz 🎤 o Escanea 📸',
-        desc: 'Escribe en la casilla, toca el micrófono 🎤 para dictar hablando o usa la cámara 📸 para escanear el código de barras de cualquier producto. La app ordenará todo automáticamente por pasillos.'
+        desc: 'Escribe en la casilla, toca el micrófono 🎤 para dictar hablando o usa la cámara 📸 para escanear el código de barras de cualquier producto. La app recordará automáticamente el precio la próxima vez.'
       },
       {
         icon: '🍳',
@@ -1382,7 +1410,7 @@
       document.getElementById('noListOverlay').classList.remove('active');
     }
 
-    /* FUNCIONALIDAD 1: ESCÁNER DE BARRAS */
+    /* FUNCIONALIDAD 1: ESCÁNER DE BARRAS CON MEMORIA AUTOMÁTICA DE PRECIOS */
     function abrirEscanerBarras() {
       vibrarConfirmacion();
 
@@ -1400,6 +1428,10 @@
           vibrarConfirmacion();
           reproducirSonidoExito();
           cerrarEscanerBarras();
+
+          // 1. Revisar si tenemos el precio guardado en la memoria local
+          const precioGuardado = memoriaPreciosLocal[barcode];
+
           mostrarToast("🔍 Buscando producto en la base de datos...");
 
           try {
@@ -1411,7 +1443,13 @@
               const nombreEncontrado = prod.product_name_es || prod.product_name || prod.brands || '';
               if (nombreEncontrado) {
                 document.getElementById('itemInput').value = nombreEncontrado;
-                mostrarToast(`✨ Producto encontrado: ${nombreEncontrado}`);
+                
+                if (precioGuardado) {
+                  document.getElementById('itemPrice').value = precioGuardado;
+                  mostrarToast(`✨ ${nombreEncontrado} ($${formatoCLP.format(precioGuardado)})`);
+                } else {
+                  mostrarToast(`✨ Producto encontrado: ${nombreEncontrado}`);
+                }
                 return;
               }
             }
@@ -1420,6 +1458,9 @@
             const manualName = prompt(`Código ${barcode} detectado. Ingrese el nombre del producto:`, '');
             if (manualName && manualName.trim()) {
               document.getElementById('itemInput').value = manualName.trim();
+              if (precioGuardado) {
+                document.getElementById('itemPrice').value = precioGuardado;
+              }
             }
           }
         },
@@ -1541,7 +1582,7 @@
           id: Date.now() + Math.random(),
           texto: ing,
           cantidad: 1,
-          precio: 0,
+          precio: memoriaPreciosLocal[ing.toLowerCase().trim()] || 0,
           categoriaId: catInfo.id,
           icono: catInfo.icono,
           comprado: false
@@ -1692,6 +1733,7 @@
       cargarTamanoLetra();
       cargarStorage();
       cargarOrdenCategorias();
+      cargarMemoriaPrecios();
       procesarListaRecibidaPorURL();
 
       if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
@@ -1839,6 +1881,7 @@
         const textoDictado = event.results[0][0].transcript;
         if (textoDictado) {
           input.value = textoDictado;
+          buscarPrecioEnMemoriaPorTexto(textoDictado);
           mostrarToast(`🗣️ Entendido: "${textoDictado}"`);
         }
       };
@@ -2324,6 +2367,11 @@
 
       if (!texto) return;
 
+      // Guardar el precio ingresado en la memoria
+      if (precio > 0) {
+        guardarPrecioEnMemoria(texto, precio);
+      }
+
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (lista) {
         if (!lista.items) lista.items = [];
@@ -2421,7 +2469,11 @@
       if (lista && lista.items) {
         const prod = lista.items.find(i => i.id === prodId);
         if (prod) {
-          prod.precio = Math.max(0, Math.round(parseFloat(nuevoPrecio) || 0));
+          const valorValido = Math.max(0, Math.round(parseFloat(nuevoPrecio) || 0));
+          prod.precio = valorValido;
+          if (valorValido > 0) {
+            guardarPrecioEnMemoria(prod.texto, valorValido);
+          }
           guardarStorage();
           sincronizarConFirebase();
           renderizarProductos();
@@ -2630,12 +2682,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V45 -->
+  <!-- SERVICE WORKER V46 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v45 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v46 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
