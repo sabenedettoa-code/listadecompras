@@ -425,6 +425,19 @@
       min-width: 50px;
     }
 
+    .btn-mic.listening {
+      background-color: #ef4444;
+      color: white;
+      border-color: #dc2626;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
     .action-bar {
       display: flex;
       gap: 6px;
@@ -1357,6 +1370,7 @@
     let html5QrcodeScanner = null;
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
+    let objetoReconocimientoVoz = null;
     
     // MEMORIA DE PRODUCTOS Y PRECIOS POR CÓDIGO/TEXTO
     let memoriaPreciosLocal = {};
@@ -1470,6 +1484,7 @@
           if (nombreGuardado) {
             document.getElementById('itemInput').value = nombreGuardado;
             if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
+            agregarProducto(); // Agrega de inmediato el producto escaneado
             mostrarToast(`⚡ Memoria: ${nombreGuardado} ${precioGuardado ? '($' + formatoCLP.format(precioGuardado) + ')' : ''}`);
             return;
           }
@@ -1490,10 +1505,9 @@
                 
                 if (precioGuardado) {
                   document.getElementById('itemPrice').value = precioGuardado;
-                  mostrarToast(`✨ ${nombreEncontrado} ($${formatoCLP.format(precioGuardado)})`);
-                } else {
-                  mostrarToast(`✨ Producto encontrado: ${nombreEncontrado}`);
                 }
+                agregarProducto(); // Agrega de inmediato el producto encontrado
+                mostrarToast(`✨ Producto agregado: ${nombreEncontrado}`);
                 return;
               }
             }
@@ -1505,7 +1519,8 @@
               const nombreLimpio = manualName.trim();
               document.getElementById('itemInput').value = nombreLimpio;
               guardarNombreCodigoEnMemoria(barcode, nombreLimpio);
-              mostrarToast(`💾 Guardado en memoria: "${nombreLimpio}"`);
+              agregarProducto(); // Agrega de inmediato el producto manual
+              mostrarToast(`💾 Guardado y agregado: "${nombreLimpio}"`);
             }
           }
         },
@@ -1644,16 +1659,24 @@
       if (!lista.items) lista.items = [];
 
       ingredientes.forEach(ing => {
-        const catInfo = clasificarProducto(ing);
-        lista.items.push({
-          id: Date.now() + Math.random(),
-          texto: ing,
-          cantidad: 1,
-          precio: memoriaPreciosLocal[ing.toLowerCase().trim()] || 0,
-          categoriaId: catInfo.id,
-          icono: catInfo.icono,
-          comprado: false
-        });
+        // Verificar si el ingrediente ya existe para incrementar cantidad
+        const normalizado = ing.toLowerCase().trim();
+        const existente = lista.items.find(i => i.texto.toLowerCase().trim() === normalizado);
+
+        if (existente) {
+          existente.cantidad += 1;
+        } else {
+          const catInfo = clasificarProducto(ing);
+          lista.items.push({
+            id: Date.now() + Math.random(),
+            texto: ing,
+            cantidad: 1,
+            precio: memoriaPreciosLocal[normalizado] || 0,
+            categoriaId: catInfo.id,
+            icono: catInfo.icono,
+            comprado: false
+          });
+        }
       });
 
       // Establecer como lista activa actual y sincronizar
@@ -1732,7 +1755,11 @@
     }
 
     function vibrarConfirmacion() {
-      if (navigator.vibrate) navigator.vibrate(35);
+      try {
+        if ("vibrate" in navigator) {
+          window.navigator.vibrate(40);
+        }
+      } catch (e) {}
     }
 
     function reproducirSonidoExito() {
@@ -1919,8 +1946,15 @@
       }
     }
 
+    /* DICTADO POR VOZ CONTINUO E INTELIGENTE */
     function activarDictadoVoz() {
       vibrarConfirmacion();
+
+      if (!idListaActiva) {
+        abrirModalSinLista();
+        return;
+      }
+
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!SpeechRecognition) {
@@ -1928,48 +1962,72 @@
         return;
       }
 
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'es-CL';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
       const btnMic = document.getElementById('btnMic');
       const input = document.getElementById('itemInput');
 
       if (esEscuchandoVoz) {
-        recognition.stop();
+        if (objetoReconocimientoVoz) objetoReconocimientoVoz.stop();
         return;
       }
 
-      recognition.start();
-      esEscuchandoVoz = true;
-      btnMic.classList.add('listening');
-      btnMic.textContent = '🔴';
-      mostrarToast("🎙️ Habla ahora (ej: 'Marraqueta')...");
+      objetoReconocimientoVoz = new SpeechRecognition();
+      objetoReconocimientoVoz.lang = 'es-CL';
+      objetoReconocimientoVoz.interimResults = false;
+      objetoReconocimientoVoz.continuous = true;
 
-      recognition.onresult = function(event) {
-        const textoDictado = event.results[0][0].transcript;
-        if (textoDictado) {
-          input.value = textoDictado;
-          buscarPrecioEnMemoriaPorTexto(textoDictado);
-          mostrarToast(`🗣️ Entendido: "${textoDictado}"`);
+      let totalAgregados = 0;
+
+      objetoReconocimientoVoz.onstart = function() {
+        esEscuchandoVoz = true;
+        btnMic.classList.add('listening');
+        btnMic.textContent = '🔴';
+        mostrarToast("🎙️ Hablando... Di tus productos con pausas o 'y'");
+      };
+
+      objetoReconocimientoVoz.onresult = function(event) {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            const transcripcion = event.results[i][0].transcript;
+            const productosSeparados = transcripcion.split(/\s+y\s+|\s+con\s+|,/i);
+
+            productosSeparados.forEach(prod => {
+              const limpio = prod.trim();
+              if (limpio) {
+                input.value = limpio;
+                buscarPrecioEnMemoriaPorTexto(limpio);
+                agregarProducto(); // Agrega o suma automáticamente la cantidad
+                totalAgregados++;
+              }
+            });
+          }
+        }
+        if (totalAgregados > 0) {
+          reproducirSonidoExito();
         }
       };
 
-      recognition.onspeechend = function() { recognition.stop(); };
-      recognition.onend = function() {
+      objetoReconocimientoVoz.onspeechend = function() {
+        setTimeout(() => {
+          if (objetoReconocimientoVoz && esEscuchandoVoz) objetoReconocimientoVoz.stop();
+        }, 1500);
+      };
+
+      objetoReconocimientoVoz.onend = function() {
         esEscuchandoVoz = false;
         btnMic.classList.remove('listening');
         btnMic.textContent = '🎤';
       };
-      recognition.onerror = function(event) {
+
+      objetoReconocimientoVoz.onerror = function(event) {
         esEscuchandoVoz = false;
         btnMic.classList.remove('listening');
         btnMic.textContent = '🎤';
         if (event.error !== 'no-speech') {
-          mostrarToast("⚠️ No se pudo entender la voz");
+          mostrarToast("⚠️ Micrófono pausado");
         }
       };
+
+      objetoReconocimientoVoz.start();
     }
 
     function comprobarTutorialPrimeraVez() {
@@ -2423,6 +2481,7 @@
       });
     }
 
+    /* AGREGAR O SUMAR CANTIDAD AUTOMÁTICAMENTE SI YA EXISTE */
     function agregarProducto() {
       if (!idListaActiva) return;
       vibrarConfirmacion();
@@ -2432,7 +2491,7 @@
       const priceInput = document.getElementById('itemPrice');
       
       const texto = input.value.trim();
-      const cantidad = parseInt(qtyInput.value) || 1;
+      const cantidadAAgregar = parseInt(qtyInput.value) || 1;
       const precio = Math.round(parseFloat(priceInput.value) || 0);
 
       if (!texto) return;
@@ -2444,16 +2503,34 @@
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (lista) {
         if (!lista.items) lista.items = [];
-        const catInfo = clasificarProducto(texto);
-        lista.items.push({
-          id: Date.now() + Math.random(),
-          texto: texto,
-          cantidad: cantidad,
-          precio: precio,
-          categoriaId: catInfo.id,
-          icono: catInfo.icono,
-          comprado: false
-        });
+
+        // Normalizar texto para comparación sin importar mayúsculas
+        const textoNormalizado = texto.toLowerCase().trim();
+
+        // Buscar si ya existe este producto en la lista
+        const productoExistente = lista.items.find(i => i.texto.toLowerCase().trim() === textoNormalizado);
+
+        if (productoExistente) {
+          // Si ya existe, le sumamos la cantidad
+          productoExistente.cantidad += cantidadAAgregar;
+          if (precio > 0 && !productoExistente.precio) {
+            productoExistente.precio = precio;
+          }
+          mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
+        } else {
+          // Si es nuevo, lo creamos
+          const catInfo = clasificarProducto(texto);
+          lista.items.push({
+            id: Date.now() + Math.random(),
+            texto: texto,
+            cantidad: cantidadAAgregar,
+            precio: precio,
+            categoriaId: catInfo.id,
+            icono: catInfo.icono,
+            comprado: false
+          });
+          mostrarToast(`➕ "${texto}" agregado a la lista`);
+        }
 
         guardarStorage();
         sincronizarConFirebase();
