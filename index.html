@@ -1000,7 +1000,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 29 de julio de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 30 de julio de 2026</span>
         </div>
       </div>
 
@@ -1028,7 +1028,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 29 de julio de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 30 de julio de 2026</span>
         </div>
       </div>
 
@@ -1226,53 +1226,73 @@
     </div>
   </div>
 
-  <!-- MODAL RECETAS CHILENAS -->
+  <!-- MODAL RECETAS CHILENAS CON SELECTOR DE LISTA DESTINO -->
   <div id="recetasOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div class="tutorial-icon">🍳</div>
-      <h3>Recetas Chilenas</h3>
-      <p>Selecciona un plato típico para cargar todos sus ingredientes automáticamente:</p>
+      <h3>Recetas Chilenas Típicas</h3>
+      <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista destino y el plato para cargar sus ingredientes:</p>
+
+      <!-- SELECTOR DE LISTA DESTINO -->
+      <div style="margin-bottom: 14px; text-align: left;">
+        <label for="selectListaDestinoReceta" style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 4px;">
+          📌 Cargar ingredientes en:
+        </label>
+        <select id="selectListaDestinoReceta" class="input-product-large" style="width: 100%; height: 44px; padding: 6px 10px; font-size: 0.95rem;">
+          <!-- Se llena dinámicamente desde JS -->
+        </select>
+      </div>
 
       <div class="recipe-grid">
         <div class="recipe-item-card" onclick="cargarIngredientesReceta('cazuela')">
           <div style="font-size: 2rem;">🍲</div>
           <h4>Cazuela de Vacuno</h4>
-          <p>6 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pastel')">
-          <div style="font-size: 2rem;">🌽</div>
-          <h4>Pastel de Choclo</h4>
-          <p>7 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('empanadas')">
-          <div style="font-size: 2rem;">🥟</div>
-          <h4>Empanadas de Pino</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('charquican')">
-          <div style="font-size: 2rem;">🍳</div>
-          <h4>Charquicán con Huevo</h4>
-          <p>6 ingredientes</p>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pastel')">
+          <div style="font-size: 2rem;">🥧</div>
+          <h4>Pastel de Choclo</h4>
+          <p>8 ingredientes</p>
         </div>
         <div class="recipe-item-card" onclick="cargarIngredientesReceta('porotos')">
           <div style="font-size: 2rem;">🫘</div>
           <h4>Porotos c/ Riendas</h4>
-          <p>6 ingredientes</p>
+          <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('tomatican')">
-          <div style="font-size: 2rem;">🍅</div>
-          <h4>Tomaticán Tradicional</h4>
-          <p>5 ingredientes</p>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('carbonada')">
+          <div style="font-size: 2rem;">🍲</div>
+          <h4>Carbonada Casera</h4>
+          <p>8 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('charquican')">
+          <div style="font-size: 2rem;">🥘</div>
+          <h4>Charquicán c/ Huevo</h4>
+          <p>7 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pebre')">
+          <div style="font-size: 2rem;">🌶️</div>
+          <h4>Pebre Chileno</h4>
+          <p>7 ingredientes</p>
         </div>
         <div class="recipe-item-card" onclick="cargarIngredientesReceta('pantrucas')">
-          <div style="font-size: 2rem;">🍵</div>
+          <div style="font-size: 2rem;">🥣</div>
           <h4>Pantrucas Caseras</h4>
-          <p>6 ingredientes</p>
+          <p>9 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('piscosour')">
-          <div style="font-size: 2rem;">🍸</div>
-          <h4>Pisco Sour & Picoteo</h4>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('completo')">
+          <div style="font-size: 2rem;">🌭</div>
+          <h4>Completo Italiano</h4>
           <p>5 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('empanadas')">
+          <div style="font-size: 2rem;">🥟</div>
+          <h4>Empanadas de Pino</h4>
+          <p>7 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('sopaipillas')">
+          <div style="font-size: 2rem;">🎃</div>
+          <h4>Sopaipillas Pasadas</h4>
+          <p>7 ingredientes</p>
         </div>
       </div>
 
@@ -1561,14 +1581,32 @@
       }
     }
 
-    /* FUNCIONALIDAD 4: RECETAS CHILENAS */
+    /* FUNCIONALIDAD 4: RECETAS CHILENAS CON SELECTOR DE LISTA DESTINO */
     function abrirModalRecetas() {
       vibrarConfirmacion();
 
-      if (!idListaActiva) {
-        abrirModalSinLista();
-        return;
+      const select = document.getElementById('selectListaDestinoReceta');
+      select.innerHTML = '';
+
+      if (coleccionListas.length === 0) {
+        // Si no hay listas creadas, crea una por defecto automáticamente
+        const nuevoCodigo = generarCodigoUnico();
+        const nuevaLista = { id: nuevoCodigo, nombre: "Mi Lista de Compras", items: [] };
+        coleccionListas.push(nuevaLista);
+        idListaActiva = nuevoCodigo;
+        guardarStorage();
       }
+
+      // Llenar el selector con todas las listas existentes del usuario
+      coleccionListas.forEach(l => {
+        const option = document.createElement('option');
+        option.value = l.id;
+        option.textContent = `${l.nombre} (${(l.items || []).length} items)`;
+        if (String(l.id) === String(idListaActiva)) {
+          option.selected = true; // Selecciona por defecto la lista activa actual
+        }
+        select.appendChild(option);
+      });
 
       document.getElementById('recetasOverlay').classList.add('active');
     }
@@ -1580,27 +1618,31 @@
     function cargarIngredientesReceta(recetaKey) {
       vibrarConfirmacion();
       
-      if (!idListaActiva) { 
-        cerrarModalRecetas();
-        abrirModalSinLista();
-        return; 
+      const selectDestino = document.getElementById('selectListaDestinoReceta');
+      const targetId = selectDestino ? selectDestino.value : idListaActiva;
+
+      const lista = coleccionListas.find(l => String(l.id) === String(targetId));
+      if (!lista) {
+        mostrarToast("⚠️ Ocurrió un error al seleccionar la lista");
+        return;
       }
 
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (!lista) return;
-
       const recetas = {
-        cazuela: ["Posta negra 1kg", "Papas 1kg", "Zapallo", "Choclo", "Zanahoria", "Cilantro"],
-        pastel: ["Choclo picado", "Carne molida", "Pechuga de pollo", "Cebolla", "Huevos", "Aceitunas", "Pasas"],
-        empanadas: ["Harina 1kg", "Carne picada 1kg", "Cebolla 1kg", "Manteca", "Huevos", "Aceitunas", "Comino", "Ají color"],
-        charquican: ["Carne molida", "Papas 1kg", "Zapallo", "Choclo", "Huevo 12un", "Cebolla"],
-        porotos: ["Porotos hallados", "Tallarines", "Zapallo", "Cebolla", "Longaniza", "Ajo"],
-        tomatican: ["Tomates 1kg", "Choclo picado", "Carne picada", "Cebolla", "Orégano"],
-        pantrucas: ["Harina 1kg", "Carne molida", "Cebolla", "Zanahoria", "Huevos", "Perejil"],
-        piscosour: ["Pisco tinto/blanco", "Limones 1kg", "Azúcar flor", "Huevo (Claras)", "Hielo"]
+        cazuela: ["1kg Vacuno", "Papas 1kg", "Zapallo", "Choclo", "Zanahoria", "Porotos verdes", "Arroz", "Cilantro"],
+        pastel: ["Choclo molido", "Carne molida", "Pechuga de pollo", "Cebolla", "Huevos", "Aceitunas", "Pasas", "Albahaca"],
+        porotos: ["Porotos hallados", "Tallarines", "Zapallo", "Cebolla", "Ajo", "Longaniza", "Ají color"],
+        carbonada: ["Carne de vacuno en cubos", "Papas 1kg", "Zapallo", "Zanahoria", "Choclo", "Porotos verdes", "Arroz", "Ajo y Cebolla"],
+        charquican: ["Carne molida", "Papas 1kg", "Zapallo", "Choclo", "Porotos verdes", "Cebolla", "Huevos"],
+        pebre: ["Tomates 1kg", "Cebolla", "Cilantro fresco", "Ají verde", "Ajo", "Aceite", "Vinagre"],
+        pantrucas: ["Harina 1kg", "Agua tibia", "Carne molida", "Cebolla", "Zanahoria", "Papas", "Huevo", "Caldo de carne", "Cilantro"],
+        completo: ["Vienesas", "Pan de completo", "Paltas", "Tomates 1kg", "Mayonesa"],
+        empanadas: ["Harina 1kg", "Manteca", "Carne picada 1kg", "Cebolla 1kg", "Huevos", "Aceitunas", "Pasas"],
+        sopaipillas: ["Zapallo", "Harina 1kg", "Manteca", "Chancaca", "Cáscara de naranja", "Clavo de olor", "Maicena"]
       };
 
       const ingredientes = recetas[recetaKey] || [];
+      if (!lista.items) lista.items = [];
+
       ingredientes.forEach(ing => {
         const catInfo = clasificarProducto(ing);
         lista.items.push({
@@ -1614,12 +1656,15 @@
         });
       });
 
+      // Establecer como lista activa actual y sincronizar
+      idListaActiva = lista.id;
       guardarStorage();
       sincronizarConFirebase();
-      renderizarProductos();
       cerrarModalRecetas();
+      
+      // Mostrar directamente la lista activa con los nuevos productos cargados
       verSeccion('lista-activa');
-      mostrarToast(`🍳 ¡Ingredientes cargados a tu lista!`);
+      mostrarToast(`🍳 Ingredientes agregados a "${lista.nombre}"`);
     }
 
     /* FUNCIONALIDAD 5: EXPORTAR A EXCEL / CSV */
@@ -1671,7 +1716,7 @@
       { id: 'lacteos', nombre: 'Lácteos, Huevos y Cecinas', icono: '🥛', regex: /(leche|queso|quesillo|yogur|yogurt|mantequilla|margarina|crema|huevo|huevos|manjar|jamon|jamón|vienesa|vienesas|salchicha|salchichas|longaniza|longanizas|chorizo|chorizos|tocino|salame|pate|paté|arrollado|arrollado de huaso|queso gauda|queso chanco|queso mantecoso|queso mozzarella|queso parmesano|queso de cabra|queso crema|ricotta|provolone|mortadela|salchichón|queso de cabeza|jamón serrano|jamón de pavo|jamón de pierna|choricillo|choricillos|chicharron|chicharrón|prieta|prietas|morcilla|jamonada)/i },
       { id: 'carnes', nombre: 'Carnes, Pescados y Mariscos', icono: '🥩', regex: /(carne|carnes|lomo|aloyado|lomo vetado|lomo liso|lomo carnudo|asado|asado carnicero|costillar|pollo|pechuga|muslo|truto|trutos|ala|alas|cerdo|pescado|reineta|salmon|salmón|atun|atún|merluza|carne molida|posta|posta negra|posta rosada|chuleta|sobrecostilla|huachalomo|tapapecho|abastero|entraña|entrañita|palanca|plateada|punta de ganso|punta picana|tapacostilla|choclillo|ganso|asado de tira|malaya|churrasco|churrascos|escalopa|milanesa|albondiga|albóndiga|hamburguesa|hamburguesas|pavo|pavo deshuesado|cordero|chivo|conejo|guatitas|lengua|chunchules|molleja|mollejas|hígado|higado|corazon|corazón|marisco|mariscos|chorito|choritos|almeja|almejas|macha|machas|ostion|ostión|ostiones|camaron|camarón|camarones|jaiba|centolla|pulpo|calamar|calamares|piure|picoroco|loco|locos|cochayuyo|luche|erizo|erizos|navajuela|sardina|sardinas|sierra|corvina|lenguado)/i },
       { id: 'panaderia', nombre: 'Panadería y Cereal', icono: '🍞', regex: /(pan|pancito|marraqueta|marraquetas|hallulla|hallullas|dobladita|dobladitas|galleta|galletas|harina|arroz|fideos|tallarines|espageti|espagueti|pasta|pastas|cereal|cereales|avena|tostadas|pan de molde|pan frica|pan de hot dog|pan pita|pan ciabatta|pan baguette|pan de masa madre|pan integral|pan amasado|coliza|bocado de dama|sopaipilla|sopaipillas|empanada|empanadas|pino|queso empanada|tortilla|tortillas|rapiditas|croissant|medialuna|medialunas|dona|donas|muffin|muffins|queque|queques|brownie|brownies|panqueque|panqueques|corbatitas|espirales|lasaña|lasagna|ñoquis|sémola|semola|harina tostada|quinoa|quínoa|mote|granola)/i },
-      { id: 'despensa', nombre: 'Despensa y Abarrotes', icono: '🥫', regex: /(aceite|sal|azucar|azúcar|lenteja|lentejas|poroto|porotos|garbanzo|garbanzos|salsa|ketchup|kétchup|mostaza|mayonesa|mayo|conserva|jurel|atun en lata|atún en lata|sopa|sopas|caldo|caldos|salsa de tomate|salsas|aderezo|aliño|aliño completo|comino|pimienta|orégano|oregano|paprika|pimentón en polvo|curry|cúrcuma|curcuma|laurel|vinagre|salsa de soya|salsa inglesa|salsa de ajo|ají color|aji color|puré|pure|puré de papas|palmitos|palmito|aceitunas|aceituna|pepinillos|alcaparras|salsa barbacoa|mermelada|mermeladas|miel|miel de abeja|leche condensada|leche evaporada|polvo de hornear|polvos de hornear|bicarbonato|esencia de vainilla|levadura|cobertura de chocolate|maicena|chuño|gelatina|jalea|flan|saborizante|coco rallado)/i },
+      { id: 'despensa', nombre: 'Despensa y Abarrotes', icono: '🥫', regex: /(aceite|sal|azucar|azúcar|lenteja|lentejas|poroto|porotos|garbanzo|garbanzos|salsa|ketchup|kétchup|mostaza|mayonesa|mayo|conserva|jurel|atun en lata|atún en lata|sopa|sopas|caldo|caldos|salsa de tomate|salsas|aderezo|aliño|aliño completo|comino|pimienta|orégano|oregano|paprika|pimentón en polvo|curry|cúrcuma|curcuma|laurel|vinagre|salsa de soya|salsa inglesa|salsa de ajo|ají color|aji color|puré|pure|puré de papas|palmitos|palmito|aceitunas|aceituna|pepinillos|alcaparras|salsa barbacoa|mermelada|mermeladas|miel|miel de abeja|leche condensada|leche evaporada|polvo de hornear|polvos de hornear|bicarbonato|esencia de vainilla|levadura|cobertura de chocolate|maicena|chuño|gelatina|jalea|flan|saborizante|coco rallado|chancaca|clavo de olor)/i },
       { id: 'limpieza', nombre: 'Limpieza e Higiene', icono: '🧹', regex: /(jabón|jabon|detergente|cloro|desinfectante|papel|suavizante|limpiador|limpiavidrios|limpia vidrios|limpiapisos|lustramuebles|desengrasante|esponja|esponjas|shampoo|champú|champu|acondicionador|papel higienico|papel higiénico|toalla nova|toallas nova|toalla absorbente|desodorante|pasta de dientes|crema dental|cepillo de dientes|lavaloza|mopa|escoba|escobillón|escobillon|pala|bolsa de basura|bolsas de basura|virutilla|cera para piso|pastilla wc|trapero|paño|paños|paño microfibra|guantes|guantes para loza|cotonitos|toallitas húmedas|toallitas humedas|pañal|pañales|toalla higiénica|toallas higienicas|tampones|tampón|rasuradora|prestobarba|espuma de afeitar|hilo dental|enjuague bucal|bloqueador|bloqueador solar|crema humectante|crema corporal|talco|algodón|algodon|parche curita|agua oxigenada|alcohol|alcohol gel|preservativo|preservativos|condón|condones)/i },
       { id: 'bebidas', nombre: 'Bebidas y Bares', icono: '🥤', regex: /(agua|agua mineral|jugo|jugos|refresco|gaseosa|bebida|bebidas|cerveza|cervezas|vino|vinos|pisco|piscola|ron|vodka|gin|whisky|whiskey|tequila|fernet|licor|champagne|espumante|espumoso|sangria|sangría|borgoña|clery|navegado|terremoto|pipeño|chicha|ginger ale|agua tónica|agua tonica|energetica|energética|jugo en sobre|jugo en polvo|jugo concentrado|cafe|café|cafe descafeinado|cafe molido|cafe en grano|\bte\b|\bté\b|té en bolsa|té de hierbas|manzanilla|anis|anís|boldo|hierba mate|mate)/i },
       { id: 'snack', nombre: 'Snacks y Dulces', icono: '🍫', regex: /(chocolate|chocolates|dulce|dulces|caramelo|caramelos|helado|helados|pastel|pasteles|torta|tortas|papas fritas|maní|mani|snack|snacks|ramitas|gomitas|chocolatina|barrita de cereal|frutos secos|almendras|nueces|castañas de caju|pistachos|avellanas|semillas de girasol|maravilla|bocadillos|tortillas de maíz|nachos|cabritas|popcorn|pretzels|chicle|chicles|chupete|chupetes|malvaviscos|cuchufli|cuchuflí|turron|turrón|alfajor|alfajores|obleas|caluga|calugas)/i },
