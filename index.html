@@ -1946,7 +1946,7 @@
       }
     }
 
-    /* DICTADO POR VOZ CONTINUO E INTELIGENTE */
+    /* DICTADO POR VOZ CONTINUO E INTELIGENTE CON REINICIO AUTOMÁTICO PARA CELULAR */
     function activarDictadoVoz() {
       vibrarConfirmacion();
 
@@ -1965,8 +1965,12 @@
       const btnMic = document.getElementById('btnMic');
       const input = document.getElementById('itemInput');
 
+      // Si ya está escuchando, lo apagamos manualmente
       if (esEscuchandoVoz) {
+        esEscuchandoVoz = false;
         if (objetoReconocimientoVoz) objetoReconocimientoVoz.stop();
+        btnMic.classList.remove('listening');
+        btnMic.textContent = '🎤';
         return;
       }
 
@@ -1975,13 +1979,11 @@
       objetoReconocimientoVoz.interimResults = false;
       objetoReconocimientoVoz.continuous = true;
 
-      let totalAgregados = 0;
-
       objetoReconocimientoVoz.onstart = function() {
         esEscuchandoVoz = true;
         btnMic.classList.add('listening');
         btnMic.textContent = '🔴';
-        mostrarToast("🎙️ Hablando... Di tus productos con pausas o 'y'");
+        mostrarToast("🎙️ Escuchando... Habla y haz pausas naturales");
       };
 
       objetoReconocimientoVoz.onresult = function(event) {
@@ -1996,35 +1998,34 @@
                 input.value = limpio;
                 buscarPrecioEnMemoriaPorTexto(limpio);
                 agregarProducto(); // Agrega o suma automáticamente la cantidad
-                totalAgregados++;
               }
             });
+            reproducirSonidoExito();
           }
         }
-        if (totalAgregados > 0) {
-          reproducirSonidoExito();
-        }
       };
 
-      objetoReconocimientoVoz.onspeechend = function() {
-        setTimeout(() => {
-          if (objetoReconocimientoVoz && esEscuchandoVoz) objetoReconocimientoVoz.stop();
-        }, 1500);
-      };
-
+      // TRUCO DE REINICIO AUTOMÁTICO PARA MÓVILES (Android/iOS)
       objetoReconocimientoVoz.onend = function() {
-        esEscuchandoVoz = false;
-        btnMic.classList.remove('listening');
-        btnMic.textContent = '🎤';
+        if (esEscuchandoVoz) {
+          // Si el micrófono se cortó solo por la pausa del celular, lo reiniciamos de inmediato
+          try {
+            objetoReconocimientoVoz.start();
+          } catch(e) {}
+        } else {
+          btnMic.classList.remove('listening');
+          btnMic.textContent = '🎤';
+        }
       };
 
       objetoReconocimientoVoz.onerror = function(event) {
+        if (event.error === 'no-speech' && esEscuchandoVoz) {
+          // Ignora el error de silencio y reintenta
+          return;
+        }
         esEscuchandoVoz = false;
         btnMic.classList.remove('listening');
         btnMic.textContent = '🎤';
-        if (event.error !== 'no-speech') {
-          mostrarToast("⚠️ Micrófono pausado");
-        }
       };
 
       objetoReconocimientoVoz.start();
