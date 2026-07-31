@@ -1436,12 +1436,13 @@
     let limitePresupuestoActual = 0;
     let objetoReconocimientoVoz = null;
     let productoPendienteDuplicado = null;
+    let escanerProcesando = false; // BANDERILLA PARA EVITAR MÚLTIPLES LECTURAS
     
     // MEMORIA DE PRODUCTOS Y PRECIOS POR CÓDIGO/TEXTO
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
 
-    /* VENTANA FLOTANTE DE CONFIRMACIÓN RÁPIDA (CHECK / X) ADAPTADA A CELULARES */
+    /* VENTANA FLOTANTE DE CONFIRMACIÓN RÁPIDA (CHECK / X) */
     function mostrarFeedbackEscaner(exito, mensaje) {
       const pop = document.getElementById('scanFeedbackPop');
       const icon = document.getElementById('scanIconPop');
@@ -1463,7 +1464,6 @@
 
       msg.textContent = mensaje || (exito ? "¡Producto Detectado!" : "No Detectado");
 
-      // Forzar renderizado en pantallas táctiles móviles
       requestAnimationFrame(() => {
         pop.classList.add('active');
       });
@@ -1578,7 +1578,7 @@
       document.getElementById('noListOverlay').classList.remove('active');
     }
 
-    /* FUNCIONALIDAD 1: ESCÁNER CON CHECK / X FLOTANTE OPTIMIZADO PARA MÓVILES */
+    /* ESCÁNER ANTI-DUPLICACIÓN Y ANTI-TECLADO */
     function abrirEscanerBarras() {
       vibrarConfirmacion();
 
@@ -1587,12 +1587,17 @@
         return;
       }
 
+      escanerProcesando = false; // Resetear bandera
       document.getElementById('scannerOverlay').classList.add('active');
       html5QrcodeScanner = new Html5Qrcode("reader");
       html5QrcodeScanner.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 150 } },
         async (barcode) => {
+          // Si ya está procesando una lectura, ignoramos las lecturas repetidas de la cámara
+          if (escanerProcesando) return;
+          escanerProcesando = true;
+
           vibrarConfirmacion();
 
           // 1. Verificar memoria local
@@ -1603,6 +1608,10 @@
             mostrarFeedbackEscaner(true, nombreGuardado);
             document.getElementById('itemInput').value = nombreGuardado;
             if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
+            
+            // Ocultar teclado virtual
+            if (document.activeElement) document.activeElement.blur();
+            
             agregarProducto();
             cerrarEscanerBarras(false);
             return;
@@ -1623,6 +1632,10 @@
                 document.getElementById('itemInput').value = nombreEncontrado;
                 guardarNombreCodigoEnMemoria(barcode, nombreEncontrado);
                 if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
+                
+                // Ocultar teclado virtual
+                if (document.activeElement) document.activeElement.blur();
+
                 agregarProducto();
                 cerrarEscanerBarras(false);
                 return;
@@ -1638,6 +1651,9 @@
                 const nombreLimpio = manualName.trim();
                 document.getElementById('itemInput').value = nombreLimpio;
                 guardarNombreCodigoEnMemoria(barcode, nombreLimpio);
+                
+                if (document.activeElement) document.activeElement.blur();
+
                 agregarProducto();
                 mostrarFeedbackEscaner(true, nombreLimpio);
               }
@@ -1653,14 +1669,18 @@
         mostrarFeedbackEscaner(false, "Escaneo Cancelado");
       }
       
-      // Damos 300ms de gracia para que la cámara no se destruya bruscamente en el celular
       setTimeout(() => {
         if (html5QrcodeScanner) {
           html5QrcodeScanner.stop().then(() => {
             document.getElementById('scannerOverlay').classList.remove('active');
-          }).catch(() => document.getElementById('scannerOverlay').classList.remove('active'));
+            escanerProcesando = false;
+          }).catch(() => {
+            document.getElementById('scannerOverlay').classList.remove('active');
+            escanerProcesando = false;
+          });
         } else {
           document.getElementById('scannerOverlay').classList.remove('active');
+          escanerProcesando = false;
         }
       }, 300);
     }
@@ -2118,6 +2138,8 @@
               if (limpio) {
                 input.value = limpio;
                 buscarPrecioEnMemoriaPorTexto(limpio);
+                
+                if (document.activeElement) document.activeElement.blur();
                 agregarProducto();
               }
             });
@@ -2655,7 +2677,6 @@
         input.value = "";
         qtyInput.value = "1";
         priceInput.value = "";
-        input.focus();
       }
     }
 
