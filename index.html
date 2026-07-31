@@ -26,7 +26,7 @@
   <title>Mis Listas de Compras - listadecompras.website</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- VISTA PREVIA PARA WHATSAPP Y REDES SOCIALES -->
+  <!-- VISTA PREVIA PARA REDES SOCIALES -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="🛒 Mis Listas de Compras">
   <meta property="og:description" content="Lista de compras en vivo, accesible y gratuita para hacer las compras fácilmente en Chile.">
@@ -942,7 +942,7 @@
       margin-bottom: 12px;
     }
 
-    /* ESTILOS DE VENTANA FLOTANTE DE CONFIRMACIÓN ESCÁNER (CHECK / X) */
+    /* VENTANA FLOTANTE CONFIRMACIÓN ESCÁNER */
     .scan-feedback-pop {
       position: fixed;
       top: 50%;
@@ -965,13 +965,8 @@
       opacity: 1;
     }
 
-    .scan-feedback-pop.success {
-      border-color: var(--success);
-    }
-
-    .scan-feedback-pop.error {
-      border-color: var(--danger);
-    }
+    .scan-feedback-pop.success { border-color: var(--success); }
+    .scan-feedback-pop.error { border-color: var(--danger); }
 
     .scan-icon-pop {
       font-size: 4rem;
@@ -1240,10 +1235,26 @@
     <button id="btnUndoToast" class="btn-undo" onclick="ejecutarAccionDeshacer()" style="display:none;">↩️ Deshacer</button>
   </div>
 
-  <!-- VENTANA FLOTANTE DE CONFIRMACIÓN ESCÁNER (CHECK / X) -->
+  <!-- VENTANA FLOTANTE CONFIRMACIÓN ESCÁNER -->
   <div id="scanFeedbackPop" class="scan-feedback-pop">
     <div id="scanIconPop" class="scan-icon-pop">✅</div>
-    <div id="scanMsgPop" class="scan-msg-pop">¡Producto Agregado!</div>
+    <div id="scanMsgPop" class="scan-msg-pop">¡Producto Detectado!</div>
+  </div>
+
+  <!-- MODAL CONFIRMACIÓN PRODUCTO DUPLICADO -->
+  <div id="duplicateOverlay" class="tutorial-overlay">
+    <div class="tutorial-card">
+      <div class="tutorial-icon">💡</div>
+      <h3>Producto ya en la lista</h3>
+      <p id="duplicateDesc" style="font-size: 1rem; color: var(--text); font-weight: 600; margin-bottom: 20px;">
+        "Marraqueta" ya está en tu lista. ¿Quieres sumar una unidad más?
+      </p>
+
+      <div class="tutorial-actions">
+        <button class="btn-tut prev" onclick="cancelarSumarDuplicado()">✕ Cancelar</button>
+        <button class="btn-tut next" onclick="confirmarSumarDuplicado()">➕ Sí, sumar</button>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL TUTORIAL INTERACTIVO DE 6 PASOS -->
@@ -1424,6 +1435,7 @@
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
     let objetoReconocimientoVoz = null;
+    let productoPendienteDuplicado = null; // Guardará temporalmente el producto a duplicar
     
     // MEMORIA DE PRODUCTOS Y PRECIOS POR CÓDIGO/TEXTO
     let memoriaPreciosLocal = {};
@@ -1616,7 +1628,6 @@
             }
             throw new Error('Producto no en base de datos');
           } catch (err) {
-            // 3. Fallo o producto no encontrado -> Muestra X Flotante
             mostrarFeedbackEscaner(false, "Código No Detectado");
             setTimeout(() => {
               const manualName = prompt(`Código ${barcode} no reconocido. Ingresa el nombre para guardarlo:`, '');
@@ -2582,7 +2593,7 @@
       });
     }
 
-    /* AGREGAR O SUMAR CANTIDAD AUTOMÁTICAMENTE SI YA EXISTE */
+    /* AGREGAR CON CONFIRMACIÓN SI YA EXISTE */
     function agregarProducto() {
       if (!idListaActiva) return;
       vibrarConfirmacion();
@@ -2597,10 +2608,6 @@
 
       if (!texto) return;
 
-      if (precio > 0) {
-        guardarPrecioEnMemoria(texto, precio);
-      }
-
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (lista) {
         if (!lista.items) lista.items = [];
@@ -2609,12 +2616,21 @@
         const productoExistente = lista.items.find(i => i.texto.toLowerCase().trim() === textoNormalizado);
 
         if (productoExistente) {
-          productoExistente.cantidad += cantidadAAgregar;
-          if (precio > 0 && !productoExistente.precio) {
-            productoExistente.precio = precio;
-          }
-          mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
+          // Si ya existe, guardamos los datos en la variable global y abrimos el Modal de confirmación
+          productoPendienteDuplicado = {
+            productoExistente,
+            cantidadAAgregar,
+            precio
+          };
+          
+          document.getElementById('duplicateDesc').innerHTML = `
+            "<strong>${escapeHtml(productoExistente.texto)}</strong>" ya está en tu lista. ¿Quieres sumar ${cantidadAAgregar > 1 ? cantidadAAgregar + ' unidades' : 'una unidad'} más?
+          `;
+          document.getElementById('duplicateOverlay').classList.add('active');
+          return;
         } else {
+          // Si es nuevo, lo creamos directamente
+          if (precio > 0) guardarPrecioEnMemoria(texto, precio);
           const catInfo = clasificarProducto(texto);
           lista.items.push({
             id: Date.now() + Math.random(),
@@ -2636,6 +2652,41 @@
         priceInput.value = "";
         input.focus();
       }
+    }
+
+    /* CONFIRMAR O CANCELAR DUPLICADO DESDE EL MODAL */
+    function confirmarSumarDuplicado() {
+      vibrarConfirmacion();
+      if (productoPendienteDuplicado) {
+        const { productoExistente, cantidadAAgregar, precio } = productoPendienteDuplicado;
+        
+        productoExistente.cantidad += cantidadAAgregar;
+        if (precio > 0) {
+          productoExistente.precio = precio;
+          guardarPrecioEnMemoria(productoExistente.texto, precio);
+        }
+
+        guardarStorage();
+        sincronizarConFirebase();
+        renderizarProductos();
+
+        mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
+
+        // Limpiar inputs
+        document.getElementById('itemInput').value = "";
+        document.getElementById('itemQty').value = "1";
+        document.getElementById('itemPrice').value = "";
+      }
+      
+      productoPendienteDuplicado = null;
+      document.getElementById('duplicateOverlay').classList.remove('active');
+    }
+
+    function cancelarSumarDuplicado() {
+      vibrarConfirmacion();
+      productoPendienteDuplicado = null;
+      document.getElementById('duplicateOverlay').classList.remove('active');
+      mostrarToast("🚫 Se canceló agregar la unidad repetida");
     }
 
     function editarProducto(prodId) {
