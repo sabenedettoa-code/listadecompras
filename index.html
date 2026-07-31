@@ -149,6 +149,17 @@
       box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
     }
 
+    .net-badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 800;
+      background: var(--tab-bg);
+      border: 1px solid var(--border);
+    }
+    .net-badge.online { color: var(--success); }
+    .net-badge.offline { color: var(--danger); }
+
     .font-size-controls {
       display: flex;
       background-color: var(--tab-bg);
@@ -395,6 +406,15 @@
 
     .qty-clean { width: 36px; }
     .price-clean { width: 70px; text-align: right; }
+
+    .select-tienda {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 700;
+      outline: none;
+    }
 
     .btn-main-add {
       flex: 1;
@@ -649,6 +669,16 @@
     .item-details { flex: 1; min-width: 0; cursor: pointer; }
     .item-name { font-weight: 600; font-size: 0.98rem; word-break: break-word; }
     .item-subtext { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+    .badge-tienda-tag {
+      font-size: 0.7rem;
+      background-color: var(--tab-bg);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-weight: 700;
+      margin-left: 4px;
+    }
 
     .comprado { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
 
@@ -979,16 +1009,40 @@
       font-weight: 800;
       color: var(--text);
     }
+/* MODO FOCUS MEJORADO: MANTIENE EL BOTÓN DE SALIDA VISIBLE */
+.focus-mode-active .add-product-card,
+.focus-mode-active .sub-tabs,
+.focus-mode-active .search-box-container,
+.focus-mode-active .header-top {
+  display: none !important;
+}
+
+/* DEJAMOS LA BARRA DE ACCIONES VISIBLE PARA PODER SALIR CON 1 CLIC */
+.focus-mode-active .action-bar .btn-sec:not(#btnToggleFocus) {
+  display: none !important;
+}
+
+    .focus-mode-active li {
+      padding: 16px;
+    }
+
+    .focus-mode-active .btn-check-action,
+    .focus-mode-active .btn-uncheck-action {
+      min-width: 52px;
+      min-height: 52px;
+      font-size: 1.5rem;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="container" id="appContainer">
     
     <!-- HEADER SUPERIOR -->
     <div class="header-top">
       <h1 class="app-title">🛒 Mis Listas</h1>
       <div class="header-controls">
+        <span id="netStatusBadge" class="net-badge online">🟢 Online</span>
         <button id="btnWakeLock" class="btn-header-tool" onclick="togglePantallaEncendida()" title="Bloquear apagado">💡 Encendida</button>
         <button class="btn-header-tool" onclick="leerListaEnVozAlta()" title="Leer lista">🔊 Leer</button>
         <div class="font-size-controls" title="Ajustar letra">
@@ -1036,7 +1090,7 @@
               <span>🍳</span> <span>Carga recetas chilenas automáticas</span>
             </div>
             <div class="feature-item">
-              <span>🥦</span> <span>Ordena solo por pasillos</span>
+              <span>⚖️</span> <span>Comparador de ofertas en vivo (Kg/Litro)</span>
             </div>
             <div class="feature-item">
               <span>👓</span> <span>Letra grande y legible</span>
@@ -1070,6 +1124,9 @@
             </button>
             <button class="btn-home-action sec" onclick="abrirModalRecetas()">
               🍳 Cargar Recetas Chilenas
+            </button>
+            <button class="btn-home-action sec" onclick="abrirModalComparador()">
+              ⚖️ Comparador de Ofertas (Kg/L)
             </button>
             <button class="btn-home-action sec" onclick="abrirTutorial()">
               ❓ Ver Tutorial de Uso
@@ -1130,7 +1187,7 @@
           </div>
         </div>
 
-        <!-- Formulario de Entrada con Escáner -->
+        <!-- Formulario de Entrada con Escáner y Tienda -->
         <div class="add-product-card">
           <div class="add-row-1">
             <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta un producto..." onchange="buscarPrecioEnMemoriaPorTexto(this.value)">
@@ -1147,6 +1204,16 @@
             <div class="field-box">
               <label for="itemPrice">$</label>
               <input type="number" id="itemPrice" class="input-clean price-clean" placeholder="CLP" min="0" step="1">
+            </div>
+
+            <div class="field-box">
+              <label for="itemTienda">🛒</label>
+              <select id="itemTienda" class="select-tienda">
+                <option value="Supermercado">Súper</option>
+                <option value="Feria">Feria</option>
+                <option value="Mayorista">Mayorista</option>
+                <option value="Farmacia">Farmacia</option>
+              </select>
             </div>
 
             <button class="btn-main-add" onclick="agregarProducto()">➕ Agregar</button>
@@ -1193,8 +1260,10 @@
 
         <!-- Barra de Acciones y Herramientas -->
         <div class="action-bar">
-          <button class="btn-sec" onclick="abrirModalGrafico()">📊 Gráfico Gastos</button>
-          <button class="btn-sec" onclick="fijarLimitePresupuesto()">🚨 Tope Gastos</button>
+          <button id="btnToggleFocus" class="btn-sec" onclick="toggleModoFocus()">🎯 Modo Focus</button>
+          <button class="btn-sec" onclick="abrirModalComparador()">⚖️ Ofertas</button>
+          <button class="btn-sec" onclick="abrirModalGrafico()">📊 Gastos</button>
+          <button class="btn-sec" onclick="fijarLimitePresupuesto()">🚨 Tope</button>
           <button class="btn-sec" onclick="exportarExcel()">📑 Excel</button>
           <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar</button>
           <button class="btn-sec" onclick="limpiarProductosComprados()">🧹 Limpiar</button>
@@ -1205,9 +1274,16 @@
           <button class="sub-btn" id="subTabComprados" onclick="cambiarFiltro('comprados')">Comprados</button>
         </div>
 
-        <!-- CAMPO DE BÚSQUEDA -->
-        <div class="search-box-container">
+        <!-- CAMPO DE BÚSQUEDA Y FILTRO TIENDA -->
+        <div class="search-box-container" style="display: flex; gap: 6px;">
           <input type="text" id="searchInput" class="input-search-product" placeholder="🔍 Buscar en esta lista..." oninput="filtrarProductosPorBusqueda()">
+          <select id="filtroTiendaSelect" class="input-search-product" style="width: auto; font-size: 0.82rem;" onchange="renderizarProductos()">
+            <option value="TODOS">Todas las Tiendas</option>
+            <option value="Supermercado">Supermercado</option>
+            <option value="Feria">Feria</option>
+            <option value="Mayorista">Mayorista</option>
+            <option value="Farmacia">Farmacia</option>
+          </select>
           <button id="btnClearSearch" class="btn-clear-search" onclick="limpiarBusqueda()">✕</button>
         </div>
 
@@ -1241,6 +1317,33 @@
     <div id="scanMsgPop" class="scan-msg-pop">¡Producto Detectado!</div>
   </div>
 
+  <!-- MODAL COMPARADOR DE OFERTAS (PRECIO POR KILO/LITRO) -->
+  <div id="comparadorOverlay" class="tutorial-overlay">
+    <div class="tutorial-card">
+      <div class="tutorial-icon">⚖️</div>
+      <h3>Comparador de Ofertas</h3>
+      <p style="font-size: 0.85rem; margin-bottom: 12px;">Ingresa precios y cantidades para saber cuál conviene más:</p>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 10px; text-align: left;">
+        <div style="flex: 1; background: var(--tab-bg); padding: 8px; border-radius: 12px; border: 1px solid var(--border);">
+          <strong style="font-size: 0.85rem; color: var(--primary);">Opción A</strong>
+          <input type="number" id="compPrecioA" placeholder="Precio $ CLP" class="input-product-large" style="min-height:38px; font-size: 0.88rem; margin: 4px 0;">
+          <input type="number" id="compCantA" placeholder="Gramos/mL" class="input-product-large" style="min-height:38px; font-size: 0.88rem;">
+        </div>
+        <div style="flex: 1; background: var(--tab-bg); padding: 8px; border-radius: 12px; border: 1px solid var(--border);">
+          <strong style="font-size: 0.85rem; color: var(--primary);">Opción B</strong>
+          <input type="number" id="compPrecioB" placeholder="Precio $ CLP" class="input-product-large" style="min-height:38px; font-size: 0.88rem; margin: 4px 0;">
+          <input type="number" id="compCantB" placeholder="Gramos/mL" class="input-product-large" style="min-height:38px; font-size: 0.88rem;">
+        </div>
+      </div>
+
+      <button class="btn-tut next" onclick="calcularMejorOferta()" style="width: 100%; margin-bottom: 10px;">⚖️ Calcular Ganador</button>
+      <div id="resultadoComparacion" style="font-weight: 800; font-size: 0.95rem; margin-bottom: 14px;"></div>
+
+      <button class="btn-tut prev" onclick="cerrarModalComparador()" style="width: 100%;">Cerrar</button>
+    </div>
+  </div>
+
   <!-- MODAL CONFIRMACIÓN PRODUCTO DUPLICADO -->
   <div id="duplicateOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
@@ -1257,11 +1360,11 @@
     </div>
   </div>
 
-  <!-- MODAL TUTORIAL INTERACTIVO DE 6 PASOS -->
+  <!-- MODAL TUTORIAL INTERACTIVO DE PASOS -->
   <div id="tutorialOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div id="tutIcon" class="tutorial-icon">👋</div>
-      <div id="tutBadge" class="tutorial-badge">Paso 1 de 6</div>
+      <div id="tutBadge" class="tutorial-badge">Paso 1 de 8</div>
       <h3 id="tutTitle">¡Bienvenido!</h3>
       <p id="tutDesc">Esta aplicación te ayudará a hacer tus compras de forma fácil y ordenada.</p>
       
@@ -1302,20 +1405,18 @@
     </div>
   </div>
 
-  <!-- MODAL RECETAS CHILENAS CON SELECTOR DE LISTA DESTINO -->
+  <!-- MODAL RECETAS CHILENAS -->
   <div id="recetasOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div class="tutorial-icon">🍳</div>
       <h3>Recetas Chilenas Típicas</h3>
       <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista destino y el plato para cargar sus ingredientes:</p>
 
-      <!-- SELECTOR DE LISTA DESTINO -->
       <div style="margin-bottom: 14px; text-align: left;">
         <label for="selectListaDestinoReceta" style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 4px;">
           📌 Cargar ingredientes en:
         </label>
         <select id="selectListaDestinoReceta" class="input-product-large" style="width: 100%; height: 44px; padding: 6px 10px; font-size: 0.95rem;">
-          <!-- Se llena dinámicamente desde JS -->
         </select>
       </div>
 
@@ -1436,11 +1537,97 @@
     let limitePresupuestoActual = 0;
     let objetoReconocimientoVoz = null;
     let productoPendienteDuplicado = null;
-    let escanerProcesando = false; // BANDERILLA PARA EVITAR MÚLTIPLES LECTURAS
+    let escanerProcesando = false;
+    let modoFocusActivo = false;
     
     // MEMORIA DE PRODUCTOS Y PRECIOS POR CÓDIGO/TEXTO
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
+
+    /* CONTROL DE ESTADO RED (ONLINE / OFFLINE) */
+    window.addEventListener('online', actualizarEstadoRed);
+    window.addEventListener('offline', actualizarEstadoRed);
+
+    function actualizarEstadoRed() {
+      const badge = document.getElementById('netStatusBadge');
+      if (navigator.onLine) {
+        badge.textContent = '🟢 Online';
+        badge.className = 'net-badge online';
+        mostrarToast("📶 Conexión restablecida");
+      } else {
+        badge.textContent = '🟠 Sin Señal';
+        badge.className = 'net-badge offline';
+        mostrarToast("📴 Modo Sin Señal: Guardando localmente");
+      }
+    }
+
+    /* MODO FOCUS */
+    function toggleModoFocus() {
+      vibrarConfirmacion();
+      modoFocusActivo = !modoFocusActivo;
+      const appContainer = document.getElementById('appContainer');
+      const btn = document.getElementById('btnToggleFocus');
+
+      if (modoFocusActivo) {
+        appContainer.classList.add('focus-mode-active');
+        btn.textContent = '🎯 Salir Focus';
+        mostrarToast("🎯 Modo Focus activado: Pantalla simplificada para comprar");
+      } else {
+        appContainer.classList.remove('focus-mode-active');
+        btn.textContent = '🎯 Modo Focus';
+        mostrarToast("🎯 Modo normal restaurado");
+      }
+    }
+
+    /* COMPARADOR DE MEJOR OFERTA */
+    function abrirModalComparador() {
+      vibrarConfirmacion();
+      document.getElementById('comparadorOverlay').classList.add('active');
+    }
+
+    function cerrarModalComparador() {
+      document.getElementById('comparadorOverlay').classList.remove('active');
+    }
+
+    function calcularMejorOferta() {
+      vibrarConfirmacion();
+      const pA = parseFloat(document.getElementById('compPrecioA').value) || 0;
+      const cA = parseFloat(document.getElementById('compCantA').value) || 0;
+      const pB = parseFloat(document.getElementById('compPrecioB').value) || 0;
+      const cB = parseFloat(document.getElementById('compCantB').value) || 0;
+
+      const resDiv = document.getElementById('resultadoComparacion');
+
+      if (pA <= 0 || cA <= 0 || pB <= 0 || cB <= 0) {
+        resDiv.innerHTML = '<span style="color:var(--danger)">⚠️ Rellena todos los campos con valores mayores a 0</span>';
+        return;
+      }
+
+      const unitA = pA / cA;
+      const unitB = pB / cB;
+
+      if (unitA < unitB) {
+        const ahorro = Math.round(((unitB - unitA) / unitB) * 100);
+        resDiv.innerHTML = `<span style="color:var(--success)">🏆 ¡Opción A es más barata! Ahorras un ${ahorro}%</span>`;
+        reproducirAudioTexto("La Opción A es más conveniente");
+      } else if (unitB < unitA) {
+        const ahorro = Math.round(((unitA - unitB) / unitA) * 100);
+        resDiv.innerHTML = `<span style="color:var(--success)">🏆 ¡Opción B es más barata! Ahorras un ${ahorro}%</span>`;
+        reproducirAudioTexto("La Opción B es más conveniente");
+      } else {
+        resDiv.innerHTML = '<span style="color:var(--primary)">⚖️ Ambas opciones cuestan exactamente lo mismo por unidad</span>';
+      }
+    }
+
+    function reproducirAudioTexto(texto) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(texto);
+        u.lang = 'es-CL';
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      }
+    }
 
     /* VENTANA FLOTANTE DE CONFIRMACIÓN RÁPIDA (CHECK / X) */
     function mostrarFeedbackEscaner(exito, mensaje) {
@@ -1456,6 +1643,7 @@
         pop.classList.add('success');
         icon.textContent = "✅";
         reproducirSonidoExito();
+        reproducirAudioTexto(`${mensaje} agregado`);
       } else {
         pop.classList.add('error');
         icon.textContent = "❌";
@@ -1534,12 +1722,12 @@
       }
     }
 
-    /* PASOS TUTORIAL INTERACTIVO */
+    /* PASOS TUTORIAL INTERACTIVO CONSERVADO + NUEVOS PASOS AL FINAL */
     const pasosTutorialData = [
       {
         icon: '👋',
         title: '¡Bienvenid@ a tu Lista!',
-        desc: 'Esta plataforma fue creada sin fines de lucro por Santiago Benedetto (@sabenedettoa) para ayudarte a comprar sin estrés. Te enseñamos lo básico en 6 pasos.'
+        desc: 'Esta plataforma fue creada sin fines de lucro por Santiago Benedetto (@sabenedettoa) para ayudarte a comprar sin estrés. Te enseñamos lo básico en simples pasos.'
       },
       {
         icon: '🔑',
@@ -1565,6 +1753,16 @@
         icon: '👓',
         title: 'Agranda la letra y fija la pantalla',
         desc: 'Usa los botones [A+] arriba para ver más grande. Y en el supermercado, toca [💡 Encendida] arriba para que el teléfono no se apague solo mientras compras.'
+      },
+      {
+        icon: '⚖️',
+        title: 'Comparador de Ofertas (Kg/Litro)',
+        desc: 'Usa el botón [⚖️ Ofertas] para comparar dos productos de distinto tamaño y descubrir cuál es realmente más barato por kilo o por litro.'
+      },
+      {
+        icon: '🎯',
+        title: 'Modo Focus y Filtro por Tienda',
+        desc: 'Activa [🎯 Modo Focus] para limpiar la pantalla y comprar rápido en los pasillos, y asigna etiquetas (Feria, Supermercado, Farmacia) para filtrar lo que compras en cada lugar.'
       }
     ];
 
@@ -1587,20 +1785,18 @@
         return;
       }
 
-      escanerProcesando = false; // Resetear bandera
+      escanerProcesando = false;
       document.getElementById('scannerOverlay').classList.add('active');
       html5QrcodeScanner = new Html5Qrcode("reader");
       html5QrcodeScanner.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 150 } },
         async (barcode) => {
-          // Si ya está procesando una lectura, ignoramos las lecturas repetidas de la cámara
           if (escanerProcesando) return;
           escanerProcesando = true;
 
           vibrarConfirmacion();
 
-          // 1. Verificar memoria local
           const nombreGuardado = memoriaNombresCodigos[barcode];
           const precioGuardado = memoriaPreciosLocal[barcode] || (nombreGuardado ? memoriaPreciosLocal[nombreGuardado.toLowerCase().trim()] : 0);
 
@@ -1609,7 +1805,6 @@
             document.getElementById('itemInput').value = nombreGuardado;
             if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
             
-            // Ocultar teclado virtual
             if (document.activeElement) document.activeElement.blur();
             
             agregarProducto();
@@ -1619,7 +1814,6 @@
 
           mostrarToast("🔍 Buscando producto en la base de datos...");
 
-          // 2. Base de datos pública
           try {
             const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
             const data = await response.json();
@@ -1633,7 +1827,6 @@
                 guardarNombreCodigoEnMemoria(barcode, nombreEncontrado);
                 if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
                 
-                // Ocultar teclado virtual
                 if (document.activeElement) document.activeElement.blur();
 
                 agregarProducto();
@@ -1685,7 +1878,7 @@
       }, 300);
     }
 
-    /* FUNCIONALIDAD 2: GRÁFICO DE GASTOS */
+    /* GRÁFICO DE GASTOS */
     function abrirModalGrafico() {
       vibrarConfirmacion();
 
@@ -1726,7 +1919,7 @@
       document.getElementById('graficoOverlay').classList.remove('active');
     }
 
-    /* FUNCIONALIDAD 3: ALERTA DE PRESUPUESTO */
+    /* ALERTA DE PRESUPUESTO */
     function fijarLimitePresupuesto() {
       vibrarConfirmacion();
 
@@ -1743,7 +1936,7 @@
       }
     }
 
-    /* FUNCIONALIDAD 4: RECETAS CHILENAS CON SELECTOR DE LISTA DESTINO */
+    /* RECETAS CHILENAS */
     function abrirModalRecetas() {
       vibrarConfirmacion();
 
@@ -1818,6 +2011,7 @@
             precio: memoriaPreciosLocal[normalizado] || 0,
             categoriaId: catInfo.id,
             icono: catInfo.icono,
+            tienda: 'Supermercado',
             comprado: false
           });
         }
@@ -1832,7 +2026,7 @@
       mostrarToast(`🍳 Ingredientes agregados a "${lista.nombre}"`);
     }
 
-    /* FUNCIONALIDAD 5: EXPORTAR A EXCEL / CSV */
+    /* EXPORTAR A EXCEL / CSV */
     function exportarExcel() {
       vibrarConfirmacion();
 
@@ -1842,12 +2036,12 @@
         return;
       }
 
-      let csv = "Producto,Pasillo,Cantidad,Precio Unitario CLP,Subtotal CLP,Estado\n";
+      let csv = "Producto,Pasillo,Tienda,Cantidad,Precio Unitario CLP,Subtotal CLP,Estado\n";
       lista.items.forEach(i => {
         const pasillo = clasificarProducto(i.texto).nombre;
         const subtotal = i.cantidad * (i.precio || 0);
         const estado = i.comprado ? "Comprado" : "Pendiente";
-        csv += `"${i.texto}","${pasillo}",${i.cantidad},${i.precio || 0},${subtotal},"${estado}"\n`;
+        csv += `"${i.texto}","${pasillo}","${i.tienda || 'Supermercado'}",${i.cantidad},${i.precio || 0},${subtotal},"${estado}"\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1974,6 +2168,7 @@
       cargarOrdenCategorias();
       cargarMemoriaPrecios();
       procesarListaRecibidaPorURL();
+      actualizarEstadoRed();
 
       if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
         const btnInstalar = document.getElementById('btnInstalarPWA');
@@ -2055,22 +2250,13 @@
         return;
       }
 
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+      let texto = `Tienes pendiente comprar ${pendientes.length} productos: `;
+      pendientes.forEach(i => {
+        texto += `${i.cantidad} ${i.texto}, `;
+      });
 
-        let texto = `Tienes pendiente comprar ${pendientes.length} productos: `;
-        pendientes.forEach(i => {
-          texto += `${i.cantidad} ${i.texto}, `;
-        });
-
-        const utterance = new SpeechSynthesisUtterance(texto);
-        utterance.lang = 'es-CL';
-        utterance.rate = 0.88;
-        window.speechSynthesis.speak(utterance);
-        mostrarToast("🔊 Leyendo lista en voz alta...");
-      } else {
-        mostrarToast("⚠️ Tu dispositivo no admite lectura en voz alta");
-      }
+      reproducirAudioTexto(texto);
+      mostrarToast("🔊 Leyendo lista en voz alta...");
     }
 
     function cambiarTamanoLetra(delta) {
@@ -2088,7 +2274,7 @@
       }
     }
 
-    /* DICTADO POR VOZ CONTINUO E INTELIGENTE CON REINICIO AUTOMÁTICO PARA CELULAR */
+    /* DICTADO POR VOZ CONTINUO E INTELIGENTE */
     function activarDictadoVoz() {
       vibrarConfirmacion();
 
@@ -2430,7 +2616,7 @@
     }
 
     function sincronizarConFirebase() {
-      if (!idListaActiva) return;
+      if (!idListaActiva || !navigator.onLine) return;
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (lista) {
         db.ref('listas/' + lista.id).set({
@@ -2622,7 +2808,7 @@
       });
     }
 
-    /* AGREGAR CON CONFIRMACIÓN SI YA EXISTE */
+    /* AGREGAR CON CONFIRMACIÓN Y TIENDA */
     function agregarProducto() {
       if (!idListaActiva) return;
       vibrarConfirmacion();
@@ -2630,10 +2816,12 @@
       const input = document.getElementById('itemInput');
       const qtyInput = document.getElementById('itemQty');
       const priceInput = document.getElementById('itemPrice');
+      const tiendaSelect = document.getElementById('itemTienda');
       
       const texto = input.value.trim();
       const cantidadAAgregar = parseInt(qtyInput.value) || 1;
       const precio = Math.round(parseFloat(priceInput.value) || 0);
+      const tiendaVal = tiendaSelect ? tiendaSelect.value : 'Supermercado';
 
       if (!texto) return;
 
@@ -2666,9 +2854,11 @@
             precio: precio,
             categoriaId: catInfo.id,
             icono: catInfo.icono,
+            tienda: tiendaVal,
             comprado: false
           });
           mostrarToast(`➕ "${texto}" agregado a la lista`);
+          reproducirAudioTexto(`${texto} agregado`);
         }
 
         guardarStorage();
@@ -2680,7 +2870,6 @@
       }
     }
 
-    /* CONFIRMAR O CANCELAR DUPLICADO DESDE EL MODAL */
     function confirmarSumarDuplicado() {
       vibrarConfirmacion();
       if (productoPendienteDuplicado) {
@@ -2697,6 +2886,7 @@
         renderizarProductos();
 
         mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
+        reproducirAudioTexto(`Se sumó una unidad a ${productoExistente.texto}`);
 
         document.getElementById('itemInput').value = "";
         document.getElementById('itemQty').value = "1";
@@ -2890,6 +3080,9 @@
       const contenedor = document.getElementById('contenedorProductosCategorizados');
       const titulo = document.getElementById('tituloListaActiva');
       const badgeCod = document.getElementById('badgeCodigoLista');
+      const filtroTiendaSel = document.getElementById('filtroTiendaSelect');
+      const tiendaFiltroVal = filtroTiendaSel ? filtroTiendaSel.value : 'TODOS';
+
       contenedor.innerHTML = "";
 
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
@@ -2903,7 +3096,8 @@
       const filtrados = items.filter(item => {
         const cumpleEstado = filtroProductos === 'pendientes' ? !item.comprado : item.comprado;
         const cumpleBusqueda = !textoBusquedaActual || item.texto.toLowerCase().includes(textoBusquedaActual);
-        return cumpleEstado && cumpleBusqueda;
+        const cumpleTienda = tiendaFiltroVal === 'TODOS' || (item.tienda || 'Supermercado') === tiendaFiltroVal;
+        return cumpleEstado && cumpleBusqueda && cumpleTienda;
       });
 
       if (filtrados.length === 0) {
@@ -2955,7 +3149,7 @@
 
             li.innerHTML = `
               <div class="item-details ${item.comprado ? 'comprado' : ''}" onclick="cambiarEstadoProducto(${item.id})">
-                <div class="item-name">${escapeHtml(item.texto)}</div>
+                <div class="item-name">${escapeHtml(item.texto)} <span class="badge-tienda-tag">${item.tienda || 'Súper'}</span></div>
                 <div class="item-subtext">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}</div>
               </div>
               
@@ -3000,12 +3194,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V47 -->
+  <!-- SERVICE WORKER V48 -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v47 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker v48 listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
