@@ -805,7 +805,7 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
       opacity: 0;
       transition: all 0.3s ease;
-      z-index: 1000;
+      z-index: 8000;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -832,7 +832,7 @@
       justify-content: center;
       align-items: center;
       padding: 16px;
-      z-index: 2000;
+      z-index: 8500;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
@@ -942,7 +942,7 @@
       margin-bottom: 12px;
     }
 
-    /* VENTANA FLOTANTE CONFIRMACIÓN ESCÁNER */
+    /* VENTANA FLOTANTE CONFIRMACIÓN ESCÁNER - Z-INDEX ULTRA ALTO PARA CELULARES (9999) */
     .scan-feedback-pop {
       position: fixed;
       top: 50%;
@@ -953,8 +953,8 @@
       padding: 24px 30px;
       border-radius: 28px;
       text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-      z-index: 3000;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      z-index: 9999 !important;
       opacity: 0;
       pointer-events: none;
       transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1435,13 +1435,13 @@
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
     let objetoReconocimientoVoz = null;
-    let productoPendienteDuplicado = null; // Guardará temporalmente el producto a duplicar
+    let productoPendienteDuplicado = null;
     
     // MEMORIA DE PRODUCTOS Y PRECIOS POR CÓDIGO/TEXTO
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
 
-    /* VENTANA FLOTANTE DE CONFIRMACIÓN RAPIDA ESCÁNER (CHECK / X) */
+    /* VENTANA FLOTANTE DE CONFIRMACIÓN RÁPIDA (CHECK / X) ADAPTADA A CELULARES */
     function mostrarFeedbackEscaner(exito, mensaje) {
       const pop = document.getElementById('scanFeedbackPop');
       const icon = document.getElementById('scanIconPop');
@@ -1463,13 +1463,14 @@
 
       msg.textContent = mensaje || (exito ? "¡Producto Detectado!" : "No Detectado");
 
-      setTimeout(() => {
+      // Forzar renderizado en pantallas táctiles móviles
+      requestAnimationFrame(() => {
         pop.classList.add('active');
-      }, 50);
+      });
 
       timerFeedbackPop = setTimeout(() => {
         pop.classList.remove('active');
-      }, 1200);
+      }, 1500);
     }
 
     function reproducirSonidoError() {
@@ -1577,7 +1578,7 @@
       document.getElementById('noListOverlay').classList.remove('active');
     }
 
-    /* FUNCIONALIDAD 1: ESCÁNER CON CHECK / X FLOTANTE */
+    /* FUNCIONALIDAD 1: ESCÁNER CON CHECK / X FLOTANTE OPTIMIZADO PARA MÓVILES */
     function abrirEscanerBarras() {
       vibrarConfirmacion();
 
@@ -1593,17 +1594,17 @@
         { fps: 10, qrbox: { width: 250, height: 150 } },
         async (barcode) => {
           vibrarConfirmacion();
-          cerrarEscanerBarras(false);
 
           // 1. Verificar memoria local
           const nombreGuardado = memoriaNombresCodigos[barcode];
           const precioGuardado = memoriaPreciosLocal[barcode] || (nombreGuardado ? memoriaPreciosLocal[nombreGuardado.toLowerCase().trim()] : 0);
 
           if (nombreGuardado) {
+            mostrarFeedbackEscaner(true, nombreGuardado);
             document.getElementById('itemInput').value = nombreGuardado;
             if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
             agregarProducto();
-            mostrarFeedbackEscaner(true, nombreGuardado);
+            cerrarEscanerBarras(false);
             return;
           }
 
@@ -1618,17 +1619,19 @@
               const prod = data.product;
               const nombreEncontrado = prod.product_name_es || prod.product_name || prod.brands || '';
               if (nombreEncontrado) {
+                mostrarFeedbackEscaner(true, nombreEncontrado);
                 document.getElementById('itemInput').value = nombreEncontrado;
                 guardarNombreCodigoEnMemoria(barcode, nombreEncontrado);
                 if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
                 agregarProducto();
-                mostrarFeedbackEscaner(true, nombreEncontrado);
+                cerrarEscanerBarras(false);
                 return;
               }
             }
             throw new Error('Producto no en base de datos');
           } catch (err) {
             mostrarFeedbackEscaner(false, "Código No Detectado");
+            cerrarEscanerBarras(false);
             setTimeout(() => {
               const manualName = prompt(`Código ${barcode} no reconocido. Ingresa el nombre para guardarlo:`, '');
               if (manualName && manualName.trim()) {
@@ -1638,7 +1641,7 @@
                 agregarProducto();
                 mostrarFeedbackEscaner(true, nombreLimpio);
               }
-            }, 300);
+            }, 400);
           }
         },
         () => {}
@@ -1649,13 +1652,17 @@
       if (porCancelacion) {
         mostrarFeedbackEscaner(false, "Escaneo Cancelado");
       }
-      if (html5QrcodeScanner) {
-        html5QrcodeScanner.stop().then(() => {
+      
+      // Damos 300ms de gracia para que la cámara no se destruya bruscamente en el celular
+      setTimeout(() => {
+        if (html5QrcodeScanner) {
+          html5QrcodeScanner.stop().then(() => {
+            document.getElementById('scannerOverlay').classList.remove('active');
+          }).catch(() => document.getElementById('scannerOverlay').classList.remove('active'));
+        } else {
           document.getElementById('scannerOverlay').classList.remove('active');
-        }).catch(() => document.getElementById('scannerOverlay').classList.remove('active'));
-      } else {
-        document.getElementById('scannerOverlay').classList.remove('active');
-      }
+        }
+      }, 300);
     }
 
     /* FUNCIONALIDAD 2: GRÁFICO DE GASTOS */
@@ -2616,7 +2623,6 @@
         const productoExistente = lista.items.find(i => i.texto.toLowerCase().trim() === textoNormalizado);
 
         if (productoExistente) {
-          // Si ya existe, guardamos los datos en la variable global y abrimos el Modal de confirmación
           productoPendienteDuplicado = {
             productoExistente,
             cantidadAAgregar,
@@ -2629,7 +2635,6 @@
           document.getElementById('duplicateOverlay').classList.add('active');
           return;
         } else {
-          // Si es nuevo, lo creamos directamente
           if (precio > 0) guardarPrecioEnMemoria(texto, precio);
           const catInfo = clasificarProducto(texto);
           lista.items.push({
@@ -2672,7 +2677,6 @@
 
         mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
 
-        // Limpiar inputs
         document.getElementById('itemInput').value = "";
         document.getElementById('itemQty').value = "1";
         document.getElementById('itemPrice').value = "";
