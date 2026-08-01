@@ -1958,29 +1958,6 @@
       } catch (e) {}
     }
 
-    function reproducirSonidoExito() {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
-
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start();
-        osc.stop(ctx.currentTime + 0.12);
-      } catch (e) {}
-    }
-
     function mostrarToast(mensaje, conUndo = false, callbackUndo = null) {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toastMsg');
@@ -2104,7 +2081,7 @@
       }
     }
 
-    /* 🎙️ DICTADO POR VOZ CONTINUO QUE PASA POR LA VENTANA DE CONFIRMACIÓN DE DUPLICADOS */
+    /* 🎙️ DICTADO POR VOZ CONTINUO (Sin reinicios en bucle para minimizar bips del móvil) */
     function activarDictadoVoz() {
       vibrarConfirmacion();
 
@@ -2143,7 +2120,7 @@
         esEscuchandoVoz = true;
         btnMic.classList.add('listening');
         btnMic.textContent = '🔴';
-        mostrarToast("🎙️ Escuchando... Nombra varios productos seguidos (ej: Leche, Pan, Huevos)");
+        mostrarToast("🎙️ Dicta de corrido (ej: Leche, Pan, Arroz...)");
       };
 
       objetoReconocimientoVoz.onresult = function(event) {
@@ -2164,30 +2141,20 @@
                 buscarPrecioEnMemoriaPorTexto(limpio);
                 if (document.activeElement) document.activeElement.blur();
                 
-                // Llama directamente a agregarProducto() para validar si el ítem está duplicado
+                // Pasa por la lógica normal incluyendo confirmación de duplicados
                 agregarProducto();
               }
             });
 
-            reproducirSonidoExito();
             input.value = "";
           }
         }
       };
 
       objetoReconocimientoVoz.onend = function() {
-        if (esEscuchandoVoz) {
-          try {
-            objetoReconocimientoVoz.start();
-          } catch(e) {
-            esEscuchandoVoz = false;
-            btnMic.classList.remove('listening');
-            btnMic.textContent = '🎤';
-          }
-        } else {
-          btnMic.classList.remove('listening');
-          btnMic.textContent = '🎤';
-        }
+        esEscuchandoVoz = false;
+        btnMic.classList.remove('listening');
+        btnMic.textContent = '🎤';
       };
 
       objetoReconocimientoVoz.onerror = function(event) {
