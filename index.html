@@ -2081,7 +2081,7 @@
       }
     }
 
-    /* 🎙️ DICTADO POR VOZ CONTINUO (Sin reinicios en bucle para minimizar bips del móvil) */
+    /* 🎙️ DICTADO POR VOZ ADAPTATIVO (MÓVIL / PC) */
     function activarDictadoVoz() {
       vibrarConfirmacion();
 
@@ -2111,16 +2111,20 @@
         return;
       }
 
+      const esMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
       objetoReconocimientoVoz = new SpeechRecognition();
       objetoReconocimientoVoz.lang = 'es-CL';
       objetoReconocimientoVoz.interimResults = false;
-      objetoReconocimientoVoz.continuous = true;
+      
+      // Ojo: En móvil usamos continuous = false para no colapsar el reconocedor web de Chrome/Safari
+      objetoReconocimientoVoz.continuous = !esMovil;
 
       objetoReconocimientoVoz.onstart = function() {
         esEscuchandoVoz = true;
         btnMic.classList.add('listening');
         btnMic.textContent = '🔴';
-        mostrarToast("🎙️ Dicta de corrido (ej: Leche, Pan, Arroz...)");
+        mostrarToast("🎙️ Escuchando... Di los productos (ej: Leche, Pan, Huevos)");
       };
 
       objetoReconocimientoVoz.onresult = function(event) {
@@ -2141,7 +2145,7 @@
                 buscarPrecioEnMemoriaPorTexto(limpio);
                 if (document.activeElement) document.activeElement.blur();
                 
-                // Pasa por la lógica normal incluyendo confirmación de duplicados
+                // Pasa por la lógica normal con confirmación de duplicados
                 agregarProducto();
               }
             });
@@ -2746,7 +2750,6 @@
         const prod = lista.items.find(i => i.id === prodId);
         if (prod) {
           prod.comprado = !prod.comprado;
-          if (prod.comprado) reproducirSonidoExito();
           guardarStorage();
           sincronizarConFirebase();
           renderizarProductos();
