@@ -1012,7 +1012,6 @@
         <button class="btn-close-menu" onclick="toggleSidebar()">✕</button>
       </div>
       <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();">💡 Mantener Pantalla Encendida</button>
-      <button class="btn-sidebar-tool" onclick="leerListaEnVozAlta(); toggleSidebar();">🔊 Leer Lista en Voz Alta</button>
       <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
       
       <div class="compact-field" style="margin-top: 10px;">
@@ -1083,7 +1082,7 @@
         </div>
       </div>
 
-      <!-- VISTA 1: PANTALLA DE INICIO HABITUAL CON PIE DE PÁGINA RESTAURADO -->
+      <!-- VISTA 1: PANTALLA DE INICIO HABITUAL -->
       <div id="secInicio">
         <div class="home-card">
           <h2>👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
@@ -1107,7 +1106,6 @@
           <div id="widgetUltimaLista"></div>
         </div>
 
-        <!-- PIE DE PÁGINA RESTAURADO EXACTO AL ORIGINAL -->
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
@@ -1593,23 +1591,11 @@
       if (unitA < unitB) {
         const ahorro = Math.round(((unitB - unitA) / unitB) * 100);
         resDiv.innerHTML = `<span style="color:var(--success)">🏆 ¡Opción A es más barata! Ahorras un ${ahorro}%</span>`;
-        reproducirAudioTexto("La Opción A es más conveniente");
       } else if (unitB < unitA) {
         const ahorro = Math.round(((unitA - unitB) / unitA) * 100);
         resDiv.innerHTML = `<span style="color:var(--success)">🏆 ¡Opción B es más barata! Ahorras un ${ahorro}%</span>`;
-        reproducirAudioTexto("La Opción B es más conveniente");
       } else {
         resDiv.innerHTML = '<span style="color:var(--primary)">⚖️ Ambas opciones cuestan exactamente lo mismo por unidad</span>';
-      }
-    }
-
-    function reproducirAudioTexto(texto) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(texto);
-        u.lang = 'es-CL';
-        u.rate = 0.9;
-        window.speechSynthesis.speak(u);
       }
     }
 
@@ -1627,7 +1613,6 @@
         pop.classList.add('success');
         icon.textContent = "✅";
         reproducirSonidoExito();
-        reproducirAudioTexto(`${mensaje} agregado`);
       } else {
         pop.classList.add('error');
         icon.textContent = "❌";
@@ -2105,16 +2090,6 @@
       } catch (e) {}
     }
 
-    function abrirModalPrivacidad() {
-      vibrarConfirmacion();
-      document.getElementById('privacyOverlay').classList.add('active');
-    }
-
-    function cerrarModalPrivacidad() {
-      vibrarConfirmacion();
-      document.getElementById('privacyOverlay').classList.remove('active');
-    }
-
     function mostrarToast(mensaje, conUndo = false, callbackUndo = null) {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toastMsg');
@@ -2221,26 +2196,6 @@
       } else {
         mostrarToast("⚠️ Tu navegador no admite bloqueo de apagado");
       }
-    }
-
-    function leerListaEnVozAlta() {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => l.id === idListaActiva);
-      if (!lista) return;
-
-      const pendientes = (lista.items || []).filter(i => !i.comprado);
-      if (pendientes.length === 0) {
-        mostrarToast("🔊 No tienes productos pendientes por comprar");
-        return;
-      }
-
-      let texto = `Tienes pendiente comprar ${pendientes.length} productos: `;
-      pendientes.forEach(i => {
-        texto += `${i.cantidad} ${i.texto}, `;
-      });
-
-      reproducirAudioTexto(texto);
-      mostrarToast("🔊 Leyendo lista en voz alta...");
     }
 
     function cambiarTamanoLetra(delta) {
@@ -2842,7 +2797,6 @@
             comprado: false
           });
           mostrarToast(`➕ "${texto}" agregado a la lista`);
-          reproducirAudioTexto(`${texto} agregado`);
         }
 
         guardarStorage();
@@ -2870,7 +2824,6 @@
         renderizarProductos();
 
         mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
-        reproducirAudioTexto(`Se sumó una unidad a ${productoExistente.texto}`);
 
         document.getElementById('itemInput').value = "";
         document.getElementById('itemQty').value = "1";
