@@ -1665,7 +1665,7 @@
       document.getElementById('noListOverlay').classList.remove('active');
     }
 
-    /* ESCÁNER ANTI-DUPLICACIÓN Y ANTI-TECLADO */
+    /* 📸 ESCÁNER CON CONGELAMIENTO RÁPIDO PARA EVITAR LECTURAS MÚLTIPLES */
     function abrirEscanerBarras() {
       vibrarConfirmacion();
 
@@ -1681,10 +1681,18 @@
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 150 } },
         async (barcode) => {
+          // 🛡️ BARRERA DE SEGURIDAD ANTI-MÚLTIPLES DISPAROS
           if (escanerProcesando) return;
-          escanerProcesando = true;
+          escanerProcesando = true; // Bloquea lecturas posteriores inmediatamente
 
           vibrarConfirmacion();
+
+          // 🛑 DETENER CÁMARA DE INMEDIATO PARA CONGELAR LECTURAS
+          try {
+            if (html5QrcodeScanner) {
+              await html5QrcodeScanner.stop();
+            }
+          } catch(e) {}
 
           const nombreGuardado = memoriaNombresCodigos[barcode];
           const precioGuardado = memoriaPreciosLocal[barcode] || (nombreGuardado ? memoriaPreciosLocal[nombreGuardado.toLowerCase().trim()] : 0);
@@ -1743,7 +1751,10 @@
           }
         },
         () => {}
-      ).catch(() => mostrarToast("⚠️ No se pudo acceder a la cámara"));
+      ).catch(() => {
+        escanerProcesando = false;
+        mostrarToast("⚠️ No se pudo acceder a la cámara");
+      });
     }
 
     function cerrarEscanerBarras(porCancelacion = false) {
@@ -1751,20 +1762,24 @@
         mostrarFeedbackEscaner(false, "Escaneo Cancelado");
       }
       
-      setTimeout(() => {
-        if (html5QrcodeScanner) {
+      document.getElementById('scannerOverlay').classList.remove('active');
+      
+      if (html5QrcodeScanner) {
+        try {
           html5QrcodeScanner.stop().then(() => {
-            document.getElementById('scannerOverlay').classList.remove('active');
-            escanerProcesando = false;
+            html5QrcodeScanner = null;
+            setTimeout(() => { escanerProcesando = false; }, 500);
           }).catch(() => {
-            document.getElementById('scannerOverlay').classList.remove('active');
-            escanerProcesando = false;
+            html5QrcodeScanner = null;
+            setTimeout(() => { escanerProcesando = false; }, 500);
           });
-        } else {
-          document.getElementById('scannerOverlay').classList.remove('active');
-          escanerProcesando = false;
+        } catch(e) {
+          html5QrcodeScanner = null;
+          setTimeout(() => { escanerProcesando = false; }, 500);
         }
-      }, 300);
+      } else {
+        setTimeout(() => { escanerProcesando = false; }, 500);
+      }
     }
 
     /* GRÁFICO DE GASTOS */
@@ -2117,7 +2132,7 @@
       objetoReconocimientoVoz.lang = 'es-CL';
       objetoReconocimientoVoz.interimResults = false;
       
-      // Ojo: En móvil usamos continuous = false para no colapsar el reconocedor web de Chrome/Safari
+      // En móvil desactivamos 'continuous' para prevenir bloqueos de la API
       objetoReconocimientoVoz.continuous = !esMovil;
 
       objetoReconocimientoVoz.onstart = function() {
