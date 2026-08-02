@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4143403056996332"
+     crossorigin="anonymous"></script>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -12,6 +14,9 @@
     gtag('js', new Date());
     gtag('config', 'G-9V2PS8SERD');
   </script>
+
+  <!-- GOOGLE ADSENSE (Descomenta y pon tu client ID cuando tengas tu cuenta lista) -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-TU_ID_DE_PUBLISHER" crossorigin="anonymous"></script> -->
 
   <!-- LIBRERÍAS EXTERNAS (CÁMARA Y GRÁFICOS) -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -759,8 +764,19 @@
     .budget-val { font-weight: 800; font-size: 0.95rem; }
     .budget-val.spent { color: var(--success); }
 
+    /* CONTENEDOR PUBLICITARIO INTEGRADO SUTIL */
+    .ad-container-native {
+      margin-top: 14px;
+      text-align: center;
+      min-height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: transparent;
+    }
+
     .app-credits {
-      margin-top: 20px;
+      margin-top: 10px;
       text-align: center;
       font-size: 0.76rem;
       color: var(--text-muted);
@@ -1010,6 +1026,7 @@
         <h3>Ajustes y Ayuda</h3>
         <button class="btn-close-menu" onclick="toggleSidebar()">✕</button>
       </div>
+
       <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();">💡 Mantener Pantalla Encendida</button>
       <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
       
@@ -1022,9 +1039,9 @@
       </div>
     </div>
 
-    <!-- BOTÓN INSTALAR PWA AUTOMÁTICO -->
-    <button id="btnInstalarPWA" class="btn-sidebar-tool" onclick="instalarAplicacionPWA()" style="display:none; background:#10b981; color:white; margin:10px 12px 0 12px; justify-content:center;">
-      📲 Instalar Aplicación en la pantalla
+    <!-- BOTÓN INSTALAR PWA PERFECTAMENTE CENTRADO -->
+    <button id="btnInstalarPWA" class="btn-sidebar-tool" onclick="instalarAplicacionPWA()" style="display:none; background:#10b981; color:white; margin:10px auto 0 auto; width: calc(100% - 24px); max-width: 576px; justify-content:center; align-items:center; text-align:center;">
+      📲 Instalar Aplicación en la pantalla de inicio
     </button>
 
     <!-- NAVEGACIÓN PRINCIPAL -->
@@ -1074,7 +1091,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 31 de julio de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 2 de agosto de 2026</span>
         </div>
       </div>
 
@@ -1099,10 +1116,15 @@
           <div id="widgetUltimaLista"></div>
         </div>
 
+        <!-- 📢 ESPACIO RESERVADO PARA ANUNCIO SUTIL -->
+        <div class="ad-container-native">
+          <!-- Pega tu código de anuncio de Google AdSense aquí -->
+        </div>
+
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 31 de julio de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 2 de agosto de 2026</span>
         </div>
       </div>
 
@@ -1346,7 +1368,7 @@
       <h3>Recetas Chilenas Típicas</h3>
       <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista destino y el plato para cargar sus ingredientes:</p>
 
-      <div style="margin-bottom: 14px; text-align: left;">
+      <div style="margin-bottom: 10px; text-align: left;">
         <label for="selectListaDestinoReceta" style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 4px;">
           📌 Cargar ingredientes en:
         </label>
@@ -1681,13 +1703,11 @@
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 150 } },
         async (barcode) => {
-          // 🛡️ BARRERA DE SEGURIDAD ANTI-MÚLTIPLES DISPAROS
           if (escanerProcesando) return;
-          escanerProcesando = true; // Bloquea lecturas posteriores inmediatamente
+          escanerProcesando = true;
 
           vibrarConfirmacion();
 
-          // 🛑 DETENER CÁMARA DE INMEDIATO PARA CONGELAR LECTURAS
           try {
             if (html5QrcodeScanner) {
               await html5QrcodeScanner.stop();
@@ -2132,7 +2152,6 @@
       objetoReconocimientoVoz.lang = 'es-CL';
       objetoReconocimientoVoz.interimResults = false;
       
-      // En móvil desactivamos 'continuous' para prevenir bloqueos de la API
       objetoReconocimientoVoz.continuous = !esMovil;
 
       objetoReconocimientoVoz.onstart = function() {
@@ -2160,7 +2179,6 @@
                 buscarPrecioEnMemoriaPorTexto(limpio);
                 if (document.activeElement) document.activeElement.blur();
                 
-                // Pasa por la lógica normal con confirmación de duplicados
                 agregarProducto();
               }
             });
