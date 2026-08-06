@@ -112,7 +112,7 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* HEADER LIMPIO CON MENÚ HAMBURGUESA */
+    /* HEADER LIMPIO CON MENÚ HAMBURGUESA Y LOGO */
     .header-top {
       display: flex;
       justify-content: space-between;
@@ -125,6 +125,7 @@
     }
 
     .app-title-box { display: flex; align-items: center; gap: 8px; }
+    .header-logo-img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
     .app-title { font-size: 1.2rem; font-weight: 800; margin: 0; white-space: nowrap; }
 
     .header-right-controls { display: flex; align-items: center; gap: 8px; }
@@ -224,7 +225,7 @@
 
     /* PORTADA BIENVENIDA */
     .welcome-hero { text-align: center; padding: 10px 0; }
-    .welcome-icon-box { font-size: 3.5rem; margin-bottom: 6px; }
+    .welcome-logo-img { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; margin-bottom: 10px; box-shadow: 0 4px 12px var(--shadow); }
     .welcome-title { font-size: 1.5rem; font-weight: 900; color: var(--text); margin: 0 0 4px 0; }
 
     .welcome-domain {
@@ -288,6 +289,29 @@
       box-shadow: var(--shadow-sm);
     }
 
+    .home-logo-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .home-app-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .home-app-name {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin: 0;
+    }
+
     .home-card h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--text); }
     .home-card p { margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
 
@@ -339,7 +363,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* FORMULARIO DE ENTRADA */
+    /* FORMULARIO DE ENTRADA CORREGIDO */
     .add-product-card {
       background-color: var(--card-bg);
       padding: 12px;
@@ -1005,10 +1029,10 @@
 
   <div class="container" id="appContainer">
     
-    <!-- HEADER SUPERIOR LIMPIO -->
+    <!-- HEADER SUPERIOR LIMPIO CON LOGO -->
     <div class="header-top">
       <div class="app-title-box">
-        <span>🛒</span>
+        <img src="/icon-512.png" alt="Logo Mis Listas" class="header-logo-img">
         <h1 class="app-title">Mis Listas</h1>
       </div>
       <div class="header-right-controls">
@@ -1038,7 +1062,7 @@
 
     <!-- BOTÓN INSTALAR PWA PERFECTAMENTE CENTRADO -->
     <button id="btnInstalarPWA" class="btn-sidebar-tool" onclick="instalarAplicacionPWA()" style="display:none; background:#10b981; color:white; margin:10px auto 0 auto; width: calc(100% - 24px); max-width: 576px; justify-content:center; align-items:center; text-align:center;">
-      📲 Instalar Aplicación en la pantalla
+      📲 Instalar Aplicación en la pantalla de inicio
     </button>
 
     <!-- NAVEGACIÓN PRINCIPAL -->
@@ -1054,7 +1078,7 @@
       <!-- VISTA 0: PORTADA BIENVENIDA -->
       <div id="secPortada" style="display: none;">
         <div class="welcome-hero">
-          <div class="welcome-icon-box">🛒</div>
+          <img src="/icon-512.png" alt="Mis Listas de Compras" class="welcome-logo-img">
           <h2 class="welcome-title">Mis Listas de Compras</h2>
           <div class="welcome-domain">listadecompras.website</div>
           
@@ -1095,6 +1119,12 @@
       <!-- VISTA 1: PANTALLA DE INICIO HABITUAL -->
       <div id="secInicio">
         <div class="home-card">
+          <!-- LOGO Y NOMBRE DE LA APP DESTACADOS -->
+          <div class="home-logo-box">
+            <img src="/icon-512.png" alt="Logo Mis Listas de Compras" class="home-app-logo">
+            <h1 class="home-app-name">Mis Listas de Compras</h1>
+          </div>
+
           <h2>👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
           <p>Tu asistente inteligente para el supermercado. Elige una opción para comenzar:</p>
           
@@ -1710,7 +1740,6 @@
         return;
       }
 
-      // ⚡ Crear e iniciar inmediatamente para no perder la interacción táctil en móviles
       objetoReconocimientoVoz = new SpeechRecognition();
       objetoReconocimientoVoz.lang = 'es-CL';
       objetoReconocimientoVoz.interimResults = false;
@@ -1772,7 +1801,6 @@
       };
 
       try {
-        // Método start() invocado de forma inmediata en el hilo principal
         objetoReconocimientoVoz.start();
       } catch(err) {
         console.error("Error iniciando dictado:", err);
