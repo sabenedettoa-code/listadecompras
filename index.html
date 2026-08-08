@@ -1621,7 +1621,6 @@ async function procesarPromptIA() {
   btnGen.innerHTML = "⏳ Generando insumos con IA...";
 
   try {
-    // URL de tu Worker en Cloudflare
     const urlProxy = "https://ancient-firefly-200e.sabenedettoa.workers.dev/";
 
     const response = await fetch(urlProxy, {
@@ -1630,12 +1629,13 @@ async function procesarPromptIA() {
       body: JSON.stringify({ promptTexto })
     });
 
+    const resData = await response.json();
+
     if (!response.ok) {
-      const errRes = await response.json().catch(() => ({}));
-      throw new Error(errRes.error || `Error en servidor (${response.status})`);
+      throw new Error(resData.error || `Error en el servidor de IA (${response.status})`);
     }
 
-    const productosIA = await response.json();
+    const productosIA = resData;
 
     const lista = coleccionListas.find(l => String(l.id) === String(targetId));
     if (!lista) throw new Error("Lista destino no encontrada");
@@ -3189,6 +3189,15 @@ async function procesarPromptIA() {
           .catch((err) => console.log('Error en SW:', err));
       });
     }
+    /*
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((reg) => console.log('Service Worker v50 listo:', reg.scope))
+      .catch((err) => console.log('Error en SW:', err));
+  });
+}
+*/
   </script>
 </body>
 </html>
