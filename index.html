@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
+  <!-- FUENTE GOOGLE FONTS: NUNITO (ULTRA LEGIBLE Y AMIGABLE) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
   <!-- GOOGLE ANALYTICS (GTAG.JS) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V2PS8SERD"></script>
   <script>
@@ -82,7 +87,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       display: flex;
@@ -91,6 +96,10 @@
       height: 100dvh;
       overflow: hidden;
       transition: background-color 0.3s, color 0.3s;
+    }
+
+    input, button, select, textarea {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     .container {
@@ -137,7 +146,7 @@
 
     .app-title-box { display: flex; align-items: center; gap: 8px; }
     .header-logo-img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
-    .app-title { font-size: 1.2rem; font-weight: 800; margin: 0; white-space: nowrap; }
+    .app-title { font-size: 1.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
 
     .header-right-controls { display: flex; align-items: center; gap: 8px; }
 
@@ -191,7 +200,7 @@
       border-radius: 10px;
       text-align: left;
       font-size: 0.9rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text);
       cursor: pointer;
       display: flex;
@@ -214,7 +223,7 @@
       border: none;
       padding: 10px 4px;
       font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text-muted);
       border-radius: 8px;
       cursor: pointer;
@@ -248,7 +257,7 @@
       margin-bottom: 12px;
     }
 
-    .welcome-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; }
+    .welcome-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; font-weight: 600; }
 
     .welcome-features-list {
       display: flex;
@@ -267,7 +276,7 @@
       padding: 10px 12px;
       border-radius: 12px;
       font-size: 0.88rem;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .btn-start-large {
@@ -278,7 +287,7 @@
       padding: 16px;
       border-radius: 16px;
       font-size: 1.1rem;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -319,8 +328,8 @@
       margin: 0;
     }
 
-    .home-card h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--text); }
-    .home-card p { margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+    .home-card h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--text); font-weight: 800; }
+    .home-card p { margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; font-weight: 600; }
 
     .home-actions {
       display: flex;
@@ -374,6 +383,7 @@
       color: var(--primary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-weight: 800;
     }
 
     .add-product-card {
@@ -405,7 +415,7 @@
       color: var(--text);
       border-radius: 10px;
       font-size: 0.95rem;
-      font-weight: 600;
+      font-weight: 700;
       outline: none;
       min-width: 0;
     }
@@ -428,7 +438,7 @@
       border: none;
       background: transparent;
       color: var(--text);
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.88rem;
       outline: none;
     }
@@ -442,7 +452,7 @@
       background: transparent;
       color: var(--text);
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
       outline: none;
     }
 
@@ -508,7 +518,7 @@
       padding: 6px 12px;
       border-radius: 20px;
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -546,7 +556,7 @@
       border: none;
       padding: 6px 12px;
       border-radius: 8px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.85rem;
       cursor: pointer;
       display: flex;
@@ -621,8 +631,8 @@
       cursor: pointer;
     }
 
-    .list-info h4 { margin: 0 0 2px 0; font-size: 0.95rem; }
-    .list-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+    .list-info h4 { margin: 0 0 2px 0; font-size: 0.95rem; font-weight: 800; }
+    .list-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
 
     .card-actions { display: flex; gap: 4px; }
 
@@ -663,7 +673,7 @@
     
     .item-name-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
     .item-name { 
-      font-weight: 700; font-size: 0.92rem; word-break: break-word;
+      font-weight: 800; font-size: 0.92rem; word-break: break-word;
     }
     
     .badge-tienda-tag {
@@ -671,10 +681,10 @@
       padding: 2px 6px;
       border-radius: 6px;
       background: var(--tab-bg);
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .item-price-status { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+    .item-price-status { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
 
     .item-controls-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
@@ -687,7 +697,7 @@
       background: var(--bg);
       color: var(--text);
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .qty-controls {
@@ -705,7 +715,7 @@
       border: none;
       color: var(--text);
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 800;
       width: 24px;
       height: 24px;
       display: flex;
@@ -728,8 +738,8 @@
       justify-content: center;
     }
 
-    .btn-check-action { color: var(--success); font-weight: bold; }
-    .btn-uncheck-action { color: var(--primary); font-weight: bold; }
+    .btn-check-action { color: var(--success); font-weight: 800; }
+    .btn-uncheck-action { color: var(--primary); font-weight: 800; }
 
     .comprado { text-decoration: line-through; opacity: 0.5; }
 
@@ -742,7 +752,7 @@
 
     .sub-btn {
       flex: 1; padding: 8px; border: none; background: none;
-      color: var(--text-muted); font-weight: 700; font-size: 0.82rem; border-radius: 8px;
+      color: var(--text-muted); font-weight: 800; font-size: 0.82rem; border-radius: 8px;
       cursor: pointer;
       text-align: center;
     }
@@ -763,7 +773,7 @@
       color: var(--text);
       border-radius: 10px;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       outline: none;
     }
 
@@ -793,8 +803,8 @@
     }
 
     .budget-item { text-align: center; }
-    .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; }
-    .budget-val { font-weight: 800; font-size: 0.95rem; }
+    .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; font-weight: 700; }
+    .budget-val { font-weight: 900; font-size: 0.95rem; }
     .budget-val.spent { color: var(--success); }
 
     .ad-container-native {
@@ -815,12 +825,13 @@
       border-top: 1px solid var(--border);
       padding-top: 12px;
       line-height: 1.5;
+      font-weight: 600;
     }
 
     .app-credits a {
       color: var(--primary);
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .toast {
@@ -833,7 +844,7 @@
       padding: 10px 18px;
       border-radius: 30px;
       font-size: 0.9rem;
-      font-weight: 600;
+      font-weight: 700;
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
       opacity: 0;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -907,7 +918,7 @@
     }
 
     .tutorial-card h3 { margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 800; }
-    .tutorial-card p { font-size: 0.95rem; line-height: 1.4; color: var(--text-muted); margin: 0 0 18px 0; }
+    .tutorial-card p { font-size: 0.95rem; line-height: 1.4; color: var(--text-muted); margin: 0 0 18px 0; font-weight: 600; }
 
     .tutorial-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
@@ -936,6 +947,7 @@
       color: var(--text);
       padding: 0;
       margin: 14px 0;
+      font-weight: 600;
     }
 
     .privacy-list li {
@@ -970,8 +982,8 @@
       transform: translateY(-2px);
     }
 
-    .recipe-item-card h4 { margin: 6px 0 2px 0; font-size: 0.92rem; }
-    .recipe-item-card p { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
+    .recipe-item-card h4 { margin: 6px 0 2px 0; font-size: 0.92rem; font-weight: 800; }
+    .recipe-item-card p { margin: 0; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
 
     #reader {
       width: 100%;
@@ -1049,6 +1061,7 @@
       line-height: 1.35;
       text-align: left;
       margin-bottom: 12px;
+      font-weight: 600;
     }
 
     .listai-intro-box ul {
@@ -2509,85 +2522,6 @@
         document.getElementById('toast').classList.remove('show');
       }
     }
-
-    // REGISTRO Y GESTIÓN DE SWIPE EN TIEMPO REAL
-    document.addEventListener('DOMContentLoaded', () => {
-      cargarTamanoLetra();
-      cargarStorage();
-      cargarOrdenCategorias();
-      cargarMemoriaPrecios();
-      procesarListaRecibidaPorURL();
-      actualizarEstadoRed();
-
-      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btnInstalar = document.getElementById('btnInstalarPWA');
-        if (btnInstalar) btnInstalar.style.display = 'none';
-      }
-
-      const portadaVista = localStorage.getItem('portadaVista_v1');
-      if (!portadaVista) {
-        verSeccion('portada');
-      } else {
-        verSeccion('inicio');
-      }
-
-      comprobarTutorialPrimeraVez();
-
-      // SWIPE EN TIEMPO REAL (DRAG & TRACK)
-      const areaSwipe = document.getElementById('mainContentArea');
-
-      areaSwipe.addEventListener('touchstart', (e) => {
-        inicioXTouch = e.touches[0].clientX;
-        inicioYTouch = e.touches[0].clientY;
-        deltaXTouch = 0;
-        areaSwipe.classList.remove('snap-back');
-      }, { passive: true });
-
-      areaSwipe.addEventListener('touchmove', (e) => {
-        const actualX = e.touches[0].clientX;
-        const actualY = e.touches[0].clientY;
-        
-        deltaXTouch = actualX - inicioXTouch;
-        const deltaY = actualY - inicioYTouch;
-
-        // Si el movimiento es predominantemente horizontal, mover en tiempo real
-        if (Math.abs(deltaXTouch) > Math.abs(deltaY) && Math.abs(deltaXTouch) < 180) {
-          areaSwipe.classList.add('swiping');
-          areaSwipe.style.transform = `translateX(${deltaXTouch * 0.45}px)`;
-        }
-      }, { passive: true });
-
-      areaSwipe.addEventListener('touchend', () => {
-        areaSwipe.classList.remove('swiping');
-        
-        if (Math.abs(deltaXTouch) > 75) {
-          const secActual = document.querySelector('.nav-btn.active')?.id.replace('nav', '').toLowerCase();
-          let ind = -1;
-          if (secActual === 'inicio') ind = 0;
-          if (secActual === 'mislistas') ind = 1;
-          if (secActual === 'listaactiva') ind = 2;
-
-          if (ind !== -1) {
-            if (deltaXTouch < 0 && ind < ordenSeccionesNav.length - 1) {
-              verSeccion(ordenSeccionesNav[ind + 1]);
-            } else if (deltaXTouch > 0 && ind > 0) {
-              verSeccion(ordenSeccionesNav[ind - 1]);
-            } else {
-              areaSwipe.classList.add('snap-back');
-            }
-          } else {
-            areaSwipe.classList.add('snap-back');
-          }
-        } else {
-          areaSwipe.classList.add('snap-back');
-        }
-
-        setTimeout(() => {
-          areaSwipe.style.transform = '';
-          areaSwipe.classList.remove('snap-back');
-        }, 250);
-      }, { passive: true });
-    });
 
     function ingresarAppDesdePortada() {
       vibrarConfirmacion();
