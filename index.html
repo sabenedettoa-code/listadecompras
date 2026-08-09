@@ -1341,7 +1341,6 @@
       <div class="tutorial-icon">🤖✨</div>
       <h3>ListAI: Tu Asistente de Compras</h3>
       
-      <!-- Breve introducción del asistente ListAI -->
       <div class="listai-intro-box">
         <strong>¿Qué puede hacer ListAI por ti?</strong>
         <ul>
@@ -1768,7 +1767,9 @@
           throw new Error(resData.error || `Error en el servidor de ListAI (${response.status})`);
         }
 
-        const productosIA = resData;
+        // CAPTURA DE RESPUESTA DE LISTAI (MENSAJE + PRODUCTOS)
+        const mensajeIA = resData.mensajeIA || "Lista procesada con éxito.";
+        const productosIA = resData.productos || resData; // Compatibilidad con arreglos directos
 
         const lista = coleccionListas.find(l => String(l.id) === String(targetId));
         if (!lista) throw new Error("Lista destino no encontrada");
@@ -1815,7 +1816,9 @@
         document.getElementById('promptIAInput').value = '';
 
         verSeccion('lista-activa');
-        mostrarToast(`✨ ListAI agregó ${agregadosCount} insumos a "${lista.nombre}"`);
+        
+        // Muestra la explicación amigable devuelta por ListAI
+        mostrarToast(`🤖 ListAI: "${mensajeIA}" (${agregadosCount} insumos)`);
 
       } catch (err) {
         console.error("Error al procesar con ListAI:", err);
