@@ -1046,6 +1046,61 @@
       padding: 0;
       box-shadow: none;
     }
+
+    /* 💻 PANTALLA COMPLETA EN COMPUTADORES Y MONITORES (PC / LAPTOP) */
+    @media (min-width: 768px) {
+      body {
+        align-items: stretch;
+      }
+
+      .container {
+        max-width: 100% !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      .main-content {
+        padding: 24px 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .home-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .home-card {
+        padding: 32px;
+      }
+
+      /* Disposición de la lista en 2 o 3 columnas en PC */
+      #contenedorProductosCategorizados ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 12px;
+      }
+
+      #contenedorProductosCategorizados li {
+        margin-bottom: 0;
+      }
+
+      .tutorial-card {
+        max-width: 520px;
+        padding: 30px;
+      }
+
+      /* Estilo hover para mouse en PC */
+      button:hover, .btn-home-action:hover, .btn-sec:hover, .list-card:hover {
+        transform: translateY(-1px);
+        transition: transform 0.15s ease, background-color 0.15s ease;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1767,9 +1822,8 @@
           throw new Error(resData.error || `Error en el servidor de ListAI (${response.status})`);
         }
 
-        // CAPTURA DE RESPUESTA DE LISTAI (MENSAJE + PRODUCTOS)
         const mensajeIA = resData.mensajeIA || "Lista procesada con éxito.";
-        const productosIA = resData.productos || resData; // Compatibilidad con arreglos directos
+        const productosIA = resData.productos || resData;
 
         const lista = coleccionListas.find(l => String(l.id) === String(targetId));
         if (!lista) throw new Error("Lista destino no encontrada");
@@ -1816,8 +1870,6 @@
         document.getElementById('promptIAInput').value = '';
 
         verSeccion('lista-activa');
-        
-        // Muestra la explicación amigable devuelta por ListAI
         mostrarToast(`🤖 ListAI: "${mensajeIA}" (${agregadosCount} insumos)`);
 
       } catch (err) {
