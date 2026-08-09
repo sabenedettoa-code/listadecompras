@@ -1020,6 +1020,32 @@
       min-height: 52px;
       font-size: 1.5rem;
     }
+
+    .listai-intro-box {
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.35;
+      text-align: left;
+      margin-bottom: 12px;
+    }
+
+    .listai-intro-box ul {
+      margin-top: 4px;
+      padding-left: 16px;
+      list-style-type: disc;
+    }
+
+    .listai-intro-box li {
+      margin-bottom: 2px;
+      background: none;
+      border: none;
+      padding: 0;
+      box-shadow: none;
+    }
   </style>
 </head>
 <body>
@@ -1122,7 +1148,7 @@
               ➕ Crear o Ver mis Listas
             </button>
             <button class="btn-home-action ai-btn" onclick="abrirModalIA()">
-              ✨ Generar Lista con IA
+              ✨ Generar Lista con ListAI
             </button>
             <button class="btn-home-action sec" onclick="abrirModalRecetas()">
               🍳 Cargar Recetas Chilenas
@@ -1309,12 +1335,21 @@
     <div id="scanMsgPop" class="scan-msg-pop">¡Producto Detectado!</div>
   </div>
 
-  <!-- MODAL ASISTENTE IA DE GENERACIÓN DE LISTAS -->
+  <!-- MODAL ASISTENTE LISTAI -->
   <div id="iaOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
-      <div class="tutorial-icon">✨</div>
-      <h3>Asistente IA de Lista</h3>
-      <p style="font-size: 0.85rem; margin-bottom: 12px;">Pídele a la IA los insumos o el menú que necesitas preparar:</p>
+      <div class="tutorial-icon">🤖✨</div>
+      <h3>ListAI: Tu Asistente de Compras</h3>
+      
+      <!-- Breve introducción del asistente ListAI -->
+      <div class="listai-intro-box">
+        <strong>¿Qué puede hacer ListAI por ti?</strong>
+        <ul>
+          <li>📝 <strong>Crear listas:</strong> Pídele recetas, menús semanales o compras específicas.</li>
+          <li>🎙️ <strong>Dictar por voz:</strong> Háblale directamente presionando el micrófono.</li>
+          <li>🧾 <strong>Escanear boletas:</strong> Lee tus boletas, extrae productos y aprende sus precios.</li>
+        </ul>
+      </div>
 
       <div style="margin-bottom: 12px; text-align: left;">
         <label for="selectListaDestinoIA" style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 4px;">
@@ -1324,10 +1359,27 @@
         </select>
       </div>
 
-      <textarea id="promptIAInput" class="input-product-large" style="width:100%; height: 90px; resize:none; font-size:0.9rem; padding:10px; margin-bottom:12px;" placeholder="Ej: Necesito un asado para 5 personas con presupuesto bajo, o insumos para 3 días de almuerzo sano..."></textarea>
+      <div style="margin-bottom: 12px; text-align: left;">
+        <label style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 4px;">
+          📸 Adjuntar Foto (Receta, Nota o Boleta):
+        </label>
+        <input type="file" id="inputImagenIA" accept="image/*" onchange="procesarImagenBase64(this)" style="font-size: 0.85rem; width: 100%;">
+        <div id="previewImagenContenedor" style="display: none; margin-top: 8px; position: relative; text-align: center;">
+          <img id="imgPreview" src="" alt="Previsualización" style="max-height: 120px; border-radius: 8px; border: 1px solid var(--border);">
+          <button type="button" onclick="quitarImagenIA()" style="position: absolute; top: 4px; right: 20px; background: var(--danger); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-weight: bold;">✕</button>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+        <textarea id="promptIAInput" class="input-product-large" style="flex: 1; height: 90px; resize: none; font-size: 0.9rem; padding: 10px;" placeholder="Ej: Pídele a ListAI insumos para un asado de 5 personas, o adjunta la foto de tu boleta..."></textarea>
+        
+        <button type="button" id="btnMicIA" onclick="toggleDictadoVozIA()" title="Dictar por voz" style="width: 48px; height: 48px; border-radius: 50%; border: none; background: #e0e7ff; color: #4338ca; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s;">
+          🎙️
+        </button>
+      </div>
 
       <button id="btnGenerarIA" class="btn-start-large" onclick="procesarPromptIA()" style="width:100%; background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); margin-bottom:10px;">
-        ✨ Generar Lista con IA
+        ✨ Generar Lista con ListAI
       </button>
 
       <button class="btn-tut prev" onclick="cerrarModalIA()" style="width: 100%;">Cerrar</button>
@@ -1519,9 +1571,11 @@
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
     let objetoReconocimientoVoz = null;
+    let reconocimientoVozIA = null;
     let productoPendienteDuplicado = null;
     let escanerProcesando = false;
     let modoFocusActivo = false;
+    let imagenBase64Cargada = null;
     
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
@@ -1571,7 +1625,7 @@
       }
     }
 
-    /* LÓGICA DEL ASISTENTE IA (USANDO LA NUEVA INTERACTIONS API DE GOOGLE) */
+    /* LÓGICA DEL ASISTENTE LISTAI */
     function abrirModalIA() {
       vibrarConfirmacion();
 
@@ -1602,87 +1656,176 @@
     function cerrarModalIA() {
       vibrarConfirmacion();
       document.getElementById('iaOverlay').classList.remove('active');
-    }
-
-async function procesarPromptIA() {
-  vibrarConfirmacion();
-
-  const promptTexto = document.getElementById('promptIAInput').value.trim();
-  const selectDestino = document.getElementById('selectListaDestinoIA');
-  const targetId = selectDestino ? selectDestino.value : idListaActiva;
-  const btnGen = document.getElementById('btnGenerarIA');
-
-  if (!promptTexto) {
-    mostrarToast("⚠️ Escribe lo que necesitas preparar o comprar");
-    return;
-  }
-
-  btnGen.disabled = true;
-  btnGen.innerHTML = "⏳ Generando insumos con IA...";
-
-  try {
-    const urlProxy = "https://ancient-firefly-200e.sabenedettoa.workers.dev/";
-
-    const response = await fetch(urlProxy, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ promptTexto })
-    });
-
-    const resData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(resData.error || `Error en el servidor de IA (${response.status})`);
-    }
-
-    const productosIA = resData;
-
-    const lista = coleccionListas.find(l => String(l.id) === String(targetId));
-    if (!lista) throw new Error("Lista destino no encontrada");
-    if (!lista.items) lista.items = [];
-
-    let agregadosCount = 0;
-    productosIA.forEach(prod => {
-      if (prod.texto) {
-        const normalizado = prod.texto.toLowerCase().trim();
-        const existente = lista.items.find(i => i.texto.toLowerCase().trim() === normalizado);
-
-        if (existente) {
-          existente.cantidad += (parseInt(prod.cantidad) || 1);
-        } else {
-          const catInfo = clasificarProducto(prod.texto);
-          lista.items.push({
-            id: Date.now() + Math.random(),
-            texto: prod.texto,
-            cantidad: parseInt(prod.cantidad) || 1,
-            precio: memoriaPreciosLocal[normalizado] || 0,
-            categoriaId: catInfo.id,
-            icono: catInfo.icono,
-            tienda: prod.tienda || 'Supermercado',
-            comprado: false
-          });
-        }
-        agregadosCount++;
+      if (reconocimientoVozIA) {
+        try { reconocimientoVozIA.stop(); } catch(e){}
+        reconocimientoVozIA = null;
       }
-    });
+      quitarImagenIA();
+    }
 
-    idListaActiva = lista.id;
-    guardarStorage();
-    sincronizarConFirebase();
-    cerrarModalIA();
-    document.getElementById('promptIAInput').value = '';
+    function toggleDictadoVozIA() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    verSeccion('lista-activa');
-    mostrarToast(`✨ Se agregaron ${agregadosCount} insumos con IA a "${lista.nombre}"`);
+      if (!SpeechRecognition) {
+        mostrarToast("⚠️ Tu navegador no soporta entrada de voz");
+        return;
+      }
 
-  } catch (err) {
-    console.error("Error al procesar con IA:", err);
-    mostrarToast(`⚠️ IA: ${err.message}`);
-  } finally {
-    btnGen.disabled = false;
-    btnGen.innerHTML = "✨ Generar Lista con IA";
-  }
-}
+      const btnMic = document.getElementById('btnMicIA');
+      const inputTexto = document.getElementById('promptIAInput');
+
+      if (reconocimientoVozIA) {
+        reconocimientoVozIA.stop();
+        reconocimientoVozIA = null;
+        btnMic.style.background = "#e0e7ff";
+        btnMic.innerHTML = "🎙️";
+        return;
+      }
+
+      reconocimientoVozIA = new SpeechRecognition();
+      reconocimientoVozIA.lang = 'es-CL';
+      reconocimientoVozIA.continuous = false;
+      reconocimientoVozIA.interimResults = false;
+
+      btnMic.style.background = "#ef4444";
+      btnMic.innerHTML = "🛑";
+      mostrarToast("🎤 Escuchando... habla ahora");
+
+      reconocimientoVozIA.onresult = (event) => {
+        const textoTranscrito = event.results[0][0].transcript;
+        inputTexto.value = inputTexto.value ? `${inputTexto.value} ${textoTranscrito}` : textoTranscrito;
+        mostrarToast("✨ Voz convertida a texto");
+      };
+
+      reconocimientoVozIA.onerror = (event) => {
+        console.error("Error en reconocimiento de voz ListAI:", event.error);
+        mostrarToast("⚠️ No se pudo entender el audio");
+      };
+
+      reconocimientoVozIA.onend = () => {
+        reconocimientoVozIA = null;
+        btnMic.style.background = "#e0e7ff";
+        btnMic.innerHTML = "🎙️";
+      };
+
+      reconocimientoVozIA.start();
+    }
+
+    function procesarImagenBase64(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          imagenBase64Cargada = e.target.result;
+          document.getElementById('imgPreview').src = imagenBase64Cargada;
+          document.getElementById('previewImagenContenedor').style.display = 'block';
+          mostrarToast("📸 Imagen cargada para ListAI");
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function quitarImagenIA() {
+      imagenBase64Cargada = null;
+      const inputImg = document.getElementById('inputImagenIA');
+      if (inputImg) inputImg.value = '';
+      const previewContainer = document.getElementById('previewImagenContenedor');
+      if (previewContainer) previewContainer.style.display = 'none';
+      const imgPrev = document.getElementById('imgPreview');
+      if (imgPrev) imgPrev.src = '';
+    }
+
+    async function procesarPromptIA() {
+      vibrarConfirmacion();
+
+      const promptTexto = document.getElementById('promptIAInput').value.trim();
+      const selectDestino = document.getElementById('selectListaDestinoIA');
+      const targetId = selectDestino ? selectDestino.value : idListaActiva;
+      const btnGen = document.getElementById('btnGenerarIA');
+
+      if (!promptTexto && !imagenBase64Cargada) {
+        mostrarToast("⚠️ Escribe, dicta o adjunta una foto para ListAI");
+        return;
+      }
+
+      btnGen.disabled = true;
+      btnGen.innerHTML = "⏳ ListAI analizando...";
+
+      try {
+        const urlProxy = "https://ancient-firefly-200e.sabenedettoa.workers.dev/";
+
+        const response = await fetch(urlProxy, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            promptTexto: promptTexto || "Lee esta imagen y extrae todos los insumos de supermercado o boleta.",
+            imagenBase64: imagenBase64Cargada
+          })
+        });
+
+        const resData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(resData.error || `Error en el servidor de ListAI (${response.status})`);
+        }
+
+        const productosIA = resData;
+
+        const lista = coleccionListas.find(l => String(l.id) === String(targetId));
+        if (!lista) throw new Error("Lista destino no encontrada");
+        if (!lista.items) lista.items = [];
+
+        let agregadosCount = 0;
+        productosIA.forEach(prod => {
+          if (prod.texto) {
+            const normalizado = prod.texto.toLowerCase().trim();
+            const precioCapturado = parseInt(prod.precio) || 0;
+
+            if (precioCapturado > 0) {
+              guardarPrecioEnMemoria(prod.texto, precioCapturado);
+            }
+
+            const existente = lista.items.find(i => i.texto.toLowerCase().trim() === normalizado);
+
+            if (existente) {
+              existente.cantidad += (parseInt(prod.cantidad) || 1);
+              if (precioCapturado > 0) existente.precio = precioCapturado;
+            } else {
+              const catInfo = clasificarProducto(prod.texto);
+              const precioFinal = precioCapturado > 0 ? precioCapturado : (memoriaPreciosLocal[normalizado] || 0);
+
+              lista.items.push({
+                id: Date.now() + Math.random(),
+                texto: prod.texto,
+                cantidad: parseInt(prod.cantidad) || 1,
+                precio: precioFinal,
+                categoriaId: catInfo.id,
+                icono: catInfo.icono,
+                tienda: prod.tienda || 'Supermercado',
+                comprado: false
+              });
+            }
+            agregadosCount++;
+          }
+        });
+
+        idListaActiva = lista.id;
+        guardarStorage();
+        sincronizarConFirebase();
+        cerrarModalIA();
+        document.getElementById('promptIAInput').value = '';
+
+        verSeccion('lista-activa');
+        mostrarToast(`✨ ListAI agregó ${agregadosCount} insumos a "${lista.nombre}"`);
+
+      } catch (err) {
+        console.error("Error al procesar con ListAI:", err);
+        mostrarToast(`⚠️ ListAI: ${err.message}`);
+      } finally {
+        btnGen.disabled = false;
+        btnGen.innerHTML = "✨ Generar Lista con ListAI";
+      }
+    }
+
     function mostrarFeedbackEscaner(exito, mensaje) {
       const pop = document.getElementById('scanFeedbackPop');
       const icon = document.getElementById('scanIconPop');
@@ -1790,8 +1933,8 @@ async function procesarPromptIA() {
       },
       {
         icon: '🍳',
-        title: 'Carga Recetas o Genera con IA',
-        desc: 'Presiona [🍳 Cargar Recetas] para recetas chilenas o usa [✨ Generar Lista con IA] para pedirle cualquier menú o compra en lenguaje natural.'
+        title: 'Carga Recetas o Genera con ListAI',
+        desc: 'Presiona [🍳 Cargar Recetas] para recetas chilenas o usa [✨ Generar Lista con ListAI] para pedirle cualquier menú o lectura de boletas.'
       },
       {
         icon: '📊',
@@ -3189,15 +3332,6 @@ async function procesarPromptIA() {
           .catch((err) => console.log('Error en SW:', err));
       });
     }
-    /*
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((reg) => console.log('Service Worker v50 listo:', reg.scope))
-      .catch((err) => console.log('Error en SW:', err));
-  });
-}
-*/
   </script>
 </body>
 </html>
