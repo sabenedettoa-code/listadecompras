@@ -4,11 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-  <!-- FUENTE GOOGLE FONTS: NUNITO (ULTRA LEGIBLE Y AMIGABLE) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
   <!-- GOOGLE ANALYTICS (GTAG.JS) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V2PS8SERD"></script>
   <script>
@@ -66,16 +61,15 @@
       --font-scale: 1;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0f172a;
-        --card-bg: #1e293b;
-        --text: #f8fafc;
-        --text-muted: #94a3b8;
-        --border: #334155;
-        --tab-bg: #334155;
-        --shadow: rgba(0, 0, 0, 0.3);
-      }
+    /* MODO OSCURO AUTOMÁTICO VÍA CLASE EN HTML */
+    html.theme-dark {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --tab-bg: #334155;
+      --shadow: rgba(0, 0, 0, 0.3);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -87,7 +81,7 @@
     }
 
     body {
-      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       display: flex;
@@ -96,10 +90,6 @@
       height: 100dvh;
       overflow: hidden;
       transition: background-color 0.3s, color 0.3s;
-    }
-
-    input, button, select, textarea {
-      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     .container {
@@ -112,7 +102,6 @@
       position: relative;
     }
 
-    /* CONTENEDOR CON DESLIZAMIENTO TÁCTIL EN TIEMPO REAL */
     .main-content {
       flex: 1;
       display: flex;
@@ -120,24 +109,51 @@
       overflow-y: auto;
       padding: 12px;
       -webkit-overflow-scrolling: touch;
+      position: relative;
       touch-action: pan-y;
-      will-change: transform;
     }
 
-    .main-content.swiping {
-      transition: none !important;
+    /* BARRA DE FECHA Y HORA EN TIEMPO REAL */
+    .clock-bar-live {
+      background: var(--tab-bg);
+      color: var(--primary);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-align: center;
+      padding: 4px 8px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.3px;
     }
 
-    .main-content.snap-back {
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-      transform: translateX(0px) !important;
+    /* ANIMACIONES DE PESTAÑAS (SWIPE) */
+    .tab-seccion {
+      width: 100%;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .tab-seccion.slide-in-right {
+      animation: slideInRight 0.25s forwards;
+    }
+
+    .tab-seccion.slide-in-left {
+      animation: slideInLeft 0.25s forwards;
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     .header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
+      padding: 10px 16px;
       background: var(--card-bg);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
@@ -146,12 +162,12 @@
 
     .app-title-box { display: flex; align-items: center; gap: 8px; }
     .header-logo-img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
-    .app-title { font-size: 1.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
+    .app-title { font-size: 1.2rem; font-weight: 800; margin: 0; white-space: nowrap; }
 
-    .header-right-controls { display: flex; align-items: center; gap: 8px; }
+    .header-right-controls { display: flex; align-items: center; gap: 6px; }
 
     .net-badge {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       padding: 3px 8px;
       border-radius: 10px;
       font-weight: 800;
@@ -161,6 +177,16 @@
     .net-badge.online { color: var(--success); }
     .net-badge.offline { color: var(--danger); }
 
+    .badge-users-online {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-weight: 800;
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
     .btn-menu-burger {
       background: var(--tab-bg);
       border: 1px solid var(--border);
@@ -168,7 +194,7 @@
       font-size: 1.1rem;
       color: var(--text);
       cursor: pointer;
-      padding: 5px 10px;
+      padding: 4px 8px;
     }
 
     .sidebar-menu {
@@ -200,7 +226,7 @@
       border-radius: 10px;
       text-align: left;
       font-size: 0.9rem;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--text);
       cursor: pointer;
       display: flex;
@@ -223,7 +249,7 @@
       border: none;
       padding: 10px 4px;
       font-size: 0.85rem;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--text-muted);
       border-radius: 8px;
       cursor: pointer;
@@ -257,7 +283,7 @@
       margin-bottom: 12px;
     }
 
-    .welcome-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; font-weight: 600; }
+    .welcome-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; }
 
     .welcome-features-list {
       display: flex;
@@ -276,7 +302,7 @@
       padding: 10px 12px;
       border-radius: 12px;
       font-size: 0.88rem;
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .btn-start-large {
@@ -287,7 +313,7 @@
       padding: 16px;
       border-radius: 16px;
       font-size: 1.1rem;
-      font-weight: 900;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -328,8 +354,8 @@
       margin: 0;
     }
 
-    .home-card h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--text); font-weight: 800; }
-    .home-card p { margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; font-weight: 600; }
+    .home-card h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--text); }
+    .home-card p { margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
 
     .home-actions {
       display: flex;
@@ -383,7 +409,6 @@
       color: var(--primary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      font-weight: 800;
     }
 
     .add-product-card {
@@ -415,7 +440,7 @@
       color: var(--text);
       border-radius: 10px;
       font-size: 0.95rem;
-      font-weight: 700;
+      font-weight: 600;
       outline: none;
       min-width: 0;
     }
@@ -438,7 +463,7 @@
       border: none;
       background: transparent;
       color: var(--text);
-      font-weight: 800;
+      font-weight: 700;
       font-size: 0.88rem;
       outline: none;
     }
@@ -452,7 +477,7 @@
       background: transparent;
       color: var(--text);
       font-size: 0.8rem;
-      font-weight: 800;
+      font-weight: 700;
       outline: none;
     }
 
@@ -518,7 +543,7 @@
       padding: 6px 12px;
       border-radius: 20px;
       font-size: 0.78rem;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -556,7 +581,7 @@
       border: none;
       padding: 6px 12px;
       border-radius: 8px;
-      font-weight: 800;
+      font-weight: 700;
       font-size: 0.85rem;
       cursor: pointer;
       display: flex;
@@ -631,8 +656,8 @@
       cursor: pointer;
     }
 
-    .list-info h4 { margin: 0 0 2px 0; font-size: 0.95rem; font-weight: 800; }
-    .list-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+    .list-info h4 { margin: 0 0 2px 0; font-size: 0.95rem; }
+    .list-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
 
     .card-actions { display: flex; gap: 4px; }
 
@@ -673,18 +698,28 @@
     
     .item-name-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
     .item-name { 
-      font-weight: 800; font-size: 0.92rem; word-break: break-word;
+      font-weight: 700; font-size: 0.92rem; word-break: break-word;
     }
+
+    /* BADGES DE COMPARACIÓN Y HISTORIAL DE INFLACIÓN */
+    .badge-price-diff {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+    .badge-price-diff.up { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .badge-price-diff.down { background: rgba(16, 185, 129, 0.15); color: var(--success); }
     
     .badge-tienda-tag {
       font-size: 0.68rem;
       padding: 2px 6px;
       border-radius: 6px;
       background: var(--tab-bg);
-      font-weight: 800;
+      font-weight: 700;
     }
 
-    .item-price-status { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
+    .item-price-status { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
 
     .item-controls-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
@@ -697,7 +732,7 @@
       background: var(--bg);
       color: var(--text);
       font-size: 0.8rem;
-      font-weight: 800;
+      font-weight: 700;
     }
 
     .qty-controls {
@@ -715,7 +750,7 @@
       border: none;
       color: var(--text);
       cursor: pointer;
-      font-weight: 800;
+      font-weight: bold;
       width: 24px;
       height: 24px;
       display: flex;
@@ -738,8 +773,8 @@
       justify-content: center;
     }
 
-    .btn-check-action { color: var(--success); font-weight: 800; }
-    .btn-uncheck-action { color: var(--primary); font-weight: 800; }
+    .btn-check-action { color: var(--success); font-weight: bold; }
+    .btn-uncheck-action { color: var(--primary); font-weight: bold; }
 
     .comprado { text-decoration: line-through; opacity: 0.5; }
 
@@ -752,7 +787,7 @@
 
     .sub-btn {
       flex: 1; padding: 8px; border: none; background: none;
-      color: var(--text-muted); font-weight: 800; font-size: 0.82rem; border-radius: 8px;
+      color: var(--text-muted); font-weight: 700; font-size: 0.82rem; border-radius: 8px;
       cursor: pointer;
       text-align: center;
     }
@@ -773,7 +808,7 @@
       color: var(--text);
       border-radius: 10px;
       font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 600;
       outline: none;
     }
 
@@ -803,8 +838,8 @@
     }
 
     .budget-item { text-align: center; }
-    .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; font-weight: 700; }
-    .budget-val { font-weight: 900; font-size: 0.95rem; }
+    .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; }
+    .budget-val { font-weight: 800; font-size: 0.95rem; }
     .budget-val.spent { color: var(--success); }
 
     .ad-container-native {
@@ -825,13 +860,12 @@
       border-top: 1px solid var(--border);
       padding-top: 12px;
       line-height: 1.5;
-      font-weight: 600;
     }
 
     .app-credits a {
       color: var(--primary);
       text-decoration: none;
-      font-weight: 800;
+      font-weight: 700;
     }
 
     .toast {
@@ -844,10 +878,10 @@
       padding: 10px 18px;
       border-radius: 30px;
       font-size: 0.9rem;
-      font-weight: 700;
+      font-weight: 600;
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
       opacity: 0;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s ease;
       z-index: 8000;
       display: flex;
       align-items: center;
@@ -878,7 +912,7 @@
       z-index: 8500;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.3s ease;
     }
 
     .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
@@ -895,12 +929,6 @@
       border: 3px solid var(--primary);
       max-height: 90vh;
       overflow-y: auto;
-      transform: scale(0.95);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .tutorial-overlay.active .tutorial-card {
-      transform: scale(1);
     }
 
     .tutorial-icon { font-size: 3rem; margin-bottom: 8px; }
@@ -918,7 +946,7 @@
     }
 
     .tutorial-card h3 { margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 800; }
-    .tutorial-card p { font-size: 0.95rem; line-height: 1.4; color: var(--text-muted); margin: 0 0 18px 0; font-weight: 600; }
+    .tutorial-card p { font-size: 0.95rem; line-height: 1.4; color: var(--text-muted); margin: 0 0 18px 0; }
 
     .tutorial-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
@@ -947,7 +975,6 @@
       color: var(--text);
       padding: 0;
       margin: 14px 0;
-      font-weight: 600;
     }
 
     .privacy-list li {
@@ -964,7 +991,10 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin: 14px 0;
+      margin: 10px 0 14px 0;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
 
     .recipe-item-card {
@@ -982,8 +1012,19 @@
       transform: translateY(-2px);
     }
 
-    .recipe-item-card h4 { margin: 6px 0 2px 0; font-size: 0.92rem; font-weight: 800; }
-    .recipe-item-card p { margin: 0; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .recipe-item-card h4 { margin: 6px 0 2px 0; font-size: 0.92rem; }
+    .recipe-item-card p { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
+
+    .counter-recipes-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
 
     #reader {
       width: 100%;
@@ -1032,7 +1073,8 @@
     .focus-mode-active .add-product-card,
     .focus-mode-active .sub-tabs,
     .focus-mode-active .search-box-container,
-    .focus-mode-active .header-top {
+    .focus-mode-active .header-top,
+    .focus-mode-active .clock-bar-live {
       display: none !important;
     }
 
@@ -1061,7 +1103,6 @@
       line-height: 1.35;
       text-align: left;
       margin-bottom: 12px;
-      font-weight: 600;
     }
 
     .listai-intro-box ul {
@@ -1078,26 +1119,28 @@
       box-shadow: none;
     }
 
-    /* PANTALLA COMPLETA EN COMPUTADORES Y MONITORES (PC / LAPTOP) */
+    /* 💻 OPTIMIZACIÓN EXCLUSIVA PARA COMPUTADORES Y MONITORES (PC / LAPTOP) */
     @media (min-width: 768px) {
       body {
-        align-items: stretch;
+        align-items: center;
+        background-color: #f1f5f9;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body { background-color: #020617; }
       }
 
       .container {
-        max-width: 100% !important;
-        height: 100vh !important;
-        height: 100dvh !important;
-        border-radius: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
+        max-width: 880px;
+        height: 92vh;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
       }
 
       .main-content {
-        padding: 24px 40px;
-        max-width: 1200px;
-        margin: 0 auto;
-        width: 100%;
+        padding: 20px 24px;
       }
 
       .home-actions {
@@ -1107,13 +1150,13 @@
       }
 
       .home-card {
-        padding: 32px;
+        padding: 28px;
       }
 
       #contenedorProductosCategorizados ul {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-        gap: 12px;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
       }
 
       #contenedorProductosCategorizados li {
@@ -1136,12 +1179,18 @@
 
   <div class="container" id="appContainer">
     
+    <!-- BARRA EN TIEMPO REAL DE FECHA Y HORA -->
+    <div class="clock-bar-live" id="clockBarLive">
+      🕒 Cargando hora local...
+    </div>
+
     <div class="header-top">
       <div class="app-title-box">
         <img src="/icon-512.png" alt="Logo Mis Listas" class="header-logo-img">
         <h1 class="app-title">Mis Listas</h1>
       </div>
       <div class="header-right-controls">
+        <span id="badgeUsuariosVivo" class="badge-users-online" style="display: none;">👥 1 en vivo</span>
         <span id="netStatusBadge" class="net-badge online">🟢 Online</span>
         <button class="btn-menu-burger" onclick="toggleSidebar()">☰</button>
       </div>
@@ -1154,7 +1203,6 @@
       </div>
 
       <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();">💡 Mantener Pantalla Encendida</button>
-      <button class="btn-sidebar-tool" onclick="abrirModalAcercaDe(); toggleSidebar();">ℹ️ Acerca de esta App</button>
       <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
       
       <div class="compact-field" style="margin-top: 10px;">
@@ -1178,7 +1226,7 @@
 
     <div class="main-content" id="mainContentArea">
       
-      <div id="secPortada" style="display: none;">
+      <div id="secPortada" class="tab-seccion" style="display: none;">
         <div class="welcome-hero">
           <img src="/icon-512.png" alt="Mis Listas de Compras" class="welcome-logo-img">
           <h2 class="welcome-title">Mis Listas de Compras</h2>
@@ -1214,11 +1262,11 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 10 de agosto de 2026</span>
         </div>
       </div>
 
-      <div id="secInicio">
+      <div id="secInicio" class="tab-seccion">
         <div class="home-card">
           <div class="home-logo-box">
             <img src="/icon-512.png" alt="Logo Mis Listas de Compras" class="home-app-logo">
@@ -1252,11 +1300,11 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 10 de agosto de 2026</span>
         </div>
       </div>
 
-      <div id="secMisListas" style="display: none;">
+      <div id="secMisListas" class="tab-seccion" style="display: none;">
         <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 10px;">
           <input type="text" id="codigoUnirseInput" class="input-product-large" placeholder="🔑 Ingresar código de lista (ej: A8K9P2)..." style="flex:1; text-transform: uppercase;">
           <button class="btn-main-add" onclick="unirsePorCodigo()" style="flex: initial; min-width: 90px; background-color: #25d366;">Unirse</button>
@@ -1276,7 +1324,7 @@
         <div id="contenedorListas"></div>
       </div>
 
-      <div id="secListaActiva" style="display: none;">
+      <div id="secListaActiva" class="tab-seccion" style="display: none;">
         <div class="header-active">
           <button class="btn-back" onclick="verSeccion('mis-listas')">← Listas</button>
           <div style="text-align: center;">
@@ -1470,35 +1518,6 @@
     </div>
   </div>
 
-  <!-- MODAL ACERCA DE LA APLICACIÓN -->
-  <div id="acercaDeOverlay" class="tutorial-overlay">
-    <div class="tutorial-card" style="text-align: left;">
-      <div style="text-align: center;" class="tutorial-icon">ℹ️</div>
-      <h3 style="text-align: center; margin-bottom: 12px;">Acerca de Mis Listas de Compras</h3>
-      
-      <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text); margin-bottom: 10px;">
-        <strong>🎯 Mi Objetivo:</strong><br>
-        Esta plataforma fue creada con el fin de ofrecer una herramienta 100% gratuita, rápida y accesible para facilitar la planificación y realización de las compras en supermercados, ferias y comercios de Chile. Se busca eliminar el estrés del proceso de compra mediante tecnología útil como dictado por voz, escáneres inteligentes y asistencia por inteligencia artificial (ListAI), sin necesidad de registros ni recolección de datos personales.
-      </p>
-
-      <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text); margin-bottom: 10px;">
-        Está pensada para adultos mayores para simplificar la manera en que anotan los productos que necesitan.
-      </p>
-
-      <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text); margin-bottom: 14px;">
-        Fue creada con mucho cariño y sin fines de lucro por un joven chileno de 16 años.
-      </p>
-
-      <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
-        🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
-        👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 3.5 (Agosto 2026)
-      </div>
-
-      <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
-    </div>
-  </div>
-
   <div id="duplicateOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div class="tutorial-icon">💡</div>
@@ -1556,70 +1575,113 @@
     </div>
   </div>
 
+  <!-- MODAL DE RECETAS CHILENAS -->
   <div id="recetasOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div class="tutorial-icon">🍳</div>
       <h3>Recetas Chilenas Típicas</h3>
-      <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista destino y el plato para cargar sus ingredientes:</p>
+      
+      <span class="counter-recipes-badge" id="badgeContadorRecetas">🇨🇱 17 recetas disponibles</span>
+
+      <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista y busca o elige tu plato:</p>
 
       <div style="margin-bottom: 10px; text-align: left;">
         <label for="selectListaDestinoReceta" style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 4px;">
           📌 Cargar ingredientes en:
         </label>
-        <select id="selectListaDestinoReceta" class="input-product-large" style="width: 100%; height: 44px; padding: 6px 10px; font-size: 0.95rem;">
+        <select id="selectListaDestinoReceta" class="input-product-large" style="width: 100%; height: 42px; padding: 6px 10px; font-size: 0.95rem;">
         </select>
       </div>
 
-      <div class="recipe-grid">
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('cazuela')">
+      <div style="margin-bottom: 10px;">
+        <input type="text" id="inputBuscarReceta" class="input-product-large" placeholder="🔍 Buscar receta o ingrediente..." oninput="filtrarRecetasChilenas()" style="width: 100%; font-size: 0.88rem; padding: 8px 12px;">
+      </div>
+
+      <div class="recipe-grid" id="contenedorGridRecetas">
+        <div class="recipe-item-card" data-nombre="cazuela cazuela de vacuno carne papa zapallo choclo arroz" onclick="cargarIngredientesReceta('cazuela')">
           <div style="font-size: 2rem;">🍲</div>
           <h4>Cazuela de Vacuno</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pastel')">
+        <div class="recipe-item-card" data-nombre="pastel pastel de choclo pino pollo cebolla huevo" onclick="cargarIngredientesReceta('pastel')">
           <div style="font-size: 2rem;">🥧</div>
           <h4>Pastel de Choclo</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('porotos')">
+        <div class="recipe-item-card" data-nombre="porotos porotos con riendas tallarines zapallo longaniza" onclick="cargarIngredientesReceta('porotos')">
           <div style="font-size: 2rem;">🫘</div>
           <h4>Porotos c/ Riendas</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('carbonada')">
+        <div class="recipe-item-card" data-nombre="carbonada carbonada casera carne papa zapallo choclo" onclick="cargarIngredientesReceta('carbonada')">
           <div style="font-size: 2rem;">🍲</div>
           <h4>Carbonada Casera</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('charquican')">
+        <div class="recipe-item-card" data-nombre="charquican charquican con huevo carne molida papa zapallo" onclick="cargarIngredientesReceta('charquican')">
           <div style="font-size: 2rem;">🥘</div>
           <h4>Charquicán c/ Huevo</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pebre')">
+        <div class="recipe-item-card" data-nombre="pebre pebre chileno tomate cebolla cilantro aji" onclick="cargarIngredientesReceta('pebre')">
           <div style="font-size: 2rem;">🌶️</div>
           <h4>Pebre Chileno</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pantrucas')">
+        <div class="recipe-item-card" data-nombre="pantrucas pantrucas caseras harina carne papa" onclick="cargarIngredientesReceta('pantrucas')">
           <div style="font-size: 2rem;">🥣</div>
           <h4>Pantrucas Caseras</h4>
           <p>9 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('completo')">
+        <div class="recipe-item-card" data-nombre="completo completo italiano vienesa pan palta tomate mayo" onclick="cargarIngredientesReceta('completo')">
           <div style="font-size: 2rem;">🌭</div>
           <h4>Completo Italiano</h4>
           <p>5 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('empanadas')">
+        <div class="recipe-item-card" data-nombre="empanadas empanadas de pino carne cebolla huevo aceituna" onclick="cargarIngredientesReceta('empanadas')">
           <div style="font-size: 2rem;">🥟</div>
           <h4>Empanadas de Pino</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('sopaipillas')">
+        <div class="recipe-item-card" data-nombre="sopaipillas sopaipillas pasadas zapallo chancaca harina" onclick="cargarIngredientesReceta('sopaipillas')">
           <div style="font-size: 2rem;">🎃</div>
           <h4>Sopaipillas Pasadas</h4>
           <p>7 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" data-nombre="humitas humita choclo albahaca cebolla" onclick="cargarIngredientesReceta('humitas')">
+          <div style="font-size: 2rem;">🌽</div>
+          <h4>Humitas Caseras</h4>
+          <p>6 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" data-nombre="caldillo caldillo de congrio pescado vino crema" onclick="cargarIngredientesReceta('caldillo')">
+          <div style="font-size: 2rem;">🐟</div>
+          <h4>Caldillo de Congrio</h4>
+          <p>8 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" data-nombre="parmesana machas a la parmesana queso mantequilla vino" onclick="cargarIngredientesReceta('parmesana')">
+          <div style="font-size: 2rem;">🦪</div>
+          <h4>Machas a la Parmesana</h4>
+          <p>5 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" data-nombre="pobre bistec a lo pobre carne papas cebolla huevo" onclick="cargarIngredientesReceta('pobre')">
+          <div style="font-size: 2rem;">🍳</div>
+          <h4>Bistec a lo Pobre</h4>
+          <p>5 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" data-nombre="paila paila marina mariscos chorito almeja camaron" onclick="cargarIngredientesReceta('paila')">
+          <div style="font-size: 2rem;">🦪</div>
+          <h4>Paila Marina</h4>
+          <p>8 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" data-nombre="asada leche asada postre leche huevo azucar" onclick="cargarIngredientesReceta('lecheasada')">
+          <div style="font-size: 2rem;">🍮</div>
+          <h4>Leche Asada</h4>
+          <p>5 ingredientes</p>
+        </div>
+        <div class="recipe-item-card" data-nombre="mote mote con huesillo chancaca canela" onclick="cargarIngredientesReceta('mote')">
+          <div style="font-size: 2rem;">🍑</div>
+          <h4>Mote con Huesillo</h4>
+          <p>4 ingredientes</p>
         </div>
       </div>
 
@@ -1680,6 +1742,7 @@
     let diferidoPromptInstalacion = null;
     let textoBusquedaActual = '';
     let dbListenerRef = null;
+    let presenceRef = null;
     let html5QrcodeScanner = null;
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
@@ -1693,14 +1756,41 @@
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
 
-    // GESTIÓN DE SWIPE EN TIEMPO REAL
-    const ordenSeccionesNav = ['inicio', 'mis-listas', 'lista-activa'];
-    let inicioXTouch = 0;
-    let inicioYTouch = 0;
-    let deltaXTouch = 0;
+    const ORDEN_PESTAÑAS = ['inicio', 'mis-listas', 'lista-activa'];
+    let touchStartX = 0;
+    let touchStartY = 0;
 
     window.addEventListener('online', actualizarEstadoRed);
     window.addEventListener('offline', actualizarEstadoRed);
+
+    // MODO OSCURO AUTOMÁTICO VÍA HORA + RELOJ EN VIVO
+  function actualizarRelojYModoOscuro() {
+      const ahora = new Date();
+      const horas = ahora.getHours();
+      
+      // Aplicar modo oscuro entre las 20:00 y las 07:00 hrs
+      if (horas >= 20 || horas < 7) {
+        document.documentElement.classList.add('theme-dark');
+      } else {
+        document.documentElement.classList.remove('theme-dark');
+      }
+
+      // Formateo de fecha completa (sin abreviar) y hora en formato 24 horas
+      const opcionesFecha = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      let fechaTxt = ahora.toLocaleDateString('es-CL', opcionesFecha);
+      
+      // Capitalizar la primera letra del día de la semana
+      fechaTxt = fechaTxt.charAt(0).toUpperCase() + fechaTxt.slice(1);
+
+      // Formato de hora 24 horas (HH:mm:ss)
+      const horaTxt = ahora.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+      
+      const clockEl = document.getElementById('clockBarLive');
+      if (clockEl) {
+        clockEl.textContent = `🕒 ${fechaTxt} - ${horaTxt}`;
+      }
+    }
+    setInterval(actualizarRelojYModoOscuro, 1000);
 
     function toggleSidebar() {
       document.getElementById('sidebarMenu').classList.toggle('active');
@@ -1714,16 +1804,6 @@
     function cerrarModalPrivacidad() {
       vibrarConfirmacion();
       document.getElementById('privacyOverlay').classList.remove('active');
-    }
-
-    function abrirModalAcercaDe() {
-      vibrarConfirmacion();
-      document.getElementById('acercaDeOverlay').classList.add('active');
-    }
-
-    function cerrarModalAcercaDe() {
-      vibrarConfirmacion();
-      document.getElementById('acercaDeOverlay').classList.remove('active');
     }
 
     function actualizarEstadoRed() {
@@ -2384,11 +2464,35 @@
         select.appendChild(option);
       });
 
+      document.getElementById('inputBuscarReceta').value = '';
+      filtrarRecetasChilenas();
+
       document.getElementById('recetasOverlay').classList.add('active');
     }
 
     function cerrarModalRecetas() {
       document.getElementById('recetasOverlay').classList.remove('active');
+    }
+
+    function filtrarRecetasChilenas() {
+      const q = document.getElementById('inputBuscarReceta').value.toLowerCase().trim();
+      const tarjetas = document.querySelectorAll('#contenedorGridRecetas .recipe-item-card');
+      let visibles = 0;
+
+      tarjetas.forEach(card => {
+        const nombre = card.getAttribute('data-nombre') || '';
+        if (!q || nombre.includes(q)) {
+          card.style.display = 'block';
+          visibles++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      const badge = document.getElementById('badgeContadorRecetas');
+      if (badge) {
+        badge.textContent = `🇨🇱 ${visibles} receta${visibles !== 1 ? 's' : ''} disponible${visibles !== 1 ? 's' : ''}`;
+      }
     }
 
     function cargarIngredientesReceta(recetaKey) {
@@ -2413,7 +2517,14 @@
         pantrucas: ["Harina 1kg", "Agua tibia", "Carne molida", "Cebolla", "Zanahoria", "Papas", "Huevo", "Caldo de carne", "Cilantro"],
         completo: ["Vienesas", "Pan de completo", "Paltas", "Tomates 1kg", "Mayonesa"],
         empanadas: ["Harina 1kg", "Manteca", "Carne picada 1kg", "Cebolla 1kg", "Huevos", "Aceitunas", "Pasas"],
-        sopaipillas: ["Zapallo", "Harina 1kg", "Manteca", "Chancaca", "Cáscara de naranja", "Clavo de olor", "Maicena"]
+        sopaipillas: ["Zapallo", "Harina 1kg", "Manteca", "Chancaca", "Cáscara de naranja", "Clavo de olor", "Maicena"],
+        humitas: ["Choclo pastelero", "Albahaca fresca", "Cebolla", "Manteca", "Leche", "Sal y Azúcar"],
+        caldillo: ["Congrio dorado", "Cebolla", "Ajo", "Tomates", "Pimentón", "Vino blanco", "Crema de leche", "Cilantro"],
+        parmesana: ["Machas frescas", "Queso parmesano", "Mantequilla", "Vino blanco", "Limón"],
+        pobre: ["Bistec de lomo", "Papas para freír", "Cebolla", "Huevos", "Aceite para freír"],
+        paila: ["Choritos", "Almejas", "Machas", "Camarones", "Pescado en trozos", "Vino blanco", "Ajo y Cebolla", "Cilantro"],
+        lecheasada: ["Leche entera", "Huevos 6 u", "Azúcar", "Esencia de vainilla", "Canela"],
+        mote: ["Huesillos secos", "Mote de trigo", "Chancaca", "Canela en rama"]
       };
 
       const ingredientes = recetas[recetaKey] || [];
@@ -2522,6 +2633,31 @@
         document.getElementById('toast').classList.remove('show');
       }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      actualizarRelojYModoOscuro();
+      cargarTamanoLetra();
+      cargarStorage();
+      cargarOrdenCategorias();
+      cargarMemoriaPrecios();
+      procesarListaRecibidaPorURL();
+      actualizarEstadoRed();
+      inicializarGestosSwipe();
+
+      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btnInstalar = document.getElementById('btnInstalarPWA');
+        if (btnInstalar) btnInstalar.style.display = 'none';
+      }
+
+      const portadaVista = localStorage.getItem('portadaVista_v1');
+      if (!portadaVista) {
+        verSeccion('portada');
+      } else {
+        verSeccion('inicio');
+      }
+
+      comprobarTutorialPrimeraVez();
+    });
 
     function ingresarAppDesdePortada() {
       vibrarConfirmacion();
@@ -2643,8 +2779,12 @@
       });
     }
 
-    function verSeccion(seccion) {
+    // GESTIÓN DE PESTAÑAS Y ANIMACIONES CON SWIPE
+    let seccionActualNombre = 'inicio';
+
+    function verSeccion(seccion, direccionAnimacion = '') {
       vibrarConfirmacion();
+      
       const secPortada = document.getElementById('secPortada');
       const secInicio = document.getElementById('secInicio');
       const secMisListas = document.getElementById('secMisListas');
@@ -2655,45 +2795,92 @@
       const navMisListas = document.getElementById('navMisListas');
       const navListaActiva = document.getElementById('navListaActiva');
 
-      secPortada.style.display = 'none';
-      secInicio.style.display = 'none';
-      secMisListas.style.display = 'none';
-      secListaActiva.style.display = 'none';
+      const seccionesMap = {
+        'portada': secPortada,
+        'inicio': secInicio,
+        'mis-listas': secMisListas,
+        'lista-activa': secListaActiva
+      };
+
+      if (seccion !== 'portada' && coleccionListas.length === 0 && seccion === 'lista-activa') {
+        mostrarToast("⚠️ Primero debes crear una lista de compras");
+        verSeccion('mis-listas');
+        return;
+      }
+
+      Object.values(seccionesMap).forEach(sec => {
+        if (sec) {
+          sec.style.display = 'none';
+          sec.classList.remove('slide-in-right', 'slide-in-left');
+        }
+      });
 
       navInicio.classList.remove('active');
       navMisListas.classList.remove('active');
       navListaActiva.classList.remove('active');
 
+      const objetivoSec = seccionesMap[seccion];
+
       if (seccion === 'portada') {
         secPortada.style.display = 'block';
         barraNavegacion.style.display = 'none';
-      } else if (seccion === 'inicio') {
-        secInicio.style.display = 'block';
-        barraNavegacion.style.display = 'flex';
-        navInicio.classList.add('active');
-        renderizarInicio();
-      } else if (seccion === 'mis-listas') {
-        secMisListas.style.display = 'block';
-        barraNavegacion.style.display = 'flex';
-        navMisListas.classList.add('active');
-        renderizarListas();
       } else {
-        if (coleccionListas.length === 0) {
-          mostrarToast("⚠️ Primero debes crear una lista de compras");
-          verSeccion('mis-listas');
-          return;
-        }
+        barraNavegacion.style.display = 'flex';
+        
+        if (seccion === 'inicio') navInicio.classList.add('active');
+        if (seccion === 'mis-listas') navMisListas.classList.add('active');
+        if (seccion === 'lista-activa') navListaActiva.classList.add('active');
 
-        if (!idListaActiva) {
+        if (seccion === 'lista-activa' && !idListaActiva && coleccionListas.length > 0) {
           idListaActiva = coleccionListas[0].id;
         }
 
-        secListaActiva.style.display = 'block';
-        barraNavegacion.style.display = 'flex';
-        navListaActiva.classList.add('active');
-        escucharSincronizacionFirebase(idListaActiva);
-        renderizarProductos();
+        if (objetivoSec) {
+          objetivoSec.style.display = 'block';
+          if (direccionAnimacion) {
+            objetivoSec.classList.add(direccionAnimacion === 'derecha' ? 'slide-in-right' : 'slide-in-left');
+          }
+        }
+
+        if (seccion === 'inicio') renderizarInicio();
+        if (seccion === 'mis-listas') renderizarListas();
+        if (seccion === 'lista-activa') {
+          escucharSincronizacionFirebase(idListaActiva);
+          renderizarProductos();
+        }
       }
+
+      seccionActualNombre = seccion;
+    }
+
+    // INICIALIZADOR DE GESTOS TÁCTILES (SWIPE EN PANTALLA)
+    function inicializarGestosSwipe() {
+      const area = document.getElementById('mainContentArea');
+      if (!area) return;
+
+      area.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }, { passive: true });
+
+      area.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
+        
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+
+        if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+          const idxActual = ORDEN_PESTAÑAS.indexOf(seccionActualNombre);
+          if (idxActual === -1) return;
+
+          if (diffX < 0 && idxActual < ORDEN_PESTAÑAS.length - 1) {
+            verSeccion(ORDEN_PESTAÑAS[idxActual + 1], 'derecha');
+          } else if (diffX > 0 && idxActual > 0) {
+            verSeccion(ORDEN_PESTAÑAS[idxActual - 1], 'izquierda');
+          }
+        }
+      }, { passive: true });
     }
 
     function renderizarInicio() {
@@ -2825,9 +3012,12 @@
       });
     }
 
+    // SINCRONIZACIÓN E INDICADOR "EN VIVO" CON FIREBASE
     function escucharSincronizacionFirebase(listaId) {
       if (dbListenerRef) dbListenerRef.off();
+      if (presenceRef) presenceRef.off();
 
+      // Sincronización de lista
       dbListenerRef = db.ref('listas/' + listaId);
       dbListenerRef.on('value', (snapshot) => {
         const datosNube = snapshot.val();
@@ -2846,16 +3036,34 @@
           }
         }
       });
+
+      // Registro de presencia en tiempo real
+      const myPresenceRef = db.ref(`listas/${listaId}/presencia`).push();
+      myPresenceRef.onDisconnect().remove();
+      myPresenceRef.set(true);
+
+      presenceRef = db.ref(`listas/${listaId}/presencia`);
+      presenceRef.on('value', (snapshot) => {
+        const presencias = snapshot.val() || {};
+        const count = Object.keys(presencias).length;
+        const badgeVivo = document.getElementById('badgeUsuariosVivo');
+        if (badgeVivo) {
+          if (count > 0) {
+            badgeVivo.style.display = 'inline-block';
+            badgeVivo.textContent = `👥 ${count} en vivo`;
+          } else {
+            badgeVivo.style.display = 'none';
+          }
+        }
+      });
     }
 
     function sincronizarConFirebase() {
       if (!idListaActiva || !navigator.onLine) return;
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (lista) {
-        db.ref('listas/' + lista.id).set({
-          nombre: lista.nombre,
-          items: lista.items || []
-        });
+        db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
+        db.ref('listas/' + lista.id + '/items').set(lista.items || []);
       }
     }
 
@@ -2867,10 +3075,8 @@
       mostrarToast("☁️ Guardando en la nube para sincronizar...");
 
       try {
-        await db.ref('listas/' + lista.id).set({
-          nombre: lista.nombre,
-          items: lista.items || []
-        });
+        await db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
+        await db.ref('listas/' + lista.id + '/items').set(lista.items || []);
 
         const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
         const mensajeTexto = `🛒 Te comparto la lista "${lista.nombre}" en vivo.\n🔑 Código de acceso: ${lista.id}`;
@@ -3305,6 +3511,23 @@
       fillProgreso.style.width = `${pct}%`;
     }
 
+    // CALCULAR HISTORIAL DE INFLACIÓN O COMPARACIÓN DE PRECIOS
+    function obtenerBadgeVariacionPrecio(textoNorm, precioActual) {
+      if (!precioActual || precioActual <= 0) return '';
+      const precioAnterior = memoriaPreciosLocal[textoNorm];
+      if (!precioAnterior || precioAnterior === precioActual) return '';
+
+      const diff = precioActual - precioAnterior;
+      const pct = Math.round((diff / precioAnterior) * 100);
+
+      if (diff > 0) {
+        return `<span class="badge-price-diff up" title="Antes: $${formatoCLP.format(precioAnterior)}">📈 +${pct}%</span>`;
+      } else if (diff < 0) {
+        return `<span class="badge-price-diff down" title="Antes: $${formatoCLP.format(precioAnterior)}">📉 ${pct}%</span>`;
+      }
+      return '';
+    }
+
     function renderizarProductos() {
       const contenedor = document.getElementById('contenedorProductosCategorizados');
       const titulo = document.getElementById('tituloListaActiva');
@@ -3360,6 +3583,7 @@
           itemsDeCat.forEach(item => {
             const li = document.createElement('li');
             const subtotal = item.cantidad * (item.precio || 0);
+            const badgeInflacion = obtenerBadgeVariacionPrecio(item.texto.toLowerCase().trim(), item.precio);
 
             let botonAccionPrincipal = '';
             if (!item.comprado) {
@@ -3382,6 +3606,7 @@
                   <div class="item-name-row">
                     <span class="item-name">${escapeHtml(item.texto)}</span>
                     <span class="badge-tienda-tag">${item.tienda || 'Súper'}</span>
+                    ${badgeInflacion}
                   </div>
                   <div class="item-price-status">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}</div>
                 </div>
