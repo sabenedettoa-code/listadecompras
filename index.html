@@ -974,6 +974,94 @@
       transform: scale(1);
     }
 
+    .budget-modal-card {
+      max-width: 390px;
+      border-color: var(--primary);
+      padding: 26px 22px 22px;
+    }
+
+    .budget-modal-copy {
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .budget-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .budget-input-wrap:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+
+    .budget-currency {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .budget-modal-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 1.35rem;
+      font-weight: 900;
+      min-width: 0;
+    }
+
+    .budget-modal-hint {
+      min-height: 20px;
+      margin-bottom: 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .budget-quick-options {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .budget-quick-btn {
+      border: 1px solid var(--border);
+      background: var(--tab-bg);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .budget-disable-btn {
+      width: 100%;
+      margin-top: 10px;
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 8px;
+    }
+
     .tutorial-icon { font-size: 3rem; margin-bottom: 8px; }
 
     .tutorial-badge {
@@ -1201,6 +1289,76 @@
         transition: transform 0.15s ease, background-color 0.15s ease;
       }
     }
+
+
+    /* LISTAI 4.2 */
+    .listai-quick-prompts { display:flex; gap:6px; overflow-x:auto; padding:2px 0 8px; scrollbar-width:none; }
+    .listai-quick-prompts::-webkit-scrollbar { display:none; }
+    .listai-chip { flex:0 0 auto; border:1px solid rgba(139,92,246,.35); background:rgba(139,92,246,.08); color:var(--text); border-radius:999px; padding:7px 10px; font:inherit; font-size:.76rem; font-weight:800; cursor:pointer; }
+    .listai-chip:hover { border-color:#8b5cf6; }
+    .listai-config-grid { display:grid; grid-template-columns:1.25fr .75fr; gap:8px; margin-bottom:10px; }
+    .listai-config-box { text-align:left; }
+    .listai-config-box label { display:block; font-size:.74rem; font-weight:900; color:var(--text-muted); margin:0 0 4px 2px; }
+    .listai-mini-input { width:100%; height:40px; border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:10px; padding:7px 9px; font:inherit; font-size:.84rem; font-weight:700; outline:none; }
+    .listai-preview { display:none; text-align:left; margin-top:10px; }
+    .listai-preview.active { display:block; }
+    .listai-preview-head { padding:10px 12px; background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.3); border-radius:12px; margin-bottom:8px; }
+    .listai-preview-head strong { display:block; margin-bottom:3px; }
+    .listai-preview-head p { margin:0; font-size:.8rem; color:var(--text-muted); line-height:1.35; }
+    .listai-preview-list { max-height:300px; overflow:auto; display:flex; flex-direction:column; gap:7px; padding:2px; }
+    .listai-preview-item { display:grid; grid-template-columns:minmax(0,1fr) 62px 82px 34px; gap:5px; align-items:center; padding:7px; border:1px solid var(--border); border-radius:11px; background:var(--card-bg); }
+    .listai-preview-item input { min-width:0; width:100%; height:34px; border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:8px; padding:5px 7px; font:inherit; font-size:.79rem; font-weight:700; }
+    .listai-preview-item .ia-qty { text-align:center; }
+    .listai-preview-item .ia-price { text-align:right; }
+    .listai-remove { width:34px; height:34px; border:1px solid var(--border); background:var(--tab-bg); color:var(--danger); border-radius:8px; cursor:pointer; font-size:.95rem; }
+    .listai-summary-line { display:flex; justify-content:space-between; gap:8px; font-size:.79rem; font-weight:800; margin:9px 2px; }
+    .listai-preview-actions { display:grid; grid-template-columns:1fr 1.3fr; gap:8px; margin-top:8px; }
+    .listai-secondary { border:2px solid var(--border); background:var(--card-bg); color:var(--text); border-radius:13px; padding:11px; font:inherit; font-weight:900; cursor:pointer; }
+    @media (max-width:420px) {
+      .listai-config-grid { grid-template-columns:1fr; }
+      .listai-preview-item { grid-template-columns:minmax(0,1fr) 54px 72px 32px; }
+    }
+
+  
+
+    .app-dialog-card { text-align: left; }
+    .app-dialog-card h3 { text-align: center; }
+    .app-dialog-card p { text-align: left; }
+    .app-dialog-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      outline: none;
+      margin-bottom: 10px;
+    }
+    .app-dialog-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+    }
+    .app-dialog-note {
+      min-height: 20px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-weight: 700;
+      text-align: left;
+    }
+    .app-dialog-note.error { color: var(--danger); }
+    .app-dialog-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-tut.next.danger {
+      background-color: var(--danger);
+    }
+
   </style>
 </head>
 <body>
@@ -1287,7 +1445,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v4.3</span>
         </div>
       </div>
 
@@ -1325,7 +1483,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v4.3</span>
         </div>
       </div>
 
@@ -1474,6 +1632,22 @@
 
   </div>
 
+  
+
+  <div id="appDialogOverlay" class="tutorial-overlay">
+    <div class="tutorial-card app-dialog-card">
+      <div id="appDialogIcon" class="tutorial-icon">💬</div>
+      <h3 id="appDialogTitle">Confirmar acción</h3>
+      <p id="appDialogMessage">Mensaje</p>
+      <input id="appDialogInput" class="app-dialog-input" type="text" style="display:none;" autocomplete="off">
+      <div id="appDialogNote" class="app-dialog-note"></div>
+      <div class="tutorial-actions app-dialog-actions">
+        <button id="appDialogCancel" class="btn-tut prev" onclick="cancelarDialogoApp()">Cancelar</button>
+        <button id="appDialogConfirm" class="btn-tut next" onclick="confirmarDialogoApp()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast">
     <span id="toastMsg">Mensaje del sistema</span>
     <button id="btnUndoToast" class="btn-undo" onclick="ejecutarAccionDeshacer()" style="display:none;">↩️ Deshacer</button>
@@ -1493,10 +1667,21 @@
       <div class="listai-intro-box">
         <strong>¿Qué puede hacer ListAI por ti?</strong>
         <ul>
-          <li>📝 <strong>Crear listas:</strong> Pídele recetas, menús semanales o compras específicas.</li>
-          <li>🎙️ <strong>Dictar por voz:</strong> Háblale directamente presionando el micrófono.</li>
-          <li>🧾 <strong>Escanear boletas:</strong> Lee tus boletas, extrae productos y aprende sus precios.</li>
+          <li>📝 <strong>Planificar compras:</strong> listas, menús, eventos y compras por presupuesto.</li>
+          <li>🧾 <strong>Leer fotos:</strong> boletas, recetas y notas manuscritas o impresas.</li>
+          <li>🧠 <strong>Aprovechar tu lista:</strong> considera el presupuesto y evita duplicados al cargar.</li>
         </ul>
+      </div>
+
+      <div style="text-align:left; margin-bottom:8px;">
+        <label style="font-size:.78rem; font-weight:900; color:var(--primary);">⚡ Ideas rápidas</label>
+        <div class="listai-quick-prompts">
+          <button type="button" class="listai-chip" onclick="usarPromptRapidoIA('Haz una compra semanal equilibrada y práctica')">🛒 Compra semanal</button>
+          <button type="button" class="listai-chip" onclick="usarPromptRapidoIA('Crea un menú económico para 5 días y genera todos los ingredientes necesarios')">💰 Menú económico</button>
+          <button type="button" class="listai-chip" onclick="usarPromptRapidoIA('Genera todo lo necesario para un asado chileno')">🔥 Asado</button>
+          <button type="button" class="listai-chip" onclick="usarPromptRapidoIA('Lee la boleta adjunta, extrae productos, cantidades y precios')">🧾 Leer boleta</button>
+          <button type="button" class="listai-chip" onclick="usarPromptRapidoIA('Completa mi lista con productos que probablemente faltan, evitando duplicados')">✨ Completar lista</button>
+        </div>
       </div>
 
       <div style="margin-bottom: 12px; text-align: left;">
@@ -1505,6 +1690,27 @@
         </label>
         <select id="selectListaDestinoIA" class="input-product-large" style="width: 100%; height: 42px; padding: 6px 10px; font-size: 0.9rem;">
         </select>
+      </div>
+
+      <div class="listai-config-grid">
+        <div class="listai-config-box">
+          <label for="selectObjetivoIA">🎯 Qué quieres hacer</label>
+          <select id="selectObjetivoIA" class="listai-mini-input">
+            <option value="crear">Crear o completar una compra</option>
+            <option value="presupuesto">Ajustarme a un presupuesto</option>
+            <option value="menu">Planificar menú + ingredientes</option>
+            <option value="boleta">Leer boleta o lista desde una foto</option>
+          </select>
+        </div>
+        <div class="listai-config-box">
+          <label for="personasIA">👥 Personas</label>
+          <input id="personasIA" class="listai-mini-input" type="number" min="1" max="30" value="2" inputmode="numeric">
+        </div>
+      </div>
+
+      <div style="margin-bottom: 10px; text-align:left;">
+        <label for="preferenciasIA" style="font-size:.74rem; font-weight:900; color:var(--text-muted); display:block; margin:0 0 4px 2px;">🥗 Preferencias o restricciones (opcional)</label>
+        <input id="preferenciasIA" class="listai-mini-input" type="text" placeholder="Ej: sin lactosa, vegetariano, económico...">
       </div>
 
       <div style="margin-bottom: 12px; text-align: left;">
@@ -1526,11 +1732,32 @@
         </button>
       </div>
 
-      <button id="btnGenerarIA" class="btn-start-large" onclick="procesarPromptIA()" style="width:100%; background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); margin-bottom:10px;">
-        ✨ Generar Lista con ListAI
-      </button>
+      <div id="panelSolicitudIA">
+        <button id="btnGenerarIA" class="btn-start-large" onclick="procesarPromptIA()" style="width:100%; background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); margin-bottom:10px;">
+          ✨ Analizar con ListAI
+        </button>
+        <button class="btn-tut prev" onclick="cerrarModalIA()" style="width: 100%;">Cerrar</button>
+      </div>
 
-      <button class="btn-tut prev" onclick="cerrarModalIA()" style="width: 100%;">Cerrar</button>
+      <div id="previewResultadoIA" class="listai-preview">
+        <div class="listai-preview-head">
+          <strong>✅ ListAI preparó esta propuesta</strong>
+          <p id="mensajeResultadoIA">Revísala antes de agregarla. Puedes cambiar nombres, cantidades o precios.</p>
+        </div>
+        <div id="listaPreviewIA" class="listai-preview-list"></div>
+        <div class="listai-summary-line"><span id="resumenItemsIA">0 productos</span><span id="resumenTotalIA">Estimado: $0</span></div>
+        <div style="text-align:left; margin-top:4px;">
+          <label for="modoCargaIA" style="font-size:.74rem; font-weight:900; color:var(--text-muted);">Al confirmar</label>
+          <select id="modoCargaIA" class="listai-mini-input" style="margin-top:4px;">
+            <option value="sumar">Agregar y sumar a lo que ya existe</option>
+            <option value="reemplazar-pendientes">Reemplazar solo los productos pendientes</option>
+          </select>
+        </div>
+        <div class="listai-preview-actions">
+          <button type="button" class="listai-secondary" onclick="volverEditarSolicitudIA()">← Modificar</button>
+          <button type="button" class="btn-start-large" onclick="confirmarResultadoIA()" style="padding:11px; font-size:.92rem;">🛒 Agregar a mi lista</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1571,7 +1798,7 @@
       <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
         🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
         👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 4.0 (Agosto 2026)
+        📌 <strong>Versión Actual:</strong> 4.3 (Agosto 2026)
       </div>
 
       <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
@@ -1735,6 +1962,34 @@
     </div>
   </div>
 
+  <div id="presupuestoOverlay" class="tutorial-overlay" role="dialog" aria-modal="true" aria-labelledby="presupuestoTitulo">
+    <div class="tutorial-card budget-modal-card">
+      <div class="tutorial-icon">💰</div>
+      <h3 id="presupuestoTitulo">Define tu tope de compra</h3>
+      <p class="budget-modal-copy">Te avisaremos mientras compras si te acercas o superas este monto. Puedes cambiarlo cuando quieras.</p>
+
+      <div class="budget-input-wrap">
+        <span class="budget-currency">$</span>
+        <input id="presupuestoModalInput" class="budget-modal-input" type="text" inputmode="numeric" autocomplete="off" placeholder="Ej: 100.000" aria-label="Tope de presupuesto en pesos chilenos">
+      </div>
+      <div id="presupuestoModalHint" class="budget-modal-hint">Ingresa un monto en pesos chilenos.</div>
+
+      <div class="budget-quick-options" aria-label="Montos rápidos">
+        <button class="budget-quick-btn" type="button" onclick="seleccionarPresupuestoRapido(50000)">$50.000</button>
+        <button class="budget-quick-btn" type="button" onclick="seleccionarPresupuestoRapido(100000)">$100.000</button>
+        <button class="budget-quick-btn" type="button" onclick="seleccionarPresupuestoRapido(150000)">$150.000</button>
+        <button class="budget-quick-btn" type="button" onclick="seleccionarPresupuestoRapido(200000)">$200.000</button>
+      </div>
+
+      <div class="tutorial-actions">
+        <button class="btn-tut prev" type="button" onclick="cerrarModalPresupuesto()">Cancelar</button>
+        <button class="btn-tut next" type="button" onclick="guardarPresupuestoDesdeModal()">Guardar tope</button>
+      </div>
+
+      <button class="budget-disable-btn" type="button" onclick="desactivarPresupuestoDesdeModal()">Quitar tope de presupuesto</button>
+    </div>
+  </div>
+
   <script>
     // CONFIGURACIÓN DE FIREBASE
     const firebaseConfig = {
@@ -1774,6 +2029,97 @@
     let escanerProcesando = false;
     let modoFocusActivo = false;
     let imagenBase64Cargada = null;
+    let resultadoIAPendiente = [];
+    let mensajeIAPendiente = "";
+    let targetIdIAPendiente = null;
+
+    let dialogoAppResolver = null;
+    let dialogoAppConfig = null;
+
+    function abrirDialogoApp(opciones = {}) {
+      const overlay = document.getElementById('appDialogOverlay');
+      const icon = document.getElementById('appDialogIcon');
+      const title = document.getElementById('appDialogTitle');
+      const message = document.getElementById('appDialogMessage');
+      const input = document.getElementById('appDialogInput');
+      const note = document.getElementById('appDialogNote');
+      const btnCancel = document.getElementById('appDialogCancel');
+      const btnConfirm = document.getElementById('appDialogConfirm');
+      if (!overlay || !icon || !title || !message || !input || !note || !btnCancel || !btnConfirm) {
+        return Promise.resolve({ confirmed: false, value: '' });
+      }
+
+      dialogoAppConfig = {
+        showInput: false,
+        required: false,
+        confirmText: 'Aceptar',
+        cancelText: 'Cancelar',
+        icon: '💬',
+        title: 'Confirmar acción',
+        message: '',
+        inputValue: '',
+        inputPlaceholder: '',
+        helperText: '',
+        danger: false,
+        ...opciones
+      };
+
+      icon.textContent = dialogoAppConfig.icon || '💬';
+      title.textContent = dialogoAppConfig.title || 'Confirmar acción';
+      message.innerHTML = dialogoAppConfig.message || '';
+      input.style.display = dialogoAppConfig.showInput ? 'block' : 'none';
+      input.value = dialogoAppConfig.inputValue || '';
+      input.placeholder = dialogoAppConfig.inputPlaceholder || '';
+      note.textContent = dialogoAppConfig.helperText || '';
+      note.classList.remove('error');
+      btnCancel.textContent = dialogoAppConfig.cancelText || 'Cancelar';
+      btnConfirm.textContent = dialogoAppConfig.confirmText || 'Aceptar';
+      btnConfirm.classList.toggle('danger', !!dialogoAppConfig.danger);
+      overlay.classList.add('active');
+
+      return new Promise(resolve => {
+        dialogoAppResolver = resolve;
+        setTimeout(() => {
+          if (dialogoAppConfig.showInput) {
+            input.focus();
+            input.select();
+          } else {
+            btnConfirm.focus();
+          }
+        }, 90);
+      });
+    }
+
+    function cerrarDialogoApp(resultado = { confirmed: false, value: '' }) {
+      const overlay = document.getElementById('appDialogOverlay');
+      if (overlay) overlay.classList.remove('active');
+      const resolver = dialogoAppResolver;
+      dialogoAppResolver = null;
+      dialogoAppConfig = null;
+      if (resolver) resolver(resultado);
+    }
+
+    function cancelarDialogoApp() {
+      vibrarConfirmacion();
+      const input = document.getElementById('appDialogInput');
+      cerrarDialogoApp({ confirmed: false, value: input ? input.value.trim() : '' });
+    }
+
+    function confirmarDialogoApp() {
+      const input = document.getElementById('appDialogInput');
+      const note = document.getElementById('appDialogNote');
+      const valor = input ? input.value.trim() : '';
+
+      if (dialogoAppConfig?.showInput && dialogoAppConfig?.required && !valor) {
+        note.textContent = dialogoAppConfig.requiredMessage || 'Escribe un valor para continuar.';
+        note.classList.add('error');
+        if (input) input.focus();
+        return;
+      }
+
+      vibrarConfirmacion();
+      cerrarDialogoApp({ confirmed: true, value: valor });
+    }
     
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
@@ -1858,6 +2204,7 @@
         select.appendChild(option);
       });
 
+      volverEditarSolicitudIA(true);
       document.getElementById('iaOverlay').classList.add('active');
     }
 
@@ -1942,6 +2289,142 @@
       if (imgPrev) imgPrev.src = '';
     }
 
+    function usarPromptRapidoIA(texto) {
+      const input = document.getElementById('promptIAInput');
+      input.value = texto;
+      input.focus();
+      vibrarConfirmacion();
+    }
+
+    function construirPromptEnriquecidoIA(promptOriginal, targetId) {
+      const lista = coleccionListas.find(l => String(l.id) === String(targetId));
+      const objetivo = document.getElementById('selectObjetivoIA')?.value || 'crear';
+      const personas = Math.max(1, parseInt(document.getElementById('personasIA')?.value) || 2);
+      const preferencias = (document.getElementById('preferenciasIA')?.value || '').trim();
+      const presupuesto = Number(lista?.presupuesto || 0);
+      const existentes = (lista?.items || []).filter(i => !i.comprado).map(i => i.texto).slice(0, 80);
+      const objetivoTxt = {
+        crear: 'crear o completar una lista de compras práctica',
+        presupuesto: 'proponer una compra que respete el presupuesto disponible',
+        menu: 'crear un menú y convertirlo en una lista consolidada de ingredientes',
+        boleta: 'leer la imagen y extraer productos, cantidades y precios con precisión'
+      }[objetivo] || 'crear una lista de compras';
+
+      let contexto = `\n\nCONTEXTO DE LISTAI:\n- Objetivo: ${objetivoTxt}.\n- Personas: ${personas}.`;
+      if (preferencias) contexto += `\n- Preferencias/restricciones: ${preferencias}.`;
+      if (presupuesto > 0) contexto += `\n- Tope de presupuesto de la lista: $${Math.round(presupuesto)} CLP. Procura no superarlo cuando sea pertinente.`;
+      if (existentes.length) contexto += `\n- Productos pendientes que ya existen: ${existentes.join(', ')}. Evita repetirlos salvo que el usuario lo pida o sea necesario aumentar cantidad.`;
+      contexto += `\n- Devuelve productos concretos de supermercado, con cantidades razonables y precios solo si realmente pueden extraerse de la imagen o fueron entregados por el usuario. No inventes precios exactos.\n- Usa nombres breves y claros, adecuados para una lista de compras en Chile.`;
+      return `${promptOriginal || 'Analiza la imagen adjunta y genera los productos correspondientes.'}${contexto}`;
+    }
+
+    function normalizarProductosIA(productos) {
+      if (!Array.isArray(productos)) return [];
+      return productos.map((prod, idx) => ({
+        idTmp: `ia_${Date.now()}_${idx}_${Math.random().toString(36).slice(2,6)}`,
+        texto: String(prod?.texto || prod?.nombre || '').trim(),
+        cantidad: Math.max(1, parseInt(prod?.cantidad) || 1),
+        precio: Math.max(0, parseInt(prod?.precio) || 0)
+      })).filter(p => p.texto).slice(0, 100);
+    }
+
+    function renderizarPreviewIA() {
+      const cont = document.getElementById('listaPreviewIA');
+      const panelSolicitud = document.getElementById('panelSolicitudIA');
+      const panelPreview = document.getElementById('previewResultadoIA');
+      if (!cont || !panelPreview || !panelSolicitud) return;
+      panelSolicitud.style.display = 'none';
+      panelPreview.classList.add('active');
+      document.getElementById('mensajeResultadoIA').textContent = mensajeIAPendiente || 'Revísala antes de agregarla. Puedes cambiar nombres, cantidades o precios.';
+      cont.innerHTML = '';
+      resultadoIAPendiente.forEach((p, index) => {
+        const row = document.createElement('div');
+        row.className = 'listai-preview-item';
+        row.innerHTML = `
+          <input aria-label="Producto" value="${escapeHtml(p.texto)}" oninput="actualizarItemPreviewIA(${index}, 'texto', this.value)">
+          <input aria-label="Cantidad" class="ia-qty" type="number" min="1" max="99" value="${p.cantidad}" oninput="actualizarItemPreviewIA(${index}, 'cantidad', this.value)">
+          <input aria-label="Precio" class="ia-price" type="number" min="0" step="1" value="${p.precio || ''}" placeholder="$" oninput="actualizarItemPreviewIA(${index}, 'precio', this.value)">
+          <button type="button" class="listai-remove" aria-label="Quitar producto" onclick="quitarItemPreviewIA(${index})">✕</button>`;
+        cont.appendChild(row);
+      });
+      actualizarResumenPreviewIA();
+    }
+
+    function actualizarItemPreviewIA(index, campo, valor) {
+      const p = resultadoIAPendiente[index];
+      if (!p) return;
+      if (campo === 'texto') p.texto = String(valor).trimStart();
+      if (campo === 'cantidad') p.cantidad = Math.max(1, parseInt(valor) || 1);
+      if (campo === 'precio') p.precio = Math.max(0, parseInt(valor) || 0);
+      actualizarResumenPreviewIA();
+    }
+
+    function quitarItemPreviewIA(index) {
+      resultadoIAPendiente.splice(index, 1);
+      renderizarPreviewIA();
+    }
+
+    function actualizarResumenPreviewIA() {
+      const total = resultadoIAPendiente.reduce((acc,p) => acc + (Number(p.precio)||0)*(Number(p.cantidad)||1), 0);
+      const conPrecio = resultadoIAPendiente.filter(p => Number(p.precio) > 0).length;
+      document.getElementById('resumenItemsIA').textContent = `${resultadoIAPendiente.length} producto${resultadoIAPendiente.length===1?'':'s'}`;
+      document.getElementById('resumenTotalIA').textContent = conPrecio ? `Con precios: ${formatoCLP.format(total)}` : 'Sin precios capturados';
+    }
+
+    function volverEditarSolicitudIA(silencioso=false) {
+      resultadoIAPendiente = [];
+      mensajeIAPendiente = '';
+      targetIdIAPendiente = null;
+      const panelSolicitud = document.getElementById('panelSolicitudIA');
+      const panelPreview = document.getElementById('previewResultadoIA');
+      if (panelSolicitud) panelSolicitud.style.display = 'block';
+      if (panelPreview) panelPreview.classList.remove('active');
+      if (!silencioso) document.getElementById('promptIAInput')?.focus();
+    }
+
+    function confirmarResultadoIA() {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(targetIdIAPendiente));
+      if (!lista) { mostrarToast('⚠️ Lista destino no encontrada'); return; }
+      const validos = resultadoIAPendiente.filter(p => p.texto.trim());
+      if (!validos.length) { mostrarToast('⚠️ No quedan productos para agregar'); return; }
+      if (!Array.isArray(lista.items)) lista.items = [];
+
+      const modo = document.getElementById('modoCargaIA')?.value || 'sumar';
+      if (modo === 'reemplazar-pendientes') lista.items = lista.items.filter(i => i.comprado);
+
+      let agregados = 0, actualizados = 0;
+      validos.forEach(prod => {
+        const texto = prod.texto.trim();
+        const normalizado = texto.toLowerCase();
+        const precioCapturado = Math.max(0, parseInt(prod.precio) || 0);
+        if (precioCapturado > 0) guardarPrecioEnMemoria(texto, precioCapturado);
+        const existente = lista.items.find(i => String(i.texto||'').toLowerCase().trim() === normalizado);
+        if (existente) {
+          existente.cantidad = Math.max(1, (parseInt(existente.cantidad)||1) + (parseInt(prod.cantidad)||1));
+          if (precioCapturado > 0) existente.precio = precioCapturado;
+          actualizados++;
+        } else {
+          const catInfo = clasificarProducto(texto);
+          const precioFinal = precioCapturado > 0 ? precioCapturado : (obtenerUltimoPrecio(normalizado) || 0);
+          lista.items.push({
+            id: Date.now() + Math.random(), texto,
+            cantidad: Math.max(1, parseInt(prod.cantidad)||1), precio: precioFinal,
+            categoriaId: catInfo.id, icono: catInfo.icono, comprado: false
+          });
+          agregados++;
+        }
+      });
+
+      idListaActiva = lista.id;
+      guardarStorage();
+      sincronizarConFirebase();
+      document.getElementById('promptIAInput').value = '';
+      cerrarModalIA();
+      verSeccion('lista-activa');
+      mostrarToast(`🤖 ListAI agregó ${agregados} y actualizó ${actualizados}`);
+    }
+
     async function procesarPromptIA() {
       vibrarConfirmacion();
 
@@ -1954,83 +2437,44 @@
         mostrarToast("⚠️ Escribe, dicta o adjunta una foto para ListAI");
         return;
       }
+      if (!navigator.onLine) {
+        mostrarToast("📶 ListAI necesita conexión a Internet");
+        return;
+      }
 
       btnGen.disabled = true;
       btnGen.innerHTML = "⏳ ListAI analizando...";
 
       try {
         const urlProxy = "https://ancient-firefly-200e.sabenedettoa.workers.dev/";
-
+        const promptEnriquecido = construirPromptEnriquecidoIA(promptTexto, targetId);
         const response = await fetch(urlProxy, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            promptTexto: promptTexto || "Lee esta imagen y extrae todos los insumos de supermercado o boleta.",
-            imagenBase64: imagenBase64Cargada
-          })
+          body: JSON.stringify({ promptTexto: promptEnriquecido, imagenBase64: imagenBase64Cargada })
         });
 
-        const resData = await response.json();
+        let resData;
+        try { resData = await response.json(); }
+        catch { throw new Error('El servidor devolvió una respuesta no válida'); }
+        if (!response.ok) throw new Error(resData.error || `Error en el servidor (${response.status})`);
 
-        if (!response.ok) {
-          throw new Error(resData.error || `Error en el servidor de ListAI (${response.status})`);
-        }
+        const productosRaw = Array.isArray(resData) ? resData : (resData.productos || []);
+        const productos = normalizarProductosIA(productosRaw);
+        if (!productos.length) throw new Error('No pude identificar productos. Prueba describiendo la compra con más detalle.');
 
-        const mensajeIA = resData.mensajeIA || "Lista procesada con éxito.";
-        const productosIA = resData.productos || resData;
-
-        const lista = coleccionListas.find(l => String(l.id) === String(targetId));
-        if (!lista) throw new Error("Lista destino no encontrada");
-        if (!lista.items) lista.items = [];
-
-        let agregadosCount = 0;
-        productosIA.forEach(prod => {
-          if (prod.texto) {
-            const normalizado = prod.texto.toLowerCase().trim();
-            const precioCapturado = parseInt(prod.precio) || 0;
-
-            if (precioCapturado > 0) {
-              guardarPrecioEnMemoria(prod.texto, precioCapturado);
-            }
-
-            const existente = lista.items.find(i => i.texto.toLowerCase().trim() === normalizado);
-
-            if (existente) {
-              existente.cantidad += (parseInt(prod.cantidad) || 1);
-              if (precioCapturado > 0) existente.precio = precioCapturado;
-            } else {
-              const catInfo = clasificarProducto(prod.texto);
-              const precioFinal = precioCapturado > 0 ? precioCapturado : (obtenerUltimoPrecio(normalizado) || 0);
-
-              lista.items.push({
-                id: Date.now() + Math.random(),
-                texto: prod.texto,
-                cantidad: parseInt(prod.cantidad) || 1,
-                precio: precioFinal,
-                categoriaId: catInfo.id,
-                icono: catInfo.icono,
-                comprado: false
-              });
-            }
-            agregadosCount++;
-          }
-        });
-
-        idListaActiva = lista.id;
-        guardarStorage();
-        sincronizarConFirebase();
-        cerrarModalIA();
-        document.getElementById('promptIAInput').value = '';
-
-        verSeccion('lista-activa');
-        mostrarToast(`🤖 ListAI: "${mensajeIA}" (${agregadosCount} insumos)`);
+        resultadoIAPendiente = productos;
+        mensajeIAPendiente = resData.mensajeIA || `Encontré ${productos.length} productos. Revísalos antes de cargarlos.`;
+        targetIdIAPendiente = targetId;
+        renderizarPreviewIA();
+        mostrarToast(`✨ ListAI preparó ${productos.length} productos`);
 
       } catch (err) {
         console.error("Error al procesar con ListAI:", err);
         mostrarToast(`⚠️ ListAI: ${err.message}`);
       } finally {
         btnGen.disabled = false;
-        btnGen.innerHTML = "✨ Generar Lista con ListAI";
+        btnGen.innerHTML = "✨ Analizar con ListAI";
       }
     }
 
@@ -2255,8 +2699,17 @@
       document.getElementById('memoriaPreciosOverlay')?.classList.remove('active');
     }
 
-    function borrarMemoriaPrecios() {
-      if (!confirm('¿Borrar toda la memoria de precios de este dispositivo? Tus listas no se eliminarán.')) return;
+    async function borrarMemoriaPrecios() {
+      const resp = await abrirDialogoApp({
+        icon: '🧠',
+        title: 'Borrar memoria de precios',
+        message: 'Se eliminarán los precios recordados de este dispositivo, pero <strong>tus listas no se borrarán</strong>.',
+        helperText: 'Esta acción limpia solo la memoria inteligente de precios.',
+        confirmText: 'Sí, borrar',
+        cancelText: 'Cancelar',
+        danger: true
+      });
+      if (!resp.confirmed) return;
       memoriaPreciosLocal = {};
       localStorage.removeItem('memoriaPrecios_v2');
       localStorage.removeItem('memoriaPrecios_v1');
@@ -2477,15 +2930,24 @@
           } catch (err) {
             mostrarFeedbackEscaner(false, "Código No Detectado");
             cerrarEscanerBarras(false);
-            setTimeout(() => {
-              const manualName = prompt(`Código ${barcode} no reconocido. Ingresa el nombre para guardarlo:`, '');
-              if (manualName && manualName.trim()) {
-                const nombreLimpio = manualName.trim();
+            setTimeout(async () => {
+              const resp = await abrirDialogoApp({
+                icon: '📦',
+                title: 'Código no reconocido',
+                message: 'El código <strong>' + escapeHtml(barcode) + '</strong> no está en la base de datos. Escribe el nombre del producto para guardarlo en tu memoria.',
+                helperText: 'La próxima vez que escanees este código, la app lo reconocerá automáticamente.',
+                showInput: true,
+                inputPlaceholder: 'Ej: Atún en lata',
+                confirmText: 'Guardar producto',
+                cancelText: 'Cancelar',
+                required: true,
+                requiredMessage: 'Escribe el nombre del producto para continuar.'
+              });
+              if (resp.confirmed && resp.value) {
+                const nombreLimpio = resp.value.trim();
                 document.getElementById('itemInput').value = nombreLimpio;
                 guardarNombreCodigoEnMemoria(barcode, nombreLimpio);
-                
                 if (document.activeElement) document.activeElement.blur();
-
                 agregarProducto();
                 mostrarFeedbackEscaner(true, nombreLimpio);
               }
@@ -2573,21 +3035,111 @@
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista) return;
 
-      const actual = obtenerPresupuestoLista(lista) || '';
-      const resp = prompt("Ingresa tu presupuesto máximo para esta compra ($ CLP):", actual);
-      if (resp !== null) {
-        const limpio = String(resp).replace(/[^0-9]/g, '');
-        lista.presupuesto = parseInt(limpio, 10) || 0;
-        guardarStorage();
-        sincronizarConFirebase();
-        renderizarProductos();
-        if (lista.presupuesto > 0) {
-          mostrarToast(`🚨 Límite fijado en ${formatoCLP.format(lista.presupuesto)}`);
-        } else {
-          mostrarToast("🚨 Límite desactivado");
+      const input = document.getElementById('presupuestoModalInput');
+      const hint = document.getElementById('presupuestoModalHint');
+      const actual = obtenerPresupuestoLista(lista);
+
+      input.value = actual > 0 ? formatoNumeroPresupuesto(actual) : '';
+      hint.textContent = actual > 0
+        ? `Tope actual: ${formatoCLP.format(actual)}`
+        : 'Ingresa un monto en pesos chilenos.';
+
+      document.getElementById('presupuestoOverlay').classList.add('active');
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      }, 100);
+    }
+
+    function cerrarModalPresupuesto() {
+      document.getElementById('presupuestoOverlay').classList.remove('active');
+    }
+
+    function formatoNumeroPresupuesto(valor) {
+      const numero = Math.max(0, parseInt(valor, 10) || 0);
+      return numero ? numero.toLocaleString('es-CL') : '';
+    }
+
+    function obtenerNumeroPresupuestoDesdeInput() {
+      const input = document.getElementById('presupuestoModalInput');
+      return parseInt(String(input.value).replace(/[^0-9]/g, ''), 10) || 0;
+    }
+
+    function actualizarVistaInputPresupuesto() {
+      const input = document.getElementById('presupuestoModalInput');
+      const hint = document.getElementById('presupuestoModalHint');
+      const numero = obtenerNumeroPresupuestoDesdeInput();
+
+      input.value = formatoNumeroPresupuesto(numero);
+      hint.textContent = numero > 0
+        ? `Tu tope será ${formatoCLP.format(numero)}`
+        : 'Ingresa un monto en pesos chilenos.';
+    }
+
+    function seleccionarPresupuestoRapido(monto) {
+      document.getElementById('presupuestoModalInput').value = formatoNumeroPresupuesto(monto);
+      actualizarVistaInputPresupuesto();
+      vibrarConfirmacion();
+    }
+
+    function guardarPresupuestoDesdeModal() {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista) return;
+
+      const monto = obtenerNumeroPresupuestoDesdeInput();
+      if (monto <= 0) {
+        document.getElementById('presupuestoModalHint').textContent = '⚠️ Ingresa un monto mayor a $0.';
+        document.getElementById('presupuestoModalInput').focus();
+        return;
+      }
+
+      lista.presupuesto = monto;
+      guardarStorage();
+      sincronizarConFirebase();
+      cerrarModalPresupuesto();
+      renderizarProductos();
+      vibrarConfirmacion();
+      mostrarToast(`💰 Tope fijado en ${formatoCLP.format(monto)}`);
+    }
+
+    function desactivarPresupuestoDesdeModal() {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista) return;
+
+      lista.presupuesto = 0;
+      guardarStorage();
+      sincronizarConFirebase();
+      cerrarModalPresupuesto();
+      renderizarProductos();
+      vibrarConfirmacion();
+      mostrarToast('💰 Tope de presupuesto desactivado');
+    }
+
+    document.addEventListener('input', (e) => {
+      if (e.target && e.target.id === 'presupuestoModalInput') {
+        actualizarVistaInputPresupuesto();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('appDialogOverlay')?.classList.contains('active')) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          cancelarDialogoApp();
+          return;
+        }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          confirmarDialogoApp();
+          return;
         }
       }
-    }
+
+      if (e.key === 'Enter' && document.getElementById('presupuestoOverlay')?.classList.contains('active')) {
+        e.preventDefault();
+        guardarPresupuestoDesdeModal();
+      }
+    });
 
     function abrirModalRecetas() {
       vibrarConfirmacion();
@@ -3214,21 +3766,34 @@
       mostrarToast(`✨ Lista creada (Código: ${nuevoCodigo})`);
     }
 
-    function editarNombreLista(e, id) {
+    async function editarNombreLista(e, id) {
       e.stopPropagation();
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => String(l.id) === String(id));
       if (!lista) return;
 
-      const nuevoNombre = prompt("Editar nombre de la lista:", lista.nombre);
-      if (nuevoNombre !== null && nuevoNombre.trim() !== "") {
-        lista.nombre = nuevoNombre.trim();
+      const resp = await abrirDialogoApp({
+        icon: '✏️',
+        title: 'Editar nombre de la lista',
+        message: 'Cambia el nombre para identificar mejor tu lista.',
+        helperText: 'Ejemplo: Compra mensual, Feria, Cumpleaños...',
+        showInput: true,
+        inputValue: lista.nombre,
+        inputPlaceholder: 'Nombre de la lista',
+        confirmText: 'Guardar',
+        cancelText: 'Cancelar',
+        required: true,
+        requiredMessage: 'Escribe un nombre para la lista.'
+      });
+
+      if (resp.confirmed && resp.value) {
+        lista.nombre = resp.value.trim();
         guardarStorage();
         sincronizarConFirebase();
         renderizarListas();
         renderizarInicio();
         if (String(idListaActiva) === String(id)) renderizarProductos();
-        mostrarToast("✏️ Nombre de la lista actualizado");
+        mostrarToast('✏️ Nombre de la lista actualizado');
       }
     }
 
@@ -3375,7 +3940,7 @@
       mostrarToast("🚫 Se canceló agregar la unidad repetida");
     }
 
-    function editarProducto(prodId) {
+    async function editarProducto(prodId) {
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista || !lista.items) return;
@@ -3383,9 +3948,22 @@
       const prod = lista.items.find(i => i.id === prodId);
       if (!prod) return;
 
-      const nuevoTexto = prompt("Editar producto:", prod.texto);
-      if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
-        prod.texto = nuevoTexto.trim();
+      const resp = await abrirDialogoApp({
+        icon: '🛒',
+        title: 'Editar producto',
+        message: 'Actualiza el nombre del producto. La categoría se ajustará automáticamente.',
+        helperText: 'Ejemplo: Leche descremada, Pan integral, Tomate...',
+        showInput: true,
+        inputValue: prod.texto,
+        inputPlaceholder: 'Nombre del producto',
+        confirmText: 'Guardar cambios',
+        cancelText: 'Cancelar',
+        required: true,
+        requiredMessage: 'Escribe el nombre del producto.'
+      });
+
+      if (resp.confirmed && resp.value) {
+        prod.texto = resp.value.trim();
         const catInfo = clasificarProducto(prod.texto);
         prod.categoriaId = catInfo.id;
         prod.icono = catInfo.icono;
@@ -3393,7 +3971,7 @@
         guardarStorage();
         sincronizarConFirebase();
         renderizarProductos();
-        mostrarToast("✏️ Producto actualizado");
+        mostrarToast('✏️ Producto actualizado');
       }
     }
 
