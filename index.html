@@ -61,15 +61,16 @@
       --font-scale: 1;
     }
 
-    /* MODO OSCURO AUTOMÁTICO VÍA CLASE EN HTML */
-    html.theme-dark {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --tab-bg: #334155;
-      --shadow: rgba(0, 0, 0, 0.3);
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --card-bg: #1e293b;
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --border: #334155;
+        --tab-bg: #334155;
+        --shadow: rgba(0, 0, 0, 0.3);
+      }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -113,19 +114,7 @@
       touch-action: pan-y;
     }
 
-    /* BARRA DE FECHA Y HORA EN TIEMPO REAL */
-    .clock-bar-live {
-      background: var(--tab-bg);
-      color: var(--primary);
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-align: center;
-      padding: 4px 8px;
-      border-bottom: 1px solid var(--border);
-      letter-spacing: 0.3px;
-    }
-
-    /* ANIMACIONES DE PESTAÑAS (SWIPE) */
+    /* ANIMACIONES Y TRANSICIONES DE PESTAÑAS (SWIPE) */
     .tab-seccion {
       width: 100%;
       transition: opacity 0.25s ease, transform 0.25s ease;
@@ -153,7 +142,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 16px;
+      padding: 12px 16px;
       background: var(--card-bg);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
@@ -164,10 +153,10 @@
     .header-logo-img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
     .app-title { font-size: 1.2rem; font-weight: 800; margin: 0; white-space: nowrap; }
 
-    .header-right-controls { display: flex; align-items: center; gap: 6px; }
+    .header-right-controls { display: flex; align-items: center; gap: 8px; }
 
     .net-badge {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       padding: 3px 8px;
       border-radius: 10px;
       font-weight: 800;
@@ -177,16 +166,6 @@
     .net-badge.online { color: var(--success); }
     .net-badge.offline { color: var(--danger); }
 
-    .badge-users-online {
-      font-size: 0.7rem;
-      padding: 3px 8px;
-      border-radius: 10px;
-      font-weight: 800;
-      background: rgba(99, 102, 241, 0.12);
-      color: var(--primary);
-      border: 1px solid var(--primary);
-    }
-
     .btn-menu-burger {
       background: var(--tab-bg);
       border: 1px solid var(--border);
@@ -194,7 +173,7 @@
       font-size: 1.1rem;
       color: var(--text);
       cursor: pointer;
-      padding: 4px 8px;
+      padding: 5px 10px;
     }
 
     .sidebar-menu {
@@ -700,16 +679,6 @@
     .item-name { 
       font-weight: 700; font-size: 0.92rem; word-break: break-word;
     }
-
-    /* BADGES DE COMPARACIÓN Y HISTORIAL DE INFLACIÓN */
-    .badge-price-diff {
-      font-size: 0.65rem;
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-weight: 800;
-    }
-    .badge-price-diff.up { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
-    .badge-price-diff.down { background: rgba(16, 185, 129, 0.15); color: var(--success); }
     
     .badge-tienda-tag {
       font-size: 0.68rem;
@@ -1073,8 +1042,7 @@
     .focus-mode-active .add-product-card,
     .focus-mode-active .sub-tabs,
     .focus-mode-active .search-box-container,
-    .focus-mode-active .header-top,
-    .focus-mode-active .clock-bar-live {
+    .focus-mode-active .header-top {
       display: none !important;
     }
 
@@ -1179,18 +1147,12 @@
 
   <div class="container" id="appContainer">
     
-    <!-- BARRA EN TIEMPO REAL DE FECHA Y HORA -->
-    <div class="clock-bar-live" id="clockBarLive">
-      🕒 Cargando hora local...
-    </div>
-
     <div class="header-top">
       <div class="app-title-box">
         <img src="/icon-512.png" alt="Logo Mis Listas" class="header-logo-img">
         <h1 class="app-title">Mis Listas</h1>
       </div>
       <div class="header-right-controls">
-        <span id="badgeUsuariosVivo" class="badge-users-online" style="display: none;">👥 1 en vivo</span>
         <span id="netStatusBadge" class="net-badge online">🟢 Online</span>
         <button class="btn-menu-burger" onclick="toggleSidebar()">☰</button>
       </div>
@@ -1575,12 +1537,13 @@
     </div>
   </div>
 
-  <!-- MODAL DE RECETAS CHILENAS -->
+  <!-- MODAL DE RECETAS CHILENAS (CON CONTADOR, BUSCADOR Y MÁS RECETAS) -->
   <div id="recetasOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div class="tutorial-icon">🍳</div>
       <h3>Recetas Chilenas Típicas</h3>
       
+      <!-- CONTADOR DINÁMICO DE RECETAS DISPONIBLES -->
       <span class="counter-recipes-badge" id="badgeContadorRecetas">🇨🇱 17 recetas disponibles</span>
 
       <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista y busca o elige tu plato:</p>
@@ -1593,6 +1556,7 @@
         </select>
       </div>
 
+      <!-- Buscador de Recetas Chilenas -->
       <div style="margin-bottom: 10px;">
         <input type="text" id="inputBuscarReceta" class="input-product-large" placeholder="🔍 Buscar receta o ingrediente..." oninput="filtrarRecetasChilenas()" style="width: 100%; font-size: 0.88rem; padding: 8px 12px;">
       </div>
@@ -1742,7 +1706,6 @@
     let diferidoPromptInstalacion = null;
     let textoBusquedaActual = '';
     let dbListenerRef = null;
-    let presenceRef = null;
     let html5QrcodeScanner = null;
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
@@ -1756,41 +1719,13 @@
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
 
+    // NAVEGACIÓN Y SWIPE DE PESTAÑAS CON GESTOS TÁCTILES
     const ORDEN_PESTAÑAS = ['inicio', 'mis-listas', 'lista-activa'];
     let touchStartX = 0;
     let touchStartY = 0;
 
     window.addEventListener('online', actualizarEstadoRed);
     window.addEventListener('offline', actualizarEstadoRed);
-
-    // MODO OSCURO AUTOMÁTICO VÍA HORA + RELOJ EN VIVO
-  function actualizarRelojYModoOscuro() {
-      const ahora = new Date();
-      const horas = ahora.getHours();
-      
-      // Aplicar modo oscuro entre las 20:00 y las 07:00 hrs
-      if (horas >= 20 || horas < 7) {
-        document.documentElement.classList.add('theme-dark');
-      } else {
-        document.documentElement.classList.remove('theme-dark');
-      }
-
-      // Formateo de fecha completa (sin abreviar) y hora en formato 24 horas
-      const opcionesFecha = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-      let fechaTxt = ahora.toLocaleDateString('es-CL', opcionesFecha);
-      
-      // Capitalizar la primera letra del día de la semana
-      fechaTxt = fechaTxt.charAt(0).toUpperCase() + fechaTxt.slice(1);
-
-      // Formato de hora 24 horas (HH:mm:ss)
-      const horaTxt = ahora.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-      
-      const clockEl = document.getElementById('clockBarLive');
-      if (clockEl) {
-        clockEl.textContent = `🕒 ${fechaTxt} - ${horaTxt}`;
-      }
-    }
-    setInterval(actualizarRelojYModoOscuro, 1000);
 
     function toggleSidebar() {
       document.getElementById('sidebarMenu').classList.toggle('active');
@@ -2474,6 +2409,7 @@
       document.getElementById('recetasOverlay').classList.remove('active');
     }
 
+    // FILTRO Y CONTADOR DINÁMICO DE RECETAS
     function filtrarRecetasChilenas() {
       const q = document.getElementById('inputBuscarReceta').value.toLowerCase().trim();
       const tarjetas = document.querySelectorAll('#contenedorGridRecetas .recipe-item-card');
@@ -2635,7 +2571,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      actualizarRelojYModoOscuro();
       cargarTamanoLetra();
       cargarStorage();
       cargarOrdenCategorias();
@@ -2776,864 +2711,6 @@
         const dot = document.createElement('span');
         dot.className = `dot ${idx === pasoActualTutorial ? 'active' : ''}`;
         dotsContainer.appendChild(dot);
-      });
-    }
-
-    // GESTIÓN DE PESTAÑAS Y ANIMACIONES CON SWIPE
-    let seccionActualNombre = 'inicio';
-
-    function verSeccion(seccion, direccionAnimacion = '') {
-      vibrarConfirmacion();
-      
-      const secPortada = document.getElementById('secPortada');
-      const secInicio = document.getElementById('secInicio');
-      const secMisListas = document.getElementById('secMisListas');
-      const secListaActiva = document.getElementById('secListaActiva');
-
-      const barraNavegacion = document.getElementById('barraNavegacion');
-      const navInicio = document.getElementById('navInicio');
-      const navMisListas = document.getElementById('navMisListas');
-      const navListaActiva = document.getElementById('navListaActiva');
-
-      const seccionesMap = {
-        'portada': secPortada,
-        'inicio': secInicio,
-        'mis-listas': secMisListas,
-        'lista-activa': secListaActiva
-      };
-
-      if (seccion !== 'portada' && coleccionListas.length === 0 && seccion === 'lista-activa') {
-        mostrarToast("⚠️ Primero debes crear una lista de compras");
-        verSeccion('mis-listas');
-        return;
-      }
-
-      Object.values(seccionesMap).forEach(sec => {
-        if (sec) {
-          sec.style.display = 'none';
-          sec.classList.remove('slide-in-right', 'slide-in-left');
-        }
-      });
-
-      navInicio.classList.remove('active');
-      navMisListas.classList.remove('active');
-      navListaActiva.classList.remove('active');
-
-      const objetivoSec = seccionesMap[seccion];
-
-      if (seccion === 'portada') {
-        secPortada.style.display = 'block';
-        barraNavegacion.style.display = 'none';
-      } else {
-        barraNavegacion.style.display = 'flex';
-        
-        if (seccion === 'inicio') navInicio.classList.add('active');
-        if (seccion === 'mis-listas') navMisListas.classList.add('active');
-        if (seccion === 'lista-activa') navListaActiva.classList.add('active');
-
-        if (seccion === 'lista-activa' && !idListaActiva && coleccionListas.length > 0) {
-          idListaActiva = coleccionListas[0].id;
-        }
-
-        if (objetivoSec) {
-          objetivoSec.style.display = 'block';
-          if (direccionAnimacion) {
-            objetivoSec.classList.add(direccionAnimacion === 'derecha' ? 'slide-in-right' : 'slide-in-left');
-          }
-        }
-
-        if (seccion === 'inicio') renderizarInicio();
-        if (seccion === 'mis-listas') renderizarListas();
-        if (seccion === 'lista-activa') {
-          escucharSincronizacionFirebase(idListaActiva);
-          renderizarProductos();
-        }
-      }
-
-      seccionActualNombre = seccion;
-    }
-
-    // INICIALIZADOR DE GESTOS TÁCTILES (SWIPE EN PANTALLA)
-    function inicializarGestosSwipe() {
-      const area = document.getElementById('mainContentArea');
-      if (!area) return;
-
-      area.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-      }, { passive: true });
-
-      area.addEventListener('touchend', (e) => {
-        const touchEndX = e.changedTouches[0].screenX;
-        const touchEndY = e.changedTouches[0].screenY;
-        
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-
-        if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
-          const idxActual = ORDEN_PESTAÑAS.indexOf(seccionActualNombre);
-          if (idxActual === -1) return;
-
-          if (diffX < 0 && idxActual < ORDEN_PESTAÑAS.length - 1) {
-            verSeccion(ORDEN_PESTAÑAS[idxActual + 1], 'derecha');
-          } else if (diffX > 0 && idxActual > 0) {
-            verSeccion(ORDEN_PESTAÑAS[idxActual - 1], 'izquierda');
-          }
-        }
-      }, { passive: true });
-    }
-
-    function renderizarInicio() {
-      const widget = document.getElementById('widgetUltimaLista');
-      widget.innerHTML = "";
-
-      if (coleccionListas.length > 0) {
-        const ultima = coleccionListas[coleccionListas.length - 1];
-        const pendientes = (ultima.items || []).filter(i => !i.comprado).length;
-
-        widget.innerHTML = `
-          <div class="recent-list-widget" onclick="abrirLista('${ultima.id}')">
-            <h4>📌 Continuar con tu última lista</h4>
-            <div style="font-weight: 800; font-size: 1.1rem; color: var(--text);">${escapeHtml(ultima.nombre)}</div>
-            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
-              ${pendientes} productos pendientes de ${(ultima.items || []).length} en total. ➔
-            </div>
-          </div>
-        `;
-      }
-    }
-
-    function exportarBackup() {
-      vibrarConfirmacion();
-      if (coleccionListas.length === 0) {
-        mostrarToast("⚠️ No hay listas para exportar");
-        return;
-      }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(coleccionListas));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `mis_listas_compras_${Date.now()}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      mostrarToast("💾 Respaldo guardado con éxito");
-    }
-
-    function importarBackup(e) {
-      vibrarConfirmacion();
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        try {
-          const importadas = JSON.parse(evt.target.result);
-          if (Array.isArray(importadas)) {
-            coleccionListas = importadas;
-            guardarStorage();
-            renderizarListas();
-            mostrarToast("📂 Respaldo cargado correctamente");
-          } else { throw new Error(); }
-        } catch (err) {
-          mostrarToast("⚠️ Archivo de respaldo no válido");
-        }
-      };
-      reader.readAsText(file);
-      e.target.value = '';
-    }
-
-    function moverCategoria(index, direccion) {
-      vibrarConfirmacion();
-      const nuevoIndex = index + direccion;
-      if (nuevoIndex < 0 || nuevoIndex >= CATEGORIAS.length) return;
-      
-      const temp = CATEGORIAS[index];
-      CATEGORIAS[index] = CATEGORIAS[nuevoIndex];
-      CATEGORIAS[nuevoIndex] = temp;
-
-      guardarOrdenCategorias();
-      renderizarProductos();
-    }
-
-    function guardarOrdenCategorias() {
-      const ordenIds = CATEGORIAS.map(c => c.id);
-      localStorage.setItem('ordenPasillos_v1', JSON.stringify(ordenIds));
-    }
-
-    function cargarOrdenCategorias() {
-      const datos = localStorage.getItem('ordenPasillos_v1');
-      if (datos) {
-        try {
-          const ordenIds = JSON.parse(datos);
-          CATEGORIAS.sort((a, b) => ordenIds.indexOf(a.id) - ordenIds.indexOf(b.id));
-        } catch (e) {}
-      }
-    }
-
-    function desmarcarTodos() {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (!lista || !lista.items || lista.items.length === 0) return;
-
-      lista.items.forEach(i => i.comprado = false);
-      guardarStorage();
-      sincronizarConFirebase();
-      renderizarProductos();
-      mostrarToast("🔄 Lista desmarcada para una nueva compra");
-    }
-
-    function limpiarProductosComprados() {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (!lista || !lista.items) return;
-
-      const comprados = lista.items.filter(i => i.comprado);
-      if (comprados.length === 0) {
-        mostrarToast("🧹 No hay productos comprados para borrar");
-        return;
-      }
-
-      const copiaItemsPrevios = JSON.parse(JSON.stringify(lista.items));
-
-      lista.items = lista.items.filter(i => !i.comprado);
-      guardarStorage();
-      sincronizarConFirebase();
-      renderizarProductos();
-
-      mostrarToast(`🧹 ${comprados.length} comprados eliminados`, true, () => {
-        const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-        if (actual) {
-          actual.items = copiaItemsPrevios;
-          guardarStorage();
-          sincronizarConFirebase();
-          renderizarProductos();
-          mostrarToast(`↩️ Eliminación de comprados deshecha`);
-        }
-      });
-    }
-
-    // SINCRONIZACIÓN E INDICADOR "EN VIVO" CON FIREBASE
-    function escucharSincronizacionFirebase(listaId) {
-      if (dbListenerRef) dbListenerRef.off();
-      if (presenceRef) presenceRef.off();
-
-      // Sincronización de lista
-      dbListenerRef = db.ref('listas/' + listaId);
-      dbListenerRef.on('value', (snapshot) => {
-        const datosNube = snapshot.val();
-        if (datosNube) {
-          let listaLocal = coleccionListas.find(l => String(l.id) === String(listaId));
-          if (!listaLocal) {
-            listaLocal = { id: listaId, nombre: datosNube.nombre, items: datosNube.items || [] };
-            coleccionListas.push(listaLocal);
-          } else {
-            listaLocal.nombre = datosNube.nombre;
-            listaLocal.items = datosNube.items || [];
-          }
-          guardarStorage();
-          if (String(idListaActiva) === String(listaId)) {
-            renderizarProductos();
-          }
-        }
-      });
-
-      // Registro de presencia en tiempo real
-      const myPresenceRef = db.ref(`listas/${listaId}/presencia`).push();
-      myPresenceRef.onDisconnect().remove();
-      myPresenceRef.set(true);
-
-      presenceRef = db.ref(`listas/${listaId}/presencia`);
-      presenceRef.on('value', (snapshot) => {
-        const presencias = snapshot.val() || {};
-        const count = Object.keys(presencias).length;
-        const badgeVivo = document.getElementById('badgeUsuariosVivo');
-        if (badgeVivo) {
-          if (count > 0) {
-            badgeVivo.style.display = 'inline-block';
-            badgeVivo.textContent = `👥 ${count} en vivo`;
-          } else {
-            badgeVivo.style.display = 'none';
-          }
-        }
-      });
-    }
-
-    function sincronizarConFirebase() {
-      if (!idListaActiva || !navigator.onLine) return;
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista) {
-        db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
-        db.ref('listas/' + lista.id + '/items').set(lista.items || []);
-      }
-    }
-
-    async function compartirListaActiva() {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (!lista) return;
-
-      mostrarToast("☁️ Guardando en la nube para sincronizar...");
-
-      try {
-        await db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
-        await db.ref('listas/' + lista.id + '/items').set(lista.items || []);
-
-        const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
-        const mensajeTexto = `🛒 Te comparto la lista "${lista.nombre}" en vivo.\n🔑 Código de acceso: ${lista.id}`;
-
-        if (navigator.share) {
-          try {
-            await navigator.share({
-              title: `Lista: ${lista.nombre}`,
-              text: mensajeTexto,
-              url: urlCompartida
-            });
-            return;
-          } catch (e) {
-            if (e.name === 'AbortError') return;
-          }
-        }
-        await copiarEnlace(urlCompartida, lista.nombre, lista.id);
-      } catch (error) {
-        mostrarToast("⚠️ Error al sincronizar en la nube");
-      }
-    }
-
-    async function copiarEnlace(url, nombreLista, codigo) {
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(url);
-          mostrarToast(`📋 ¡Enlace copiado! Código: ${codigo}`);
-        } else { throw new Error(); }
-      } catch (err) {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista "${nombreLista}" (Código: ${codigo}): ${url}`)}`, '_blank');
-      }
-    }
-
-    function unirsePorCodigo() {
-      vibrarConfirmacion();
-      const input = document.getElementById('codigoUnirseInput');
-      const codigo = input.value.trim().toUpperCase();
-
-      if (!codigo) {
-        mostrarToast("⚠️ Escribe un código de 6 caracteres primero");
-        return;
-      }
-
-      mostrarToast("🔍 Buscando lista...");
-
-      db.ref('listas/' + codigo).once('value').then((snapshot) => {
-        const datos = snapshot.val();
-        if (datos) {
-          let local = coleccionListas.find(l => String(l.id) === String(codigo));
-          if (!local) {
-            coleccionListas.push({ id: codigo, nombre: datos.nombre, items: datos.items || [] });
-          } else {
-            local.nombre = datos.nombre;
-            local.items = datos.items || [];
-          }
-          guardarStorage();
-          input.value = '';
-          abrirLista(codigo);
-          mostrarToast(`🎉 ¡Conectado a "${datos.nombre}"!`);
-        } else {
-          mostrarToast("❌ Código no encontrado o no existe");
-        }
-      }).catch(() => {
-        mostrarToast("⚠️ Error al buscar el código");
-      });
-    }
-
-    function procesarListaRecibidaPorURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const listaIdURL = urlParams.get('id');
-
-      if (listaIdURL) {
-        idListaActiva = listaIdURL;
-        db.ref('listas/' + listaIdURL).once('value').then((snapshot) => {
-          const datos = snapshot.val();
-          if (datos) {
-            let local = coleccionListas.find(l => String(l.id) === String(listaIdURL));
-            if (!local) {
-              coleccionListas.push({ id: listaIdURL, nombre: datos.nombre, items: datos.items || [] });
-            } else {
-              local.nombre = datos.nombre;
-              local.items = datos.items || [];
-            }
-            guardarStorage();
-            window.history.replaceState({}, document.title, window.location.pathname);
-            abrirLista(listaIdURL);
-            mostrarToast(`🎉 ¡Lista "${datos.nombre}" conectada en vivo!`);
-          }
-        });
-      }
-    }
-
-    function crearNuevaLista() {
-      vibrarConfirmacion();
-      const input = document.getElementById('nombreNuevaLista');
-      const nombre = input.value.trim();
-      if (!nombre) return;
-
-      const nuevoCodigo = generarCodigoUnico();
-      const nuevaLista = { id: nuevoCodigo, nombre: nombre, items: [] };
-      coleccionListas.push(nuevaLista);
-      guardarStorage();
-      input.value = "";
-      abrirLista(nuevaLista.id);
-      sincronizarConFirebase();
-      mostrarToast(`✨ Lista creada (Código: ${nuevoCodigo})`);
-    }
-
-    function editarNombreLista(e, id) {
-      e.stopPropagation();
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => String(l.id) === String(id));
-      if (!lista) return;
-
-      const nuevoNombre = prompt("Editar nombre de la lista:", lista.nombre);
-      if (nuevoNombre !== null && nuevoNombre.trim() !== "") {
-        lista.nombre = nuevoNombre.trim();
-        guardarStorage();
-        sincronizarConFirebase();
-        renderizarListas();
-        renderizarInicio();
-        if (String(idListaActiva) === String(id)) renderizarProductos();
-        mostrarToast("✏️ Nombre de la lista actualizado");
-      }
-    }
-
-    function abrirLista(id) {
-      vibrarConfirmacion();
-      idListaActiva = id;
-      verSeccion('lista-activa');
-    }
-
-    function eliminarLista(e, id) {
-      e.stopPropagation();
-      vibrarConfirmacion();
-      coleccionListas = coleccionListas.filter(l => String(l.id) !== String(id));
-      if (String(idListaActiva) === String(id)) idListaActiva = null;
-      guardarStorage();
-      renderizarListas();
-      renderizarInicio();
-      mostrarToast(`🗑️ Lista eliminada`);
-    }
-
-    function renderizarListas() {
-      const contenedor = document.getElementById('contenedorListas');
-      contenedor.innerHTML = "";
-      if (coleccionListas.length === 0) {
-        contenedor.innerHTML = '<p class="empty-msg">No tienes listas creadas. ¡Crea una arriba o únete con un código!</p>';
-        return;
-      }
-      coleccionListas.forEach(lista => {
-        const pendientes = (lista.items || []).filter(i => !i.comprado).length;
-        const div = document.createElement('div');
-        div.className = 'list-card';
-        div.onclick = () => abrirLista(lista.id);
-        div.innerHTML = `
-          <div class="list-info">
-            <h4>📌 ${escapeHtml(lista.nombre)}</h4>
-            <p>${pendientes} pendientes de ${(lista.items || []).length} productos</p>
-            <span class="badge-code">CÓDIGO: ${lista.id}</span>
-          </div>
-          <div class="card-actions">
-            <button class="btn-action-icon" onclick="editarNombreLista(event, '${lista.id}')" title="Editar nombre">✏️</button>
-            <button class="btn-action-icon" onclick="eliminarLista(event, '${lista.id}')" title="Eliminar lista">🗑️</button>
-          </div>
-        `;
-        contenedor.appendChild(div);
-      });
-    }
-
-    function agregarProducto() {
-      if (!idListaActiva) return;
-      vibrarConfirmacion();
-
-      const input = document.getElementById('itemInput');
-      const qtyInput = document.getElementById('itemQty');
-      const priceInput = document.getElementById('itemPrice');
-      const tiendaSelect = document.getElementById('itemTienda');
-      
-      const texto = input.value.trim();
-      const cantidadAAgregar = parseInt(qtyInput.value) || 1;
-      const precio = Math.round(parseFloat(priceInput.value) || 0);
-      const tiendaVal = tiendaSelect ? tiendaSelect.value : 'Supermercado';
-
-      if (!texto) return;
-
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista) {
-        if (!lista.items) lista.items = [];
-
-        const textoNormalizado = texto.toLowerCase().trim();
-        const productoExistente = lista.items.find(i => i.texto.toLowerCase().trim() === textoNormalizado);
-
-        if (productoExistente) {
-          productoPendienteDuplicado = {
-            productoExistente,
-            cantidadAAgregar,
-            precio
-          };
-          
-          document.getElementById('duplicateDesc').innerHTML = `
-            "<strong>${escapeHtml(productoExistente.texto)}</strong>" ya está en tu lista. ¿Quieres sumar ${cantidadAAgregar > 1 ? cantidadAAgregar + ' unidades' : 'una unidad'} más?
-          `;
-          document.getElementById('duplicateOverlay').classList.add('active');
-          return;
-        } else {
-          if (precio > 0) guardarPrecioEnMemoria(texto, precio);
-          const catInfo = clasificarProducto(texto);
-          lista.items.push({
-            id: Date.now() + Math.random(),
-            texto: texto,
-            cantidad: cantidadAAgregar,
-            precio: precio,
-            categoriaId: catInfo.id,
-            icono: catInfo.icono,
-            tienda: tiendaVal,
-            comprado: false
-          });
-          mostrarToast(`➕ "${texto}" agregado a la lista`);
-        }
-
-        guardarStorage();
-        sincronizarConFirebase();
-        renderizarProductos();
-        input.value = "";
-        qtyInput.value = "1";
-        priceInput.value = "";
-      }
-    }
-
-    function confirmarSumarDuplicado() {
-      vibrarConfirmacion();
-      if (productoPendienteDuplicado) {
-        const { productoExistente, cantidadAAgregar, precio } = productoPendienteDuplicado;
-        
-        productoExistente.cantidad += cantidadAAgregar;
-        if (precio > 0) {
-          productoExistente.precio = precio;
-          guardarPrecioEnMemoria(productoExistente.texto, precio);
-        }
-
-        guardarStorage();
-        sincronizarConFirebase();
-        renderizarProductos();
-
-        mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
-
-        document.getElementById('itemInput').value = "";
-        document.getElementById('itemQty').value = "1";
-        document.getElementById('itemPrice').value = "";
-      }
-      
-      productoPendienteDuplicado = null;
-      document.getElementById('duplicateOverlay').classList.remove('active');
-    }
-
-    function cancelarSumarDuplicado() {
-      vibrarConfirmacion();
-      productoPendienteDuplicado = null;
-      document.getElementById('duplicateOverlay').classList.remove('active');
-      mostrarToast("🚫 Se canceló agregar la unidad repetida");
-    }
-
-    function editarProducto(prodId) {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (!lista || !lista.items) return;
-
-      const prod = lista.items.find(i => i.id === prodId);
-      if (!prod) return;
-
-      const nuevoTexto = prompt("Editar producto:", prod.texto);
-      if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
-        prod.texto = nuevoTexto.trim();
-        const catInfo = clasificarProducto(prod.texto);
-        prod.categoriaId = catInfo.id;
-        prod.icono = catInfo.icono;
-
-        guardarStorage();
-        sincronizarConFirebase();
-        renderizarProductos();
-        mostrarToast("✏️ Producto actualizado");
-      }
-    }
-
-    function cambiarEstadoProducto(prodId) {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista && lista.items) {
-        const prod = lista.items.find(i => i.id === prodId);
-        if (prod) {
-          prod.comprado = !prod.comprado;
-          guardarStorage();
-          sincronizarConFirebase();
-          renderizarProductos();
-
-          const accionTxt = prod.comprado ? 'comprado' : 'pendiente';
-          const iconoTxt = prod.comprado ? '✅' : '▫️';
-
-          mostrarToast(`${iconoTxt} "${prod.texto}" marcado como ${accionTxt}`, true, () => {
-            const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-            if (actual && actual.items) {
-              const itemRevertir = actual.items.find(i => i.id === prodId);
-              if (itemRevertir) {
-                itemRevertir.comprado = !itemRevertir.comprado;
-                guardarStorage();
-                sincronizarConFirebase();
-                renderizarProductos();
-                mostrarToast(`↩️ Cambio en "${itemRevertir.texto}" deshecho`);
-              }
-            }
-          });
-        }
-      }
-    }
-
-    function cambiarCantidadProducto(prodId, cambio) {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista && lista.items) {
-        const prod = lista.items.find(i => i.id === prodId);
-        if (prod) {
-          prod.cantidad = Math.max(1, prod.cantidad + cambio);
-          guardarStorage();
-          sincronizarConFirebase();
-          renderizarProductos();
-        }
-      }
-    }
-
-    function actualizarPrecioProducto(prodId, nuevoPrecio) {
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista && lista.items) {
-        const prod = lista.items.find(i => i.id === prodId);
-        if (prod) {
-          const valorValido = Math.max(0, Math.round(parseFloat(nuevoPrecio) || 0));
-          prod.precio = valorValido;
-          if (valorValido > 0) {
-            guardarPrecioEnMemoria(prod.texto, valorValido);
-          }
-          guardarStorage();
-          sincronizarConFirebase();
-          renderizarProductos();
-        }
-      }
-    }
-
-    function eliminarProducto(prodId) {
-      vibrarConfirmacion();
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista && lista.items) {
-        const prodIndex = lista.items.findIndex(i => i.id === prodId);
-        if (prodIndex !== -1) {
-          const itemEliminado = lista.items[prodIndex];
-
-          lista.items.splice(prodIndex, 1);
-          guardarStorage();
-          sincronizarConFirebase();
-          renderizarProductos();
-
-          mostrarToast(`🗑️ "${itemEliminado.texto}" borrado`, true, () => {
-            const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-            if (actual && actual.items) {
-              actual.items.splice(prodIndex, 0, itemEliminado);
-              guardarStorage();
-              sincronizarConFirebase();
-              renderizarProductos();
-              mostrarToast(`↩️ "${itemEliminado.texto}" restaurado`);
-            }
-          });
-        }
-      }
-    }
-
-    function cambiarFiltro(filtro) {
-      vibrarConfirmacion();
-      filtroProductos = filtro;
-      document.getElementById('subTabPendientes').classList.toggle('active', filtro === 'pendientes');
-      document.getElementById('subTabComprados').classList.toggle('active', filtro === 'comprados');
-      renderizarProductos();
-    }
-
-    function filtrarProductosPorBusqueda() {
-      const searchInput = document.getElementById('searchInput');
-      const btnClear = document.getElementById('btnClearSearch');
-      textoBusquedaActual = searchInput.value.toLowerCase().trim();
-
-      btnClear.style.display = textoBusquedaActual ? 'block' : 'none';
-      renderizarProductos();
-    }
-
-    function limpiarBusqueda() {
-      const searchInput = document.getElementById('searchInput');
-      searchInput.value = '';
-      filtrarProductosPorBusqueda();
-    }
-
-    function actualizarPresupuestoYProgreso(lista) {
-      let gastado = 0;
-      let total = 0;
-      let compradosCount = 0;
-      const items = lista.items || [];
-      const totalItems = items.length;
-
-      items.forEach(item => {
-        const subtotal = item.cantidad * Math.round(item.precio || 0);
-        total += subtotal;
-        if (item.comprado) {
-          gastado += subtotal;
-          compradosCount++;
-        }
-      });
-
-      document.getElementById('valGastado').textContent = formatoCLP.format(gastado);
-      document.getElementById('valTotal').textContent = formatoCLP.format(total);
-
-      const panelProgreso = document.getElementById('panelProgreso');
-      const fillProgreso = document.getElementById('fillProgreso');
-
-      if (limitePresupuestoActual > 0 && gastado > limitePresupuestoActual) {
-        panelProgreso.classList.add('exceeded');
-        fillProgreso.classList.add('exceeded');
-        document.getElementById('txtProgresoEstado').textContent = `🚨 ¡TE PASASTE DEL LÍMITE! ($${formatoCLP.format(gastado)})`;
-      } else {
-        panelProgreso.classList.remove('exceeded');
-        fillProgreso.classList.remove('exceeded');
-        document.getElementById('txtProgresoEstado').textContent = `${compradosCount} de ${totalItems} productos en el carro`;
-      }
-
-      const pct = totalItems > 0 ? Math.round((compradosCount / totalItems) * 100) : 0;
-      document.getElementById('txtProgresoPorcentaje').textContent = `${pct}%`;
-      fillProgreso.style.width = `${pct}%`;
-    }
-
-    // CALCULAR HISTORIAL DE INFLACIÓN O COMPARACIÓN DE PRECIOS
-    function obtenerBadgeVariacionPrecio(textoNorm, precioActual) {
-      if (!precioActual || precioActual <= 0) return '';
-      const precioAnterior = memoriaPreciosLocal[textoNorm];
-      if (!precioAnterior || precioAnterior === precioActual) return '';
-
-      const diff = precioActual - precioAnterior;
-      const pct = Math.round((diff / precioAnterior) * 100);
-
-      if (diff > 0) {
-        return `<span class="badge-price-diff up" title="Antes: $${formatoCLP.format(precioAnterior)}">📈 +${pct}%</span>`;
-      } else if (diff < 0) {
-        return `<span class="badge-price-diff down" title="Antes: $${formatoCLP.format(precioAnterior)}">📉 ${pct}%</span>`;
-      }
-      return '';
-    }
-
-    function renderizarProductos() {
-      const contenedor = document.getElementById('contenedorProductosCategorizados');
-      const titulo = document.getElementById('tituloListaActiva');
-      const badgeCod = document.getElementById('badgeCodigoLista');
-      const filtroTiendaSel = document.getElementById('filtroTiendaSelect');
-      const tiendaFiltroVal = filtroTiendaSel ? filtroTiendaSel.value : 'TODOS';
-
-      contenedor.innerHTML = "";
-
-      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (!lista) return;
-
-      titulo.textContent = lista.nombre;
-      badgeCod.textContent = `CÓDIGO: ${lista.id}`;
-      actualizarPresupuestoYProgreso(lista);
-
-      const items = lista.items || [];
-      const filtrados = items.filter(item => {
-        const cumpleEstado = filtroProductos === 'pendientes' ? !item.comprado : item.comprado;
-        const cumpleBusqueda = !textoBusquedaActual || item.texto.toLowerCase().includes(textoBusquedaActual);
-        const cumpleTienda = tiendaFiltroVal === 'TODOS' || (item.tienda || 'Supermercado') === tiendaFiltroVal;
-        return cumpleEstado && cumpleBusqueda && cumpleTienda;
-      });
-
-      if (filtrados.length === 0) {
-        if (textoBusquedaActual) {
-          contenedor.innerHTML = `<p class="empty-msg">No se encontraron productos para "${escapeHtml(textoBusquedaActual)}"</p>`;
-        } else {
-          contenedor.innerHTML = `<p class="empty-msg">${filtroProductos === 'pendientes' ? '¡Todo comprado!' : 'No hay productos comprados.'}</p>`;
-        }
-        return;
-      }
-
-      CATEGORIAS.forEach((cat, index) => {
-        const itemsDeCat = filtrados.filter(i => (i.categoriaId || clasificarProducto(i.texto).id) === cat.id);
-
-        if (itemsDeCat.length > 0) {
-          const header = document.createElement('div');
-          header.className = 'category-header';
-          header.innerHTML = `
-            <div class="category-title">
-              <span>${cat.icono}</span> <span>${cat.nombre}</span>
-            </div>
-            <div class="category-nav-btns">
-              <button class="btn-cat-order" onclick="moverCategoria(${index}, -1)" title="Subir pasillo">▲</button>
-              <button class="btn-cat-order" onclick="moverCategoria(${index}, 1)" title="Bajar pasillo">▼</button>
-            </div>
-          `;
-          contenedor.appendChild(header);
-
-          const ul = document.createElement('ul');
-
-          itemsDeCat.forEach(item => {
-            const li = document.createElement('li');
-            const subtotal = item.cantidad * (item.precio || 0);
-            const badgeInflacion = obtenerBadgeVariacionPrecio(item.texto.toLowerCase().trim(), item.precio);
-
-            let botonAccionPrincipal = '';
-            if (!item.comprado) {
-              botonAccionPrincipal = `
-                <button class="btn-check-action" onclick="cambiarEstadoProducto(${item.id})" title="Marcar como comprado">
-                  ✓
-                </button>
-              `;
-            } else {
-              botonAccionPrincipal = `
-                <button class="btn-uncheck-action" onclick="cambiarEstadoProducto(${item.id})" title="Devolver a Por Comprar">
-                  ↩️
-                </button>
-              `;
-            }
-
-            li.innerHTML = `
-              <div class="product-list-item">
-                <div class="item-main-details ${item.comprado ? 'comprado' : ''}" onclick="cambiarEstadoProducto(${item.id})">
-                  <div class="item-name-row">
-                    <span class="item-name">${escapeHtml(item.texto)}</span>
-                    <span class="badge-tienda-tag">${item.tienda || 'Súper'}</span>
-                    ${badgeInflacion}
-                  </div>
-                  <div class="item-price-status">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}</div>
-                </div>
-                
-                <div class="item-controls-right">
-                  <input type="number" class="inline-price" value="${item.precio || ''}" placeholder="$ CLP" 
-                         onchange="actualizarPrecioProducto(${item.id}, this.value)" title="Precio CLP">
-
-                  <div class="qty-controls">
-                    <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, -1)">-</button>
-                    <span style="font-size:0.85rem; font-weight:800; width:18px; text-align:center;">${item.cantidad}</span>
-                    <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, 1)">+</button>
-                  </div>
-
-                  <button class="btn-action-icon" onclick="editarProducto(${item.id})" title="Editar producto">✏️</button>
-
-                  ${botonAccionPrincipal}
-
-                  <button class="btn-action-icon" onclick="eliminarProducto(${item.id})" title="Borrar producto">✕</button>
-                </div>
-              </div>
-            `;
-            ul.appendChild(li);
-          });
-
-          contenedor.appendChild(ul);
-        }
       });
     }
 
