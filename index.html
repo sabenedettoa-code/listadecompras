@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
+  <!-- FUENTE GOOGLE FONTS: NUNITO (ULTRA LEGIBLE Y AMIGABLE) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
   <!-- GOOGLE ANALYTICS (GTAG.JS) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9V2PS8SERD"></script>
   <script>
@@ -82,7 +87,7 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       display: flex;
@@ -91,6 +96,10 @@
       height: 100dvh;
       overflow: hidden;
       transition: background-color 0.3s, color 0.3s;
+    }
+
+    input, button, select, textarea {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     .container {
@@ -103,6 +112,7 @@
       position: relative;
     }
 
+    /* CONTENEDOR CON DESLIZAMIENTO TÁCTIL EN TIEMPO REAL */
     .main-content {
       flex: 1;
       display: flex;
@@ -110,32 +120,17 @@
       overflow-y: auto;
       padding: 12px;
       -webkit-overflow-scrolling: touch;
-      position: relative;
       touch-action: pan-y;
+      will-change: transform;
     }
 
-    /* ANIMACIONES Y TRANSICIONES DE PESTAÑAS (SWIPE) */
-    .tab-seccion {
-      width: 100%;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+    .main-content.swiping {
+      transition: none !important;
     }
 
-    .tab-seccion.slide-in-right {
-      animation: slideInRight 0.25s forwards;
-    }
-
-    .tab-seccion.slide-in-left {
-      animation: slideInLeft 0.25s forwards;
-    }
-
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(30px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-30px); }
-      to { opacity: 1; transform: translateX(0); }
+    .main-content.snap-back {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      transform: translateX(0px) !important;
     }
 
     .header-top {
@@ -151,7 +146,7 @@
 
     .app-title-box { display: flex; align-items: center; gap: 8px; }
     .header-logo-img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
-    .app-title { font-size: 1.2rem; font-weight: 800; margin: 0; white-space: nowrap; }
+    .app-title { font-size: 1.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
 
     .header-right-controls { display: flex; align-items: center; gap: 8px; }
 
@@ -205,7 +200,7 @@
       border-radius: 10px;
       text-align: left;
       font-size: 0.9rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text);
       cursor: pointer;
       display: flex;
@@ -228,7 +223,7 @@
       border: none;
       padding: 10px 4px;
       font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text-muted);
       border-radius: 8px;
       cursor: pointer;
@@ -262,7 +257,7 @@
       margin-bottom: 12px;
     }
 
-    .welcome-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; }
+    .welcome-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px; font-weight: 600; }
 
     .welcome-features-list {
       display: flex;
@@ -281,7 +276,7 @@
       padding: 10px 12px;
       border-radius: 12px;
       font-size: 0.88rem;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .btn-start-large {
@@ -292,7 +287,7 @@
       padding: 16px;
       border-radius: 16px;
       font-size: 1.1rem;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -333,8 +328,8 @@
       margin: 0;
     }
 
-    .home-card h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--text); }
-    .home-card p { margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+    .home-card h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: var(--text); font-weight: 800; }
+    .home-card p { margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; font-weight: 600; }
 
     .home-actions {
       display: flex;
@@ -388,6 +383,7 @@
       color: var(--primary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-weight: 800;
     }
 
     .add-product-card {
@@ -419,7 +415,7 @@
       color: var(--text);
       border-radius: 10px;
       font-size: 0.95rem;
-      font-weight: 600;
+      font-weight: 700;
       outline: none;
       min-width: 0;
     }
@@ -442,7 +438,7 @@
       border: none;
       background: transparent;
       color: var(--text);
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.88rem;
       outline: none;
     }
@@ -456,7 +452,7 @@
       background: transparent;
       color: var(--text);
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
       outline: none;
     }
 
@@ -522,7 +518,7 @@
       padding: 6px 12px;
       border-radius: 20px;
       font-size: 0.78rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -560,7 +556,7 @@
       border: none;
       padding: 6px 12px;
       border-radius: 8px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.85rem;
       cursor: pointer;
       display: flex;
@@ -635,8 +631,8 @@
       cursor: pointer;
     }
 
-    .list-info h4 { margin: 0 0 2px 0; font-size: 0.95rem; }
-    .list-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+    .list-info h4 { margin: 0 0 2px 0; font-size: 0.95rem; font-weight: 800; }
+    .list-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
 
     .card-actions { display: flex; gap: 4px; }
 
@@ -677,7 +673,7 @@
     
     .item-name-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
     .item-name { 
-      font-weight: 700; font-size: 0.92rem; word-break: break-word;
+      font-weight: 800; font-size: 0.92rem; word-break: break-word;
     }
     
     .badge-tienda-tag {
@@ -685,10 +681,10 @@
       padding: 2px 6px;
       border-radius: 6px;
       background: var(--tab-bg);
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .item-price-status { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+    .item-price-status { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
 
     .item-controls-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
@@ -701,7 +697,7 @@
       background: var(--bg);
       color: var(--text);
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .qty-controls {
@@ -719,7 +715,7 @@
       border: none;
       color: var(--text);
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 800;
       width: 24px;
       height: 24px;
       display: flex;
@@ -742,8 +738,8 @@
       justify-content: center;
     }
 
-    .btn-check-action { color: var(--success); font-weight: bold; }
-    .btn-uncheck-action { color: var(--primary); font-weight: bold; }
+    .btn-check-action { color: var(--success); font-weight: 800; }
+    .btn-uncheck-action { color: var(--primary); font-weight: 800; }
 
     .comprado { text-decoration: line-through; opacity: 0.5; }
 
@@ -756,7 +752,7 @@
 
     .sub-btn {
       flex: 1; padding: 8px; border: none; background: none;
-      color: var(--text-muted); font-weight: 700; font-size: 0.82rem; border-radius: 8px;
+      color: var(--text-muted); font-weight: 800; font-size: 0.82rem; border-radius: 8px;
       cursor: pointer;
       text-align: center;
     }
@@ -777,7 +773,7 @@
       color: var(--text);
       border-radius: 10px;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       outline: none;
     }
 
@@ -807,8 +803,8 @@
     }
 
     .budget-item { text-align: center; }
-    .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; }
-    .budget-val { font-weight: 800; font-size: 0.95rem; }
+    .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; font-weight: 700; }
+    .budget-val { font-weight: 900; font-size: 0.95rem; }
     .budget-val.spent { color: var(--success); }
 
     .ad-container-native {
@@ -829,12 +825,13 @@
       border-top: 1px solid var(--border);
       padding-top: 12px;
       line-height: 1.5;
+      font-weight: 600;
     }
 
     .app-credits a {
       color: var(--primary);
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .toast {
@@ -847,10 +844,10 @@
       padding: 10px 18px;
       border-radius: 30px;
       font-size: 0.9rem;
-      font-weight: 600;
+      font-weight: 700;
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
       opacity: 0;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 8000;
       display: flex;
       align-items: center;
@@ -881,7 +878,7 @@
       z-index: 8500;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.25s ease;
     }
 
     .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
@@ -898,6 +895,12 @@
       border: 3px solid var(--primary);
       max-height: 90vh;
       overflow-y: auto;
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tutorial-overlay.active .tutorial-card {
+      transform: scale(1);
     }
 
     .tutorial-icon { font-size: 3rem; margin-bottom: 8px; }
@@ -915,7 +918,7 @@
     }
 
     .tutorial-card h3 { margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 800; }
-    .tutorial-card p { font-size: 0.95rem; line-height: 1.4; color: var(--text-muted); margin: 0 0 18px 0; }
+    .tutorial-card p { font-size: 0.95rem; line-height: 1.4; color: var(--text-muted); margin: 0 0 18px 0; font-weight: 600; }
 
     .tutorial-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
@@ -944,6 +947,7 @@
       color: var(--text);
       padding: 0;
       margin: 14px 0;
+      font-weight: 600;
     }
 
     .privacy-list li {
@@ -961,9 +965,6 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin: 14px 0;
-      max-height: 280px;
-      overflow-y: auto;
-      padding-right: 4px;
     }
 
     .recipe-item-card {
@@ -981,8 +982,8 @@
       transform: translateY(-2px);
     }
 
-    .recipe-item-card h4 { margin: 6px 0 2px 0; font-size: 0.92rem; }
-    .recipe-item-card p { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
+    .recipe-item-card h4 { margin: 6px 0 2px 0; font-size: 0.92rem; font-weight: 800; }
+    .recipe-item-card p { margin: 0; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
 
     #reader {
       width: 100%;
@@ -1060,6 +1061,7 @@
       line-height: 1.35;
       text-align: left;
       margin-bottom: 12px;
+      font-weight: 600;
     }
 
     .listai-intro-box ul {
@@ -1076,28 +1078,26 @@
       box-shadow: none;
     }
 
-    /* 💻 OPTIMIZACIÓN EXCLUSIVA PARA COMPUTADORES Y MONITORES (PC / LAPTOP) */
+    /* PANTALLA COMPLETA EN COMPUTADORES Y MONITORES (PC / LAPTOP) */
     @media (min-width: 768px) {
       body {
-        align-items: center;
-        background-color: #f1f5f9;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        body { background-color: #020617; }
+        align-items: stretch;
       }
 
       .container {
-        max-width: 880px;
-        height: 92vh;
-        border-radius: 20px;
-        border: 1px solid var(--border);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        overflow: hidden;
+        max-width: 100% !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
       }
 
       .main-content {
-        padding: 20px 24px;
+        padding: 24px 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
       }
 
       .home-actions {
@@ -1107,13 +1107,13 @@
       }
 
       .home-card {
-        padding: 28px;
+        padding: 32px;
       }
 
       #contenedorProductosCategorizados ul {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 12px;
       }
 
       #contenedorProductosCategorizados li {
@@ -1154,6 +1154,7 @@
       </div>
 
       <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();">💡 Mantener Pantalla Encendida</button>
+      <button class="btn-sidebar-tool" onclick="abrirModalAcercaDe(); toggleSidebar();">ℹ️ Acerca de esta App</button>
       <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
       
       <div class="compact-field" style="margin-top: 10px;">
@@ -1177,7 +1178,7 @@
 
     <div class="main-content" id="mainContentArea">
       
-      <div id="secPortada" class="tab-seccion" style="display: none;">
+      <div id="secPortada" style="display: none;">
         <div class="welcome-hero">
           <img src="/icon-512.png" alt="Mis Listas de Compras" class="welcome-logo-img">
           <h2 class="welcome-title">Mis Listas de Compras</h2>
@@ -1213,11 +1214,11 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 8 de agosto de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026</span>
         </div>
       </div>
 
-      <div id="secInicio" class="tab-seccion">
+      <div id="secInicio">
         <div class="home-card">
           <div class="home-logo-box">
             <img src="/icon-512.png" alt="Logo Mis Listas de Compras" class="home-app-logo">
@@ -1251,11 +1252,11 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 8 de agosto de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026</span>
         </div>
       </div>
 
-      <div id="secMisListas" class="tab-seccion" style="display: none;">
+      <div id="secMisListas" style="display: none;">
         <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 10px;">
           <input type="text" id="codigoUnirseInput" class="input-product-large" placeholder="🔑 Ingresar código de lista (ej: A8K9P2)..." style="flex:1; text-transform: uppercase;">
           <button class="btn-main-add" onclick="unirsePorCodigo()" style="flex: initial; min-width: 90px; background-color: #25d366;">Unirse</button>
@@ -1275,7 +1276,7 @@
         <div id="contenedorListas"></div>
       </div>
 
-      <div id="secListaActiva" class="tab-seccion" style="display: none;">
+      <div id="secListaActiva" style="display: none;">
         <div class="header-active">
           <button class="btn-back" onclick="verSeccion('mis-listas')">← Listas</button>
           <div style="text-align: center;">
@@ -1469,6 +1470,35 @@
     </div>
   </div>
 
+  <!-- MODAL ACERCA DE LA APLICACIÓN -->
+  <div id="acercaDeOverlay" class="tutorial-overlay">
+    <div class="tutorial-card" style="text-align: left;">
+      <div style="text-align: center;" class="tutorial-icon">ℹ️</div>
+      <h3 style="text-align: center; margin-bottom: 12px;">Acerca de Mis Listas de Compras</h3>
+      
+      <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text); margin-bottom: 10px;">
+        <strong>🎯 Mi Objetivo:</strong><br>
+        Esta plataforma fue creada con el fin de ofrecer una herramienta 100% gratuita, rápida y accesible para facilitar la planificación y realización de las compras en supermercados, ferias y comercios de Chile. Se busca eliminar el estrés del proceso de compra mediante tecnología útil como dictado por voz, escáneres inteligentes y asistencia por inteligencia artificial (ListAI), sin necesidad de registros ni recolección de datos personales.
+      </p>
+
+      <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text); margin-bottom: 10px;">
+        Está pensada para adultos mayores para simplificar la manera en que anotan los productos que necesitan.
+      </p>
+
+      <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text); margin-bottom: 14px;">
+        Fue creada con mucho cariño y sin fines de lucro por un joven chileno de 16 años.
+      </p>
+
+      <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
+        🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
+        👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
+        📌 <strong>Versión Actual:</strong> 3.5 (Agosto 2026)
+      </div>
+
+      <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
+    </div>
+  </div>
+
   <div id="duplicateOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div class="tutorial-icon">💡</div>
@@ -1526,112 +1556,70 @@
     </div>
   </div>
 
-  <!-- MODAL DE RECETAS CHILENAS (CON BUSCADOR Y MÁS RECETAS) -->
   <div id="recetasOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div class="tutorial-icon">🍳</div>
       <h3>Recetas Chilenas Típicas</h3>
-      <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista y busca o elige tu plato:</p>
+      <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista destino y el plato para cargar sus ingredientes:</p>
 
       <div style="margin-bottom: 10px; text-align: left;">
         <label for="selectListaDestinoReceta" style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 4px;">
           📌 Cargar ingredientes en:
         </label>
-        <select id="selectListaDestinoReceta" class="input-product-large" style="width: 100%; height: 42px; padding: 6px 10px; font-size: 0.95rem;">
+        <select id="selectListaDestinoReceta" class="input-product-large" style="width: 100%; height: 44px; padding: 6px 10px; font-size: 0.95rem;">
         </select>
       </div>
 
-      <!-- Buscador de Recetas Chilenas -->
-      <div style="margin-bottom: 10px;">
-        <input type="text" id="inputBuscarReceta" class="input-product-large" placeholder="🔍 Buscar receta o ingrediente..." oninput="filtrarRecetasChilenas()" style="width: 100%; font-size: 0.88rem; padding: 8px 12px;">
-      </div>
-
-      <div class="recipe-grid" id="contenedorGridRecetas">
-        <div class="recipe-item-card" data-nombre="cazuela cazuela de vacuno" onclick="cargarIngredientesReceta('cazuela')">
+      <div class="recipe-grid">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('cazuela')">
           <div style="font-size: 2rem;">🍲</div>
           <h4>Cazuela de Vacuno</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="pastel pastel de choclo" onclick="cargarIngredientesReceta('pastel')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pastel')">
           <div style="font-size: 2rem;">🥧</div>
           <h4>Pastel de Choclo</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="porotos porotos con riendas" onclick="cargarIngredientesReceta('porotos')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('porotos')">
           <div style="font-size: 2rem;">🫘</div>
           <h4>Porotos c/ Riendas</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="carbonada carbonada casera" onclick="cargarIngredientesReceta('carbonada')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('carbonada')">
           <div style="font-size: 2rem;">🍲</div>
           <h4>Carbonada Casera</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="charquican charquican con huevo" onclick="cargarIngredientesReceta('charquican')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('charquican')">
           <div style="font-size: 2rem;">🥘</div>
           <h4>Charquicán c/ Huevo</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="pebre pebre chileno" onclick="cargarIngredientesReceta('pebre')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pebre')">
           <div style="font-size: 2rem;">🌶️</div>
           <h4>Pebre Chileno</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="pantrucas pantrucas caseras" onclick="cargarIngredientesReceta('pantrucas')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pantrucas')">
           <div style="font-size: 2rem;">🥣</div>
           <h4>Pantrucas Caseras</h4>
           <p>9 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="completo completo italiano" onclick="cargarIngredientesReceta('completo')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('completo')">
           <div style="font-size: 2rem;">🌭</div>
           <h4>Completo Italiano</h4>
           <p>5 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="empanadas empanadas de pino" onclick="cargarIngredientesReceta('empanadas')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('empanadas')">
           <div style="font-size: 2rem;">🥟</div>
           <h4>Empanadas de Pino</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="sopaipillas sopaipillas pasadas" onclick="cargarIngredientesReceta('sopaipillas')">
+        <div class="recipe-item-card" onclick="cargarIngredientesReceta('sopaipillas')">
           <div style="font-size: 2rem;">🎃</div>
           <h4>Sopaipillas Pasadas</h4>
           <p>7 ingredientes</p>
-        </div>
-        <!-- Recetas Chilenas adicionales -->
-        <div class="recipe-item-card" data-nombre="humitas humita choclo" onclick="cargarIngredientesReceta('humitas')">
-          <div style="font-size: 2rem;">🌽</div>
-          <h4>Humitas Caseras</h4>
-          <p>6 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" data-nombre="caldillo caldillo de congrio" onclick="cargarIngredientesReceta('caldillo')">
-          <div style="font-size: 2rem;">🐟</div>
-          <h4>Caldillo de Congrio</h4>
-          <p>8 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" data-nombre="parmesana machas a la parmesana" onclick="cargarIngredientesReceta('parmesana')">
-          <div style="font-size: 2rem;">🦪</div>
-          <h4>Machas a la Parmesana</h4>
-          <p>5 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" data-nombre="pobre bistec a lo pobre" onclick="cargarIngredientesReceta('pobre')">
-          <div style="font-size: 2rem;">🍳</div>
-          <h4>Bistec a lo Pobre</h4>
-          <p>5 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" data-nombre="paila marina mariscos" onclick="cargarIngredientesReceta('paila')">
-          <div style="font-size: 2rem;">🦪</div>
-          <h4>Paila Marina</h4>
-          <p>8 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" data-nombre="asada leche asada postre" onclick="cargarIngredientesReceta('lecheasada')">
-          <div style="font-size: 2rem;">🍮</div>
-          <h4>Leche Asada</h4>
-          <p>5 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" data-nombre="mote mote con huesillo" onclick="cargarIngredientesReceta('mote')">
-          <div style="font-size: 2rem;">🍑</div>
-          <h4>Mote con Huesillo</h4>
-          <p>4 ingredientes</p>
         </div>
       </div>
 
@@ -1705,10 +1693,11 @@
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
 
-    // NAVEGACIÓN Y SWIPE DE PESTAÑAS CON GESTOS TÁCTILES
-    const ORDEN_PESTAÑAS = ['inicio', 'mis-listas', 'lista-activa'];
-    let touchStartX = 0;
-    let touchStartY = 0;
+    // GESTIÓN DE SWIPE EN TIEMPO REAL
+    const ordenSeccionesNav = ['inicio', 'mis-listas', 'lista-activa'];
+    let inicioXTouch = 0;
+    let inicioYTouch = 0;
+    let deltaXTouch = 0;
 
     window.addEventListener('online', actualizarEstadoRed);
     window.addEventListener('offline', actualizarEstadoRed);
@@ -1725,6 +1714,16 @@
     function cerrarModalPrivacidad() {
       vibrarConfirmacion();
       document.getElementById('privacyOverlay').classList.remove('active');
+    }
+
+    function abrirModalAcercaDe() {
+      vibrarConfirmacion();
+      document.getElementById('acercaDeOverlay').classList.add('active');
+    }
+
+    function cerrarModalAcercaDe() {
+      vibrarConfirmacion();
+      document.getElementById('acercaDeOverlay').classList.remove('active');
     }
 
     function actualizarEstadoRed() {
@@ -2385,28 +2384,11 @@
         select.appendChild(option);
       });
 
-      document.getElementById('inputBuscarReceta').value = '';
-      filtrarRecetasChilenas();
-
       document.getElementById('recetasOverlay').classList.add('active');
     }
 
     function cerrarModalRecetas() {
       document.getElementById('recetasOverlay').classList.remove('active');
-    }
-
-    function filtrarRecetasChilenas() {
-      const q = document.getElementById('inputBuscarReceta').value.toLowerCase().trim();
-      const tarjetas = document.querySelectorAll('#contenedorGridRecetas .recipe-item-card');
-
-      tarjetas.forEach(card => {
-        const nombre = card.getAttribute('data-nombre') || '';
-        if (!q || nombre.includes(q)) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
-      });
     }
 
     function cargarIngredientesReceta(recetaKey) {
@@ -2431,14 +2413,7 @@
         pantrucas: ["Harina 1kg", "Agua tibia", "Carne molida", "Cebolla", "Zanahoria", "Papas", "Huevo", "Caldo de carne", "Cilantro"],
         completo: ["Vienesas", "Pan de completo", "Paltas", "Tomates 1kg", "Mayonesa"],
         empanadas: ["Harina 1kg", "Manteca", "Carne picada 1kg", "Cebolla 1kg", "Huevos", "Aceitunas", "Pasas"],
-        sopaipillas: ["Zapallo", "Harina 1kg", "Manteca", "Chancaca", "Cáscara de naranja", "Clavo de olor", "Maicena"],
-        humitas: ["Choclo pastelero", "Albahaca fresca", "Cebolla", "Manteca", "Leche", "Sal y Azúcar"],
-        caldillo: ["Congrio dorado", "Cebolla", "Ajo", "Tomates", "Pimentón", "Vino blanco", "Crema de leche", "Cilantro"],
-        parmesana: ["Machas frescas", "Queso parmesano", "Mantequilla", "Vino blanco", "Limón"],
-        pobre: ["Bistec de lomo", "Papas para freír", "Cebolla", "Huevos", "Aceite para freír"],
-        paila: ["Choritos", "Almejas", "Machas", "Camarones", "Pescado en trozos", "Vino blanco", "Ajo y Cebolla", "Cilantro"],
-        lecheasada: ["Leche entera", "Huevos 6 u", "Azúcar", "Esencia de vainilla", "Canela"],
-        mote: ["Huesillos secos", "Mote de trigo", "Chancaca", "Canela en rama"]
+        sopaipillas: ["Zapallo", "Harina 1kg", "Manteca", "Chancaca", "Cáscara de naranja", "Clavo de olor", "Maicena"]
       };
 
       const ingredientes = recetas[recetaKey] || [];
@@ -2547,30 +2522,6 @@
         document.getElementById('toast').classList.remove('show');
       }
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      cargarTamanoLetra();
-      cargarStorage();
-      cargarOrdenCategorias();
-      cargarMemoriaPrecios();
-      procesarListaRecibidaPorURL();
-      actualizarEstadoRed();
-      inicializarGestosSwipe();
-
-      if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btnInstalar = document.getElementById('btnInstalarPWA');
-        if (btnInstalar) btnInstalar.style.display = 'none';
-      }
-
-      const portadaVista = localStorage.getItem('portadaVista_v1');
-      if (!portadaVista) {
-        verSeccion('portada');
-      } else {
-        verSeccion('inicio');
-      }
-
-      comprobarTutorialPrimeraVez();
-    });
 
     function ingresarAppDesdePortada() {
       vibrarConfirmacion();
@@ -2692,12 +2643,8 @@
       });
     }
 
-    // GESTIÓN DE PESTAÑAS Y ANIMACIONES CON SWIPE
-    let seccionActualNombre = 'inicio';
-
-    function verSeccion(seccion, direccionAnimacion = '') {
+    function verSeccion(seccion) {
       vibrarConfirmacion();
-      
       const secPortada = document.getElementById('secPortada');
       const secInicio = document.getElementById('secInicio');
       const secMisListas = document.getElementById('secMisListas');
@@ -2708,95 +2655,45 @@
       const navMisListas = document.getElementById('navMisListas');
       const navListaActiva = document.getElementById('navListaActiva');
 
-      const seccionesMap = {
-        'portada': secPortada,
-        'inicio': secInicio,
-        'mis-listas': secMisListas,
-        'lista-activa': secListaActiva
-      };
-
-      if (seccion !== 'portada' && coleccionListas.length === 0 && seccion === 'lista-activa') {
-        mostrarToast("⚠️ Primero debes crear una lista de compras");
-        verSeccion('mis-listas');
-        return;
-      }
-
-      Object.values(seccionesMap).forEach(sec => {
-        if (sec) {
-          sec.style.display = 'none';
-          sec.classList.remove('slide-in-right', 'slide-in-left');
-        }
-      });
+      secPortada.style.display = 'none';
+      secInicio.style.display = 'none';
+      secMisListas.style.display = 'none';
+      secListaActiva.style.display = 'none';
 
       navInicio.classList.remove('active');
       navMisListas.classList.remove('active');
       navListaActiva.classList.remove('active');
 
-      const objetivoSec = seccionesMap[seccion];
-
       if (seccion === 'portada') {
         secPortada.style.display = 'block';
         barraNavegacion.style.display = 'none';
-      } else {
+      } else if (seccion === 'inicio') {
+        secInicio.style.display = 'block';
         barraNavegacion.style.display = 'flex';
-        
-        if (seccion === 'inicio') navInicio.classList.add('active');
-        if (seccion === 'mis-listas') navMisListas.classList.add('active');
-        if (seccion === 'lista-activa') navListaActiva.classList.add('active');
+        navInicio.classList.add('active');
+        renderizarInicio();
+      } else if (seccion === 'mis-listas') {
+        secMisListas.style.display = 'block';
+        barraNavegacion.style.display = 'flex';
+        navMisListas.classList.add('active');
+        renderizarListas();
+      } else {
+        if (coleccionListas.length === 0) {
+          mostrarToast("⚠️ Primero debes crear una lista de compras");
+          verSeccion('mis-listas');
+          return;
+        }
 
-        if (seccion === 'lista-activa' && !idListaActiva && coleccionListas.length > 0) {
+        if (!idListaActiva) {
           idListaActiva = coleccionListas[0].id;
         }
 
-        if (objetivoSec) {
-          objetivoSec.style.display = 'block';
-          if (direccionAnimacion) {
-            objetivoSec.classList.add(direccionAnimacion === 'derecha' ? 'slide-in-right' : 'slide-in-left');
-          }
-        }
-
-        if (seccion === 'inicio') renderizarInicio();
-        if (seccion === 'mis-listas') renderizarListas();
-        if (seccion === 'lista-activa') {
-          escucharSincronizacionFirebase(idListaActiva);
-          renderizarProductos();
-        }
+        secListaActiva.style.display = 'block';
+        barraNavegacion.style.display = 'flex';
+        navListaActiva.classList.add('active');
+        escucharSincronizacionFirebase(idListaActiva);
+        renderizarProductos();
       }
-
-      seccionActualNombre = seccion;
-    }
-
-    // INICIALIZADOR DE GESTOS TÁCTILES (SWIPE EN PANTALLA)
-    function inicializarGestosSwipe() {
-      const area = document.getElementById('mainContentArea');
-      if (!area) return;
-
-      area.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-      }, { passive: true });
-
-      area.addEventListener('touchend', (e) => {
-        const touchEndX = e.changedTouches[0].screenX;
-        const touchEndY = e.changedTouches[0].screenY;
-        
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-
-        // Validar que el gesto sea horizontal y tenga fuerza
-        if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
-          const idxActual = ORDEN_PESTAÑAS.indexOf(seccionActualNombre);
-          if (idxActual === -1) return;
-
-          if (diffX < 0 && idxActual < ORDEN_PESTAÑAS.length - 1) {
-            // Deslizar izquierda -> Siguiente pestaña
-            verSeccion(ORDEN_PESTAÑAS[idxActual + 1], 'derecha');
-          } else if (diffX > 0 && idxActual > 0) {
-            // Deslizar derecha -> Pestaña anterior
-            verSeccion(ORDEN_PESTAÑAS[idxActual - 1], 'izquierda');
-          }
-        }
-      }, { passive: true });
     }
 
     function renderizarInicio() {
