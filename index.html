@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <!-- FUENTE GOOGLE FONTS: NUNITO (ULTRA LEGIBLE Y AMIGABLE) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,6 +80,20 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
     html { 
       font-size: calc(16px * var(--font-scale));
       height: 100%;
@@ -148,6 +162,16 @@
     }
     .net-badge.online { color: var(--success); }
     .net-badge.offline { color: var(--danger); }
+
+    .badge-users-online {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-weight: 800;
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
 
     .btn-menu-burger {
       background: var(--tab-bg);
@@ -390,7 +414,7 @@
     .add-row-1 { display: flex; gap: 6px; }
     .add-row-2 { 
       display: grid; 
-      grid-template-columns: 1fr 1.5fr auto; 
+      grid-template-columns: 1fr 1.2fr auto; 
       gap: 6px; 
       align-items: center; 
     }
@@ -433,6 +457,7 @@
 
     .qty-clean { text-align: center; }
     .price-clean { text-align: right; }
+
 
     .btn-main-add {
       background-color: var(--primary);
@@ -653,8 +678,59 @@
     .item-name { 
       font-weight: 800; font-size: 0.92rem; word-break: break-word;
     }
+    
 
     .item-price-status { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
+
+    .price-memory-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .price-memory-badge {
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      background: rgba(99, 102, 241, 0.08);
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 0.69rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .price-memory-badge:hover { background: rgba(99, 102, 241, 0.15); }
+
+    .memory-price-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0;
+      max-height: 52vh;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    .memory-price-card {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+    }
+
+    .memory-price-card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .memory-price-name { font-weight: 900; font-size: 0.9rem; }
+    .memory-price-value { font-weight: 900; color: var(--primary); white-space: nowrap; }
+    .memory-price-meta { margin-top: 3px; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; }
+    .memory-price-history { margin-top: 6px; font-size: 0.75rem; line-height: 1.45; color: var(--text); }
 
     .item-controls-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
@@ -776,6 +852,31 @@
     .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px; font-weight: 700; }
     .budget-val { font-weight: 900; font-size: 0.95rem; }
     .budget-val.spent { color: var(--success); }
+
+    .memory-estimate-box {
+      margin: 8px 0;
+      padding: 9px 12px;
+      border: 1px dashed var(--primary);
+      border-radius: 10px;
+      background: rgba(99, 102, 241, 0.07);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .memory-estimate-box strong { color: var(--primary); }
+
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid rgba(99, 102, 241, 0.35);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 420px) {
+      .budget-summary { padding: 9px 7px; gap: 4px; }
+      .budget-label { font-size: 0.68rem; }
+      .budget-val { font-size: 0.82rem; }
+    }
 
     .ad-container-native {
       margin-top: 14px;
@@ -1112,20 +1213,22 @@
         <h1 class="app-title">Mis Listas</h1>
       </div>
       <div class="header-right-controls">
+        <span id="badgeUsuariosVivo" class="badge-users-online" style="display: none;">👥 1 en vivo</span>
         <span id="netStatusBadge" class="net-badge online">🟢 Online</span>
-        <button class="btn-menu-burger" onclick="toggleSidebar()">☰</button>
+        <button class="btn-menu-burger" onclick="toggleSidebar()" aria-label="Abrir menú" title="Abrir menú">☰</button>
       </div>
     </div>
 
     <div id="sidebarMenu" class="sidebar-menu">
       <div class="sidebar-header">
         <h3>Ajustes y Ayuda</h3>
-        <button class="btn-close-menu" onclick="toggleSidebar()">✕</button>
+        <button class="btn-close-menu" onclick="toggleSidebar()" aria-label="Cerrar menú" title="Cerrar menú">✕</button>
       </div>
 
       <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();">💡 Mantener Pantalla Encendida</button>
       <button class="btn-sidebar-tool" onclick="abrirModalAcercaDe(); toggleSidebar();">ℹ️ Acerca de esta App</button>
       <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
+      <button class="btn-sidebar-tool" onclick="abrirMemoriaPrecios(); toggleSidebar();">🧠 Memoria de Precios</button>
       
       <div class="compact-field" style="margin-top: 10px;">
         <label style="font-size: 0.85rem; font-weight: 700;">Tamaño Letra:</label>
@@ -1172,7 +1275,7 @@
               <span>👓</span> <span>Letra grande y legible</span>
             </div>
             <div class="feature-item">
-              <span>📶</span> <span>Funciona 100% sin Internet</span>
+              <span>📶</span> <span>Tus listas funcionan incluso sin Internet</span>
             </div>
           </div>
 
@@ -1233,7 +1336,7 @@
         </div>
 
         <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 16px;">
-          <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Mercado mensual, Feria..." style="flex:1;">
+          <input type="text" id="nombreNuevaLista" class="input-product-large" placeholder="Ej: Compra mensual, Cumpleaños..." style="flex:1;">
           <button class="btn-main-add" onclick="crearNuevaLista()" style="flex: initial; min-width: 90px;">Crear</button>
         </div>
 
@@ -1269,8 +1372,8 @@
         <div class="add-product-card">
           <div class="add-row-1">
             <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta varios productos..." onchange="buscarPrecioEnMemoriaPorTexto(this.value)">
-            <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz de corrido">🎤</button>
-            <button class="btn-scanner" onclick="abrirEscanerBarras()" title="Escanear código de barras">📸</button>
+            <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz de corrido" aria-label="Dictar productos por voz">🎤</button>
+            <button class="btn-scanner" onclick="abrirEscanerBarras()" title="Escanear código de barras" aria-label="Escanear código de barras">📸</button>
           </div>
           
           <div class="add-row-2">
@@ -1329,6 +1432,7 @@
         <div class="action-bar">
           <button id="btnToggleFocus" class="btn-sec" onclick="toggleModoFocus()">🎯 Modo Focus</button>
           <button class="btn-sec" onclick="abrirModalGrafico()">📊 Gastos</button>
+          <button class="btn-sec" onclick="completarPreciosDesdeMemoria()">🧠 Completar precios</button>
           <button class="btn-sec" onclick="fijarLimitePresupuesto()">🚨 Tope</button>
           <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar</button>
           <button class="btn-sec" onclick="limpiarProductosComprados()">🧹 Limpiar</button>
@@ -1346,6 +1450,8 @@
 
         <div id="contenedorProductosCategorizados"></div>
 
+        <div id="estimacionMemoriaBox" class="memory-estimate-box" style="display:none;"></div>
+
         <div class="budget-summary" id="panelPresupuesto">
           <div class="budget-item">
             <div class="budget-label">Llevas gastado</div>
@@ -1355,6 +1461,11 @@
           <div class="budget-item">
             <div class="budget-label">Total Estimado</div>
             <div class="budget-val" id="valTotal">$0 CLP</div>
+          </div>
+          <div style="height: 28px; width: 2px; background: var(--border);"></div>
+          <div class="budget-item">
+            <div class="budget-label">Disponible</div>
+            <div class="budget-val" id="valDisponible">Sin tope</div>
           </div>
         </div>
       </div>
@@ -1423,6 +1534,21 @@
     </div>
   </div>
 
+  <!-- MODAL MEMORIA INTELIGENTE DE PRECIOS -->
+  <div id="memoriaPreciosOverlay" class="tutorial-overlay">
+    <div class="tutorial-card" style="text-align:left; max-width: 520px;">
+      <div style="text-align:center" class="tutorial-icon">🧠</div>
+      <h3 style="text-align:center; margin-bottom:6px;">Memoria Inteligente de Precios</h3>
+      <p style="text-align:center; margin-bottom:10px;">La app recuerda los precios que vas ingresando y construye un historial local en este dispositivo.</p>
+      <div id="memoriaPreciosResumen" class="listai-intro-box" style="margin-bottom:10px;"></div>
+      <div id="memoriaPreciosLista" class="memory-price-list"></div>
+      <div class="tutorial-actions">
+        <button class="btn-tut prev" onclick="borrarMemoriaPrecios()">🗑️ Borrar memoria</button>
+        <button class="btn-tut next" onclick="cerrarMemoriaPrecios()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL ACERCA DE LA APLICACIÓN -->
   <div id="acercaDeOverlay" class="tutorial-overlay">
     <div class="tutorial-card" style="text-align: left;">
@@ -1431,7 +1557,7 @@
       
       <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text); margin-bottom: 10px;">
         <strong>🎯 Mi Objetivo:</strong><br>
-        Esta plataforma fue creada con el fin de ofrecer una herramienta 100% gratuita, rápida y accesible para facilitar la planificación y realización de las compras en supermercados, ferias y comercios de Chile. Se busca eliminar el estrés del proceso de compra mediante tecnología útil como dictado por voz, escáneres inteligentes y asistencia por inteligencia artificial (ListAI), sin necesidad de registros ni recolección de datos personales.
+        Esta plataforma fue creada con el fin de ofrecer una herramienta 100% gratuita, rápida y accesible para facilitar la planificación y realización de las compras en supermercados, ferias y comercios de Chile. Se busca eliminar el estrés del proceso de compra mediante tecnología útil como dictado por voz, escáneres inteligentes y asistencia por inteligencia artificial (ListAI), sin necesidad de crear una cuenta para comenzar a usarla.
       </p>
 
       <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text); margin-bottom: 10px;">
@@ -1445,7 +1571,7 @@
       <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
         🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
         👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 3.5 (Agosto 2026)
+        📌 <strong>Versión Actual:</strong> 4.0 (Agosto 2026)
       </div>
 
       <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
@@ -1489,10 +1615,13 @@
       <h3>Política de Privacidad</h3>
       
       <ul class="privacy-list">
-        <li><strong>0% Registros:</strong> No te pedimos tu correo, ni teléfono, ni nombre. Tampoco requiere crear cuentas.</li>
-        <li><strong>Tus datos son tuyos:</strong> Tus listas de compras se guardan únicamente dentro de la memoria de tu celular (almacenamiento local).</li>
-        <li><strong>Uso del Micrófono y Cámara:</strong> Se activan únicamente cuando presionas sus respectivos botones para dictar o escanear productos.</li>
-        <li><strong>Sin Rastreo:</strong> La plataforma fue creada sin fines de lucro y no vende información a terceros.</li>
+        <li><strong>Sin registro obligatorio:</strong> La app no te pide crear una cuenta con nombre, correo o teléfono para usar tus listas.</li>
+        <li><strong>Almacenamiento local:</strong> Tus listas se guardan en el almacenamiento de este dispositivo para que puedas seguir usándolas incluso sin conexión.</li>
+        <li><strong>Listas compartidas:</strong> Cuando compartes o te unes a una lista mediante un código, esa lista se sincroniza a través de Firebase para que pueda actualizarse entre dispositivos.</li>
+        <li><strong>Micrófono y cámara:</strong> Solo se solicitan cuando usas funciones que los necesitan, como dictado, escáner de códigos o análisis de una imagen.</li>
+        <li><strong>ListAI e imágenes:</strong> Cuando utilizas ListAI, el texto o la imagen que adjuntas se envía al servicio necesario para procesar tu solicitud.</li>
+        <li><strong>Analítica y publicidad:</strong> El sitio utiliza servicios de Google Analytics y Google AdSense. Estos servicios pueden procesar datos técnicos conforme a sus propias políticas y a la configuración de consentimiento aplicable.</li>
+        <li><strong>Sin venta de listas:</strong> La plataforma fue creada sin fines de lucro y no vende el contenido de tus listas de compras a terceros.</li>
       </ul>
 
       <button class="btn-tut next" onclick="cerrarModalPrivacidad()" style="width: 100%;">¡Entendido y Claro! 👍</button>
@@ -1633,6 +1762,9 @@
     let diferidoPromptInstalacion = null;
     let textoBusquedaActual = '';
     let dbListenerRef = null;
+    let presenceRef = null;
+    let myPresenceRef = null; // Guardará la conexión activa de este usuario
+    let listaIdSuscrito = null; // Controla qué lista ya está siendo escuchada
     let html5QrcodeScanner = null;
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
@@ -1710,7 +1842,7 @@
 
       if (coleccionListas.length === 0) {
         const nuevoCodigo = generarCodigoUnico();
-        const nuevaLista = { id: nuevoCodigo, nombre: "Mi Lista de Compras", items: [] };
+        const nuevaLista = { id: nuevoCodigo, nombre: "Mi Lista de Compras", items: [], presupuesto: 0 };
         coleccionListas.push(nuevaLista);
         idListaActiva = nuevoCodigo;
         guardarStorage();
@@ -1868,7 +2000,7 @@
               if (precioCapturado > 0) existente.precio = precioCapturado;
             } else {
               const catInfo = clasificarProducto(prod.texto);
-              const precioFinal = precioCapturado > 0 ? precioCapturado : (memoriaPreciosLocal[normalizado] || 0);
+              const precioFinal = precioCapturado > 0 ? precioCapturado : (obtenerUltimoPrecio(normalizado) || 0);
 
               lista.items.push({
                 id: Date.now() + Math.random(),
@@ -1954,10 +2086,60 @@
       } catch (e) {}
     }
 
+    function normalizarClavePrecio(claveKey) {
+      return String(claveKey || '').toLowerCase().trim();
+    }
+
+    function obtenerRegistroPrecio(claveKey) {
+      const key = normalizarClavePrecio(claveKey);
+      const registro = memoriaPreciosLocal[key];
+      if (!registro) return null;
+      if (typeof registro === 'number') {
+        return { ultimoPrecio: registro, fechaUltimoPrecio: null, historial: [] };
+      }
+      return registro;
+    }
+
+    function obtenerUltimoPrecio(claveKey) {
+      const registro = obtenerRegistroPrecio(claveKey);
+      return registro ? (Number(registro.ultimoPrecio) || 0) : 0;
+    }
+
+    function formatearFechaPrecio(fechaISO) {
+      if (!fechaISO) return 'precio anterior';
+      const fecha = new Date(fechaISO);
+      if (Number.isNaN(fecha.getTime())) return 'fecha desconocida';
+      const hoy = new Date();
+      const ayer = new Date();
+      ayer.setDate(hoy.getDate() - 1);
+      const mismaFecha = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+      if (mismaFecha(fecha, hoy)) return 'hoy';
+      if (mismaFecha(fecha, ayer)) return 'ayer';
+      return fecha.toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: fecha.getFullYear() !== hoy.getFullYear() ? 'numeric' : undefined });
+    }
+
     function cargarMemoriaPrecios() {
-      const datosPrecios = localStorage.getItem('memoriaPrecios_v1');
-      if (datosPrecios) {
-        try { memoriaPreciosLocal = JSON.parse(datosPrecios); } catch (e) { memoriaPreciosLocal = {}; }
+      const datosPreciosV2 = localStorage.getItem('memoriaPrecios_v2');
+      const datosPreciosV1 = localStorage.getItem('memoriaPrecios_v1');
+      let datos = datosPreciosV2 || datosPreciosV1;
+      memoriaPreciosLocal = {};
+
+      if (datos) {
+        try {
+          const parsed = JSON.parse(datos);
+          Object.entries(parsed || {}).forEach(([key, valor]) => {
+            if (typeof valor === 'number') {
+              memoriaPreciosLocal[key] = { ultimoPrecio: valor, fechaUltimoPrecio: null, historial: [] };
+            } else if (valor && typeof valor === 'object') {
+              memoriaPreciosLocal[key] = {
+                ultimoPrecio: Number(valor.ultimoPrecio ?? valor.precio ?? 0) || 0,
+                fechaUltimoPrecio: valor.fechaUltimoPrecio || null,
+                historial: Array.isArray(valor.historial) ? valor.historial.slice(-12) : []
+              };
+            }
+          });
+          localStorage.setItem('memoriaPrecios_v2', JSON.stringify(memoriaPreciosLocal));
+        } catch (e) { memoriaPreciosLocal = {}; }
       }
       
       const datosNombres = localStorage.getItem('memoriaNombresCodigos_v1');
@@ -1967,10 +2149,25 @@
     }
 
     function guardarPrecioEnMemoria(claveKey, precio) {
-      if (!claveKey || !precio) return;
-      const keyNormalizada = claveKey.toLowerCase().trim();
-      memoriaPreciosLocal[keyNormalizada] = precio;
-      localStorage.setItem('memoriaPrecios_v1', JSON.stringify(memoriaPreciosLocal));
+      const precioValido = Math.max(0, Math.round(Number(precio) || 0));
+      if (!claveKey || !precioValido) return;
+      const keyNormalizada = normalizarClavePrecio(claveKey);
+      const ahora = new Date().toISOString();
+      const previo = obtenerRegistroPrecio(keyNormalizada);
+      const historial = previo && Array.isArray(previo.historial) ? [...previo.historial] : [];
+      const precioAnterior = previo ? Number(previo.ultimoPrecio) || 0 : 0;
+
+      // Solo crea un nuevo punto del historial cuando el precio cambia.
+      if (precioAnterior > 0 && precioAnterior !== precioValido) {
+        historial.push({ precio: precioAnterior, fecha: previo.fechaUltimoPrecio || ahora });
+      }
+
+      memoriaPreciosLocal[keyNormalizada] = {
+        ultimoPrecio: precioValido,
+        fechaUltimoPrecio: ahora,
+        historial: historial.slice(-12)
+      };
+      localStorage.setItem('memoriaPrecios_v2', JSON.stringify(memoriaPreciosLocal));
     }
 
     function guardarNombreCodigoEnMemoria(barcode, nombre) {
@@ -1981,14 +2178,91 @@
 
     function buscarPrecioEnMemoriaPorTexto(texto) {
       if (!texto) return;
-      const keyNormalizada = texto.toLowerCase().trim();
-      if (memoriaPreciosLocal[keyNormalizada]) {
+      const precioRecordado = obtenerUltimoPrecio(texto);
+      if (precioRecordado > 0) {
         const inputPrice = document.getElementById('itemPrice');
+        const registro = obtenerRegistroPrecio(texto);
         if (inputPrice && !inputPrice.value) {
-          inputPrice.value = memoriaPreciosLocal[keyNormalizada];
-          mostrarToast(`💡 Precio sugerido: $${formatoCLP.format(memoriaPreciosLocal[keyNormalizada])}`);
+          inputPrice.value = precioRecordado;
+          mostrarToast(`🧠 Último precio: ${formatoCLP.format(precioRecordado)} · ${formatearFechaPrecio(registro?.fechaUltimoPrecio)}`);
         }
       }
+    }
+
+    function obtenerTendenciaPrecio(registro) {
+      if (!registro) return '';
+      const historial = Array.isArray(registro.historial) ? registro.historial : [];
+      if (!historial.length) return '';
+      const anterior = Number(historial[historial.length - 1].precio) || 0;
+      const actual = Number(registro.ultimoPrecio) || 0;
+      if (!anterior || !actual || anterior === actual) return '→ sin cambio';
+      const pct = Math.round(((actual - anterior) / anterior) * 100);
+      return pct > 0 ? `↑ ${pct}%` : `↓ ${Math.abs(pct)}%`;
+    }
+
+    function abrirHistorialPrecio(nombre) {
+      vibrarConfirmacion();
+      abrirMemoriaPrecios(nombre);
+    }
+
+    function abrirMemoriaPrecios(filtroNombre = '') {
+      const overlay = document.getElementById('memoriaPreciosOverlay');
+      const listaEl = document.getElementById('memoriaPreciosLista');
+      const resumenEl = document.getElementById('memoriaPreciosResumen');
+      if (!overlay || !listaEl || !resumenEl) return;
+
+      let registros = Object.entries(memoriaPreciosLocal)
+        .map(([key, registro]) => ({ key, registro: obtenerRegistroPrecio(key) }))
+        .filter(x => x.registro && Number(x.registro.ultimoPrecio) > 0);
+
+      if (filtroNombre) {
+        const filtro = normalizarClavePrecio(filtroNombre);
+        registros = registros.filter(x => x.key === filtro || x.key.includes(filtro) || filtro.includes(x.key));
+      }
+
+      registros.sort((a, b) => {
+        const fa = a.registro.fechaUltimoPrecio ? new Date(a.registro.fechaUltimoPrecio).getTime() : 0;
+        const fb = b.registro.fechaUltimoPrecio ? new Date(b.registro.fechaUltimoPrecio).getTime() : 0;
+        return fb - fa;
+      });
+
+      const conHistorial = registros.filter(x => Array.isArray(x.registro.historial) && x.registro.historial.length > 0).length;
+      resumenEl.innerHTML = `<strong>${registros.length}</strong> producto${registros.length === 1 ? '' : 's'} recordado${registros.length === 1 ? '' : 's'}${filtroNombre ? ` para <strong>${escapeHtml(filtroNombre)}</strong>` : ''}. ${conHistorial ? `${conHistorial} ya tienen cambios de precio registrados.` : 'El historial irá creciendo a medida que cambien los precios.'}`;
+
+      if (!registros.length) {
+        listaEl.innerHTML = '<div class="empty-msg">Todavía no hay precios guardados para mostrar.</div>';
+      } else {
+        listaEl.innerHTML = registros.slice(0, 100).map(({key, registro}) => {
+          const nombreVisible = memoriaNombresCodigos[key] || key.replace(/(^|\s)\S/g, c => c.toUpperCase());
+          const historial = [...(registro.historial || []), { precio: registro.ultimoPrecio, fecha: registro.fechaUltimoPrecio }].slice(-5).reverse();
+          const detalleHistorial = historial.map((h, idx) => `${idx === 0 ? '<strong>' : ''}${formatoCLP.format(Number(h.precio) || 0)} · ${formatearFechaPrecio(h.fecha)}${idx === 0 ? '</strong>' : ''}`).join(' &nbsp;→&nbsp; ');
+          return `
+            <div class="memory-price-card">
+              <div class="memory-price-card-top">
+                <div class="memory-price-name">${escapeHtml(nombreVisible)}</div>
+                <div class="memory-price-value">${formatoCLP.format(Number(registro.ultimoPrecio) || 0)} ${obtenerTendenciaPrecio(registro)}</div>
+              </div>
+              <div class="memory-price-meta">Última actualización: ${formatearFechaPrecio(registro.fechaUltimoPrecio)}</div>
+              <div class="memory-price-history">${detalleHistorial}</div>
+            </div>`;
+        }).join('');
+      }
+
+      overlay.classList.add('active');
+    }
+
+    function cerrarMemoriaPrecios() {
+      document.getElementById('memoriaPreciosOverlay')?.classList.remove('active');
+    }
+
+    function borrarMemoriaPrecios() {
+      if (!confirm('¿Borrar toda la memoria de precios de este dispositivo? Tus listas no se eliminarán.')) return;
+      memoriaPreciosLocal = {};
+      localStorage.removeItem('memoriaPrecios_v2');
+      localStorage.removeItem('memoriaPrecios_v1');
+      cerrarMemoriaPrecios();
+      renderizarProductos();
+      mostrarToast('🧠 Memoria de precios borrada');
     }
 
     const pasosTutorialData = [
@@ -2025,7 +2299,7 @@
       {
         icon: '🎯',
         title: 'Modo Focus',
-        desc: 'Activa [🎯 Modo Focus] para limpiar la pantalla y comprar rápido en los pasillos sin distracciones.'
+        desc: 'Activa [🎯 Modo Focus] para limpiar la pantalla y comprar rápido en los pasillos.'
       }
     ];
 
@@ -2163,7 +2437,7 @@
           } catch(e) {}
 
           const nombreGuardado = memoriaNombresCodigos[barcode];
-          const precioGuardado = memoriaPreciosLocal[barcode] || (nombreGuardado ? memoriaPreciosLocal[nombreGuardado.toLowerCase().trim()] : 0);
+          const precioGuardado = obtenerUltimoPrecio(barcode) || (nombreGuardado ? obtenerUltimoPrecio(nombreGuardado) : 0);
 
           if (nombreGuardado) {
             mostrarFeedbackEscaner(true, nombreGuardado);
@@ -2290,16 +2564,25 @@
       document.getElementById('graficoOverlay').classList.remove('active');
     }
 
+    function obtenerPresupuestoLista(lista) {
+      return Math.max(0, Number(lista && lista.presupuesto) || 0);
+    }
+
     function fijarLimitePresupuesto() {
       vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista) return;
 
-      const actual = limitePresupuestoActual ? limitePresupuestoActual : '';
+      const actual = obtenerPresupuestoLista(lista) || '';
       const resp = prompt("Ingresa tu presupuesto máximo para esta compra ($ CLP):", actual);
       if (resp !== null) {
-        limitePresupuestoActual = parseInt(resp) || 0;
+        const limpio = String(resp).replace(/[^0-9]/g, '');
+        lista.presupuesto = parseInt(limpio, 10) || 0;
+        guardarStorage();
+        sincronizarConFirebase();
         renderizarProductos();
-        if (limitePresupuestoActual > 0) {
-          mostrarToast(`🚨 Límite fijado en $${formatoCLP.format(limitePresupuestoActual)}`);
+        if (lista.presupuesto > 0) {
+          mostrarToast(`🚨 Límite fijado en ${formatoCLP.format(lista.presupuesto)}`);
         } else {
           mostrarToast("🚨 Límite desactivado");
         }
@@ -2314,7 +2597,7 @@
 
       if (coleccionListas.length === 0) {
         const nuevoCodigo = generarCodigoUnico();
-        const nuevaLista = { id: nuevoCodigo, nombre: "Mi Lista de Compras", items: [] };
+        const nuevaLista = { id: nuevoCodigo, nombre: "Mi Lista de Compras", items: [], presupuesto: 0 };
         coleccionListas.push(nuevaLista);
         idListaActiva = nuevoCodigo;
         guardarStorage();
@@ -2377,7 +2660,7 @@
             id: Date.now() + Math.random(),
             texto: ing,
             cantidad: 1,
-            precio: memoriaPreciosLocal[normalizado] || 0,
+            precio: obtenerUltimoPrecio(normalizado) || 0,
             categoriaId: catInfo.id,
             icono: catInfo.icono,
             comprado: false
@@ -2588,7 +2871,7 @@
       });
     }
 
-    // NAVEGACIÓN INSTANTÁNEA ENTRE SECCIONES
+    // NAVEGACIÓN INSTANTÁNEA ENTRE SECCIONES (SIN BUGS DE TRANSICIONES)
     function verSeccion(seccion) {
       vibrarConfirmacion();
       const secPortada = document.getElementById('secPortada');
@@ -2780,16 +3063,17 @@
       dbListenerRef.on('value', (snapshot) => {
         const datosNube = snapshot.val();
         
-        if (datosNube && (datosNube.nombre || (Array.isArray(datosNube.items) && datosNube.items.length > 0))) {
+        // Sincroniza también una lista realmente vacía. En Firebase, un array vacío puede volver como null/ausente.
+        if (datosNube && datosNube.nombre) {
           let listaLocal = coleccionListas.find(l => String(l.id) === String(listaId));
+          const itemsNube = Array.isArray(datosNube.items) ? datosNube.items : [];
           if (!listaLocal) {
-            listaLocal = { id: listaId, nombre: datosNube.nombre || "Mi Lista", items: datosNube.items || [] };
+            listaLocal = { id: listaId, nombre: datosNube.nombre || "Mi Lista", items: itemsNube, presupuesto: Number(datosNube.presupuesto) || 0 };
             coleccionListas.push(listaLocal);
           } else {
             listaLocal.nombre = datosNube.nombre || listaLocal.nombre;
-            if (Array.isArray(datosNube.items) && datosNube.items.length > 0) {
-              listaLocal.items = datosNube.items;
-            }
+            listaLocal.items = itemsNube;
+            listaLocal.presupuesto = Number(datosNube.presupuesto) || 0;
           }
           guardarStorage();
           if (String(idListaActiva) === String(listaId)) {
@@ -2805,6 +3089,7 @@
       if (lista && lista.id) {
         db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
         db.ref('listas/' + lista.id + '/items').set(lista.items || []);
+        db.ref('listas/' + lista.id + '/presupuesto').set(obtenerPresupuestoLista(lista));
       }
     }
 
@@ -2818,6 +3103,7 @@
       try {
         await db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
         await db.ref('listas/' + lista.id + '/items').set(lista.items || []);
+        await db.ref('listas/' + lista.id + '/presupuesto').set(obtenerPresupuestoLista(lista));
 
         const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
         const mensajeTexto = `🛒 Te comparto la lista "${lista.nombre}" en vivo.\n🔑 Código de acceso: ${lista.id}`;
@@ -2868,10 +3154,11 @@
         if (datos) {
           let local = coleccionListas.find(l => String(l.id) === String(codigo));
           if (!local) {
-            coleccionListas.push({ id: codigo, nombre: datos.nombre, items: datos.items || [] });
+            coleccionListas.push({ id: codigo, nombre: datos.nombre, items: datos.items || [], presupuesto: Number(datos.presupuesto) || 0 });
           } else {
             local.nombre = datos.nombre;
             local.items = datos.items || [];
+            local.presupuesto = Number(datos.presupuesto) || 0;
           }
           guardarStorage();
           input.value = '';
@@ -2896,10 +3183,11 @@
           if (datos) {
             let local = coleccionListas.find(l => String(l.id) === String(listaIdURL));
             if (!local) {
-              coleccionListas.push({ id: listaIdURL, nombre: datos.nombre, items: datos.items || [] });
+              coleccionListas.push({ id: listaIdURL, nombre: datos.nombre, items: datos.items || [], presupuesto: Number(datos.presupuesto) || 0 });
             } else {
               local.nombre = datos.nombre;
               local.items = datos.items || [];
+              local.presupuesto = Number(datos.presupuesto) || 0;
             }
             guardarStorage();
             window.history.replaceState({}, document.title, window.location.pathname);
@@ -2917,7 +3205,7 @@
       if (!nombre) return;
 
       const nuevoCodigo = generarCodigoUnico();
-      const nuevaLista = { id: nuevoCodigo, nombre: nombre, items: [] };
+      const nuevaLista = { id: nuevoCodigo, nombre: nombre, items: [], presupuesto: 0 };
       coleccionListas.push(nuevaLista);
       guardarStorage();
       input.value = "";
@@ -2953,12 +3241,21 @@
     function eliminarLista(e, id) {
       e.stopPropagation();
       vibrarConfirmacion();
-      coleccionListas = coleccionListas.filter(l => String(l.id) !== String(id));
+      const index = coleccionListas.findIndex(l => String(l.id) === String(id));
+      if (index === -1) return;
+      const eliminada = JSON.parse(JSON.stringify(coleccionListas[index]));
+      coleccionListas.splice(index, 1);
       if (String(idListaActiva) === String(id)) idListaActiva = null;
       guardarStorage();
       renderizarListas();
       renderizarInicio();
-      mostrarToast(`🗑️ Lista eliminada`);
+      mostrarToast(`🗑️ "${eliminada.nombre}" eliminada`, true, () => {
+        coleccionListas.splice(Math.min(index, coleccionListas.length), 0, eliminada);
+        guardarStorage();
+        renderizarListas();
+        renderizarInicio();
+        mostrarToast('↩️ Lista restaurada');
+      });
     }
 
     function renderizarListas() {
@@ -3215,13 +3512,21 @@
     function actualizarPresupuestoYProgreso(lista) {
       let gastado = 0;
       let total = 0;
+      let estimadoConMemoria = 0;
+      let productosEstimados = 0;
       let compradosCount = 0;
       const items = lista.items || [];
       const totalItems = items.length;
 
       items.forEach(item => {
-        const subtotal = item.cantidad * Math.round(item.precio || 0);
+        const cantidad = Math.max(1, Number(item.cantidad) || 1);
+        const precioActual = Math.max(0, Math.round(Number(item.precio) || 0));
+        const precioMemoria = precioActual > 0 ? 0 : obtenerUltimoPrecio(item.texto);
+        const precioEstimacion = precioActual || precioMemoria || 0;
+        const subtotal = cantidad * precioActual;
         total += subtotal;
+        estimadoConMemoria += cantidad * precioEstimacion;
+        if (!precioActual && precioMemoria > 0) productosEstimados++;
         if (item.comprado) {
           gastado += subtotal;
           compradosCount++;
@@ -3231,13 +3536,35 @@
       document.getElementById('valGastado').textContent = formatoCLP.format(gastado);
       document.getElementById('valTotal').textContent = formatoCLP.format(total);
 
+      const boxEstimacion = document.getElementById('estimacionMemoriaBox');
+      if (boxEstimacion) {
+        if (productosEstimados > 0) {
+          boxEstimacion.style.display = 'block';
+          boxEstimacion.innerHTML = `🧠 Con tus precios recordados, esta compra se estima en <strong>${formatoCLP.format(estimadoConMemoria)}</strong>. Se estimaron ${productosEstimados} producto${productosEstimados === 1 ? '' : 's'} sin precio actual.`;
+        } else {
+          boxEstimacion.style.display = 'none';
+          boxEstimacion.innerHTML = '';
+        }
+      }
+
       const panelProgreso = document.getElementById('panelProgreso');
       const fillProgreso = document.getElementById('fillProgreso');
 
-      if (limitePresupuestoActual > 0 && gastado > limitePresupuestoActual) {
+      const limitePresupuesto = obtenerPresupuestoLista(lista);
+      const valDisponible = document.getElementById('valDisponible');
+      if (valDisponible) {
+        const basePresupuesto = productosEstimados > 0 ? estimadoConMemoria : gastado;
+        valDisponible.textContent = limitePresupuesto > 0
+          ? formatoCLP.format(limitePresupuesto - basePresupuesto)
+          : 'Sin tope';
+        valDisponible.style.color = limitePresupuesto > 0 && basePresupuesto > limitePresupuesto ? 'var(--danger)' : '';
+      }
+
+      const referenciaLimite = productosEstimados > 0 ? estimadoConMemoria : gastado;
+      if (limitePresupuesto > 0 && referenciaLimite > limitePresupuesto) {
         panelProgreso.classList.add('exceeded');
         fillProgreso.classList.add('exceeded');
-        document.getElementById('txtProgresoEstado').textContent = `🚨 ¡TE PASASTE DEL LÍMITE! ($${formatoCLP.format(gastado)})`;
+        document.getElementById('txtProgresoEstado').textContent = `🚨 Presupuesto excedido por ${formatoCLP.format(referenciaLimite - limitePresupuesto)}${productosEstimados ? ' (estimado)' : ''}`;
       } else {
         panelProgreso.classList.remove('exceeded');
         fillProgreso.classList.remove('exceeded');
@@ -3247,6 +3574,33 @@
       const pct = totalItems > 0 ? Math.round((compradosCount / totalItems) * 100) : 0;
       document.getElementById('txtProgresoPorcentaje').textContent = `${pct}%`;
       fillProgreso.style.width = `${pct}%`;
+    }
+
+    function completarPreciosDesdeMemoria() {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !Array.isArray(lista.items) || !lista.items.length) {
+        mostrarToast('🧠 No hay productos para completar');
+        return;
+      }
+      let completados = 0;
+      lista.items.forEach(item => {
+        if (!(Number(item.precio) > 0)) {
+          const recordado = obtenerUltimoPrecio(item.texto);
+          if (recordado > 0) {
+            item.precio = recordado;
+            completados++;
+          }
+        }
+      });
+      if (!completados) {
+        mostrarToast('🧠 No encontré precios recordados faltantes');
+        return;
+      }
+      guardarStorage();
+      sincronizarConFirebase();
+      renderizarProductos();
+      mostrarToast(`🧠 ${completados} precio${completados === 1 ? '' : 's'} completado${completados === 1 ? '' : 's'} desde tu memoria`);
     }
 
     function renderizarProductos() {
@@ -3324,6 +3678,12 @@
                     <span class="item-name">${escapeHtml(item.texto)}</span>
                   </div>
                   <div class="item-price-status">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}</div>
+                  ${(() => {
+                    const mem = obtenerRegistroPrecio(item.texto);
+                    if (!mem || !Number(mem.ultimoPrecio)) return '';
+                    const tendencia = obtenerTendenciaPrecio(mem);
+                    return `<div class="price-memory-row"><button class="price-memory-badge" onclick="event.stopPropagation(); abrirHistorialPrecio(decodeURIComponent('${encodeURIComponent(String(item.texto))}'))" title="Ver historial de precios">🧠 Último: ${formatoCLP.format(Number(mem.ultimoPrecio))} · ${formatearFechaPrecio(mem.fechaUltimoPrecio)} ${tendencia}</button></div>`;
+                  })()}
                 </div>
                 
                 <div class="item-controls-right">
@@ -3352,14 +3712,44 @@
       });
     }
 
-    function guardarStorage() { localStorage.setItem('misListasCompras_v1', JSON.stringify(coleccionListas)); }
+    function guardarStorage() {
+      try {
+        localStorage.setItem('misListasCompras_v1', JSON.stringify(coleccionListas));
+        return true;
+      } catch (e) {
+        console.error('No se pudo guardar localmente:', e);
+        mostrarToast('⚠️ No se pudo guardar en este dispositivo');
+        return false;
+      }
+    }
     function cargarStorage() {
       const datos = localStorage.getItem('misListasCompras_v1');
-      if (datos) { try { coleccionListas = JSON.parse(datos); } catch (e) { coleccionListas = []; } }
+      if (datos) {
+        try {
+          coleccionListas = JSON.parse(datos);
+          if (!Array.isArray(coleccionListas)) coleccionListas = [];
+          coleccionListas.forEach(lista => {
+            if (!Array.isArray(lista.items)) lista.items = [];
+            lista.nombre = String(lista.nombre || 'Mi Lista').slice(0, 100);
+            lista.items = lista.items.filter(Boolean).map(item => ({
+              ...item,
+              id: item.id ?? (Date.now() + Math.random()),
+              texto: String(item.texto || '').trim().slice(0, 160),
+              cantidad: Math.min(99, Math.max(1, parseInt(item.cantidad) || 1)),
+              precio: Math.max(0, Math.round(Number(item.precio) || 0)),
+              comprado: Boolean(item.comprado)
+            })).filter(item => item.texto);
+            if (!Number.isFinite(Number(lista.presupuesto))) lista.presupuesto = 0;
+            lista.presupuesto = Math.max(0, Number(lista.presupuesto) || 0);
+          });
+        } catch (e) {
+          coleccionListas = [];
+        }
+      }
     }
 
     function escapeHtml(str) {
-      return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+      return String(str ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -3385,6 +3775,12 @@
       comprobarTutorialPrimeraVez();
     });
 
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.tutorial-overlay.active').forEach(el => el.classList.remove('active'));
+      document.getElementById('sidebarMenu')?.classList.remove('active');
+    });
+
     document.getElementById('nombreNuevaLista').addEventListener('keypress', e => { if (e.key === 'Enter') crearNuevaLista(); });
     document.getElementById('codigoUnirseInput').addEventListener('keypress', e => { if (e.key === 'Enter') unirsePorCodigo(); });
     ['itemInput', 'itemQty', 'itemPrice'].forEach(id => {
@@ -3393,12 +3789,12 @@
     });
   </script>
 
-  <!-- SERVICE WORKER V50 -->
+  <!-- SERVICE WORKER -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => console.log('Service Worker v50 listo:', reg.scope))
+          .then((reg) => console.log('Service Worker listo:', reg.scope))
           .catch((err) => console.log('Error en SW:', err));
       });
     }
