@@ -503,18 +503,19 @@
     }
 
     .action-bar {
-      display: flex;
-      overflow-x: auto;
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
       gap: 6px;
       padding-bottom: 4px;
       margin-bottom: 10px;
       flex-shrink: 0;
-      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      justify-content: start;
+      align-items: start;
     }
     .action-bar::-webkit-scrollbar { display: none; }
 
     .btn-sec {
-      flex: 0 0 auto;
       background-color: var(--card-bg);
       color: var(--text);
       border: 1px solid var(--border);
@@ -528,6 +529,10 @@
       justify-content: center;
       gap: 4px;
       white-space: nowrap;
+      width: auto;
+      min-width: 0;
+      line-height: normal;
+      text-align: center;
     }
 
     .header-active {
@@ -1359,6 +1364,118 @@
       background-color: var(--danger);
     }
 
+  
+
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v4.7 */
+    .tutorial-overlay {
+      background: rgba(15, 23, 42, 0.68);
+      -webkit-backdrop-filter: blur(8px) saturate(1.08);
+      backdrop-filter: blur(8px) saturate(1.08);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.24s ease, visibility 0.24s ease, backdrop-filter 0.24s ease;
+    }
+
+    .tutorial-overlay.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .tutorial-card {
+      position: relative;
+      max-width: 430px;
+      padding: 24px 22px 22px;
+      border-radius: 24px;
+      border: 1px solid color-mix(in srgb, var(--primary) 42%, var(--border));
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.32), 0 2px 8px rgba(15, 23, 42, 0.08);
+      opacity: 0;
+      transform: translateY(18px) scale(0.965);
+      transition: transform 0.30s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+
+    .tutorial-overlay.active .tutorial-card {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .tutorial-icon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      background: rgba(99, 102, 241, 0.10);
+      border: 1px solid rgba(99, 102, 241, 0.18);
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .tutorial-card h3 {
+      font-size: 1.22rem;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .tutorial-card > p {
+      line-height: 1.5;
+    }
+
+    .tutorial-actions,
+    .app-dialog-actions {
+      gap: 9px;
+      margin-top: 4px;
+    }
+
+    .btn-tut {
+      min-height: 46px;
+      border-radius: 14px;
+      transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-tut:active { transform: scale(0.98); }
+    .btn-tut.next { box-shadow: 0 5px 14px rgba(99, 102, 241, 0.20); }
+    .btn-tut.next.danger { box-shadow: 0 5px 14px rgba(239, 68, 68, 0.18); }
+
+    .budget-modal-card {
+      max-width: 430px;
+      border-width: 1px;
+      padding: 24px 22px 22px;
+    }
+
+    #scannerOverlay .tutorial-card,
+    #graficoOverlay .tutorial-card,
+    #recetasOverlay .tutorial-card,
+    #memoriaPreciosOverlay .tutorial-card,
+    #iaOverlay .tutorial-card {
+      max-width: 520px;
+    }
+
+    @media (max-width: 520px) {
+      .tutorial-overlay { padding: 14px; align-items: center; }
+      .tutorial-card {
+        max-width: 100%;
+        border-radius: 22px;
+        padding: 22px 18px 18px;
+        max-height: min(88dvh, 760px);
+      }
+      .tutorial-icon { width: 54px; height: 54px; border-radius: 17px; font-size: 1.85rem; }
+      .tutorial-actions { flex-direction: column-reverse; }
+      .tutorial-actions .btn-tut { width: 100%; flex: none; }
+      #presupuestoOverlay .tutorial-actions { flex-direction: row; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tutorial-overlay,
+      .tutorial-card,
+      .btn-tut { transition: none !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -1445,7 +1562,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v4.3</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v4.7 · v4.7</span>
         </div>
       </div>
 
@@ -1483,7 +1600,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v4.3</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v4.7 · v4.7</span>
         </div>
       </div>
 
@@ -1589,9 +1706,9 @@
 
         <div class="action-bar">
           <button id="btnToggleFocus" class="btn-sec" onclick="toggleModoFocus()">🎯 Modo Focus</button>
-          <button class="btn-sec" onclick="abrirModalGrafico()">📊 Gastos</button>
           <button class="btn-sec" onclick="completarPreciosDesdeMemoria()">🧠 Completar precios</button>
           <button class="btn-sec" onclick="fijarLimitePresupuesto()">🚨 Tope</button>
+          <button class="btn-sec" onclick="abrirModalGrafico()">📊 Gastos</button>
           <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar</button>
           <button class="btn-sec" onclick="limpiarProductosComprados()">🧹 Limpiar</button>
         </div>
@@ -1634,7 +1751,7 @@
 
   
 
-  <div id="appDialogOverlay" class="tutorial-overlay">
+  <div id="appDialogOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card app-dialog-card">
       <div id="appDialogIcon" class="tutorial-icon">💬</div>
       <h3 id="appDialogTitle">Confirmar acción</h3>
@@ -1659,7 +1776,7 @@
   </div>
 
   <!-- MODAL ASISTENTE LISTAI -->
-  <div id="iaOverlay" class="tutorial-overlay">
+  <div id="iaOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card">
       <div class="tutorial-icon">🤖✨</div>
       <h3>ListAI: Tu Asistente de Compras</h3>
@@ -1762,7 +1879,7 @@
   </div>
 
   <!-- MODAL MEMORIA INTELIGENTE DE PRECIOS -->
-  <div id="memoriaPreciosOverlay" class="tutorial-overlay">
+  <div id="memoriaPreciosOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card" style="text-align:left; max-width: 520px;">
       <div style="text-align:center" class="tutorial-icon">🧠</div>
       <h3 style="text-align:center; margin-bottom:6px;">Memoria Inteligente de Precios</h3>
@@ -1777,7 +1894,7 @@
   </div>
 
   <!-- MODAL ACERCA DE LA APLICACIÓN -->
-  <div id="acercaDeOverlay" class="tutorial-overlay">
+  <div id="acercaDeOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card" style="text-align: left;">
       <div style="text-align: center;" class="tutorial-icon">ℹ️</div>
       <h3 style="text-align: center; margin-bottom: 12px;">Acerca de Mis Listas de Compras</h3>
@@ -1798,14 +1915,14 @@
       <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
         🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
         👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 4.3 (Agosto 2026)
+        📌 <strong>Versión Actual:</strong> 4.7 (Agosto 2026)
       </div>
 
       <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
     </div>
   </div>
 
-  <div id="duplicateOverlay" class="tutorial-overlay">
+  <div id="duplicateOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card">
       <div class="tutorial-icon">💡</div>
       <h3>Producto ya en la lista</h3>
@@ -1820,7 +1937,7 @@
     </div>
   </div>
 
-  <div id="tutorialOverlay" class="tutorial-overlay">
+  <div id="tutorialOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card">
       <div id="tutIcon" class="tutorial-icon">👋</div>
       <div id="tutBadge" class="tutorial-badge">Paso 1 de 7</div>
@@ -1836,7 +1953,7 @@
     </div>
   </div>
 
-  <div id="privacyOverlay" class="tutorial-overlay">
+  <div id="privacyOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card">
       <div class="tutorial-icon">🔒</div>
       <h3>Política de Privacidad</h3>
@@ -1855,7 +1972,7 @@
     </div>
   </div>
 
-  <div id="noListOverlay" class="tutorial-overlay">
+  <div id="noListOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card">
       <div class="tutorial-icon">⚠️</div>
       <h3>¡Primero selecciona una Lista!</h3>
@@ -1865,7 +1982,7 @@
     </div>
   </div>
 
-  <div id="recetasOverlay" class="tutorial-overlay">
+  <div id="recetasOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card">
       <div class="tutorial-icon">🍳</div>
       <h3>Recetas Chilenas Típicas</h3>
@@ -1936,7 +2053,7 @@
     </div>
   </div>
 
-  <div id="scannerOverlay" class="tutorial-overlay">
+  <div id="scannerOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card">
       <div class="tutorial-icon">📸</div>
       <h3>Escáner de Código de Barras</h3>
@@ -1948,7 +2065,7 @@
     </div>
   </div>
 
-  <div id="graficoOverlay" class="tutorial-overlay">
+  <div id="graficoOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card">
       <div class="tutorial-icon">📊</div>
       <h3>Desglose de Gastos por Pasillo</h3>
@@ -4353,10 +4470,42 @@
       comprobarTutorialPrimeraVez();
     });
 
+    function cerrarModalActivoSeguro() {
+      const activo = Array.from(document.querySelectorAll('.tutorial-overlay.active')).pop();
+      if (!activo) {
+        document.getElementById('sidebarMenu')?.classList.remove('active');
+        return;
+      }
+
+      switch (activo.id) {
+        case 'appDialogOverlay': cancelarDialogoApp(); break;
+        case 'iaOverlay': cerrarModalIA(); break;
+        case 'memoriaPreciosOverlay': cerrarMemoriaPrecios(); break;
+        case 'acercaDeOverlay': cerrarModalAcercaDe(); break;
+        case 'duplicateOverlay': cancelarSumarDuplicado(); break;
+        case 'tutorialOverlay': cerrarTutorial(); break;
+        case 'privacyOverlay': cerrarModalPrivacidad(); break;
+        case 'noListOverlay': cerrarModalSinLista(); break;
+        case 'recetasOverlay': cerrarModalRecetas(); break;
+        case 'scannerOverlay': cerrarEscanerBarras(true); break;
+        case 'graficoOverlay': cerrarModalGrafico(); break;
+        case 'presupuestoOverlay': cerrarModalPresupuesto(); break;
+        default: activo.classList.remove('active');
+      }
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
-      document.querySelectorAll('.tutorial-overlay.active').forEach(el => el.classList.remove('active'));
-      document.getElementById('sidebarMenu')?.classList.remove('active');
+      if (document.getElementById('appDialogOverlay')?.classList.contains('active')) return;
+      e.preventDefault();
+      cerrarModalActivoSeguro();
+    });
+
+    document.querySelectorAll('.tutorial-overlay').forEach(overlay => {
+      overlay.addEventListener('pointerdown', (e) => {
+        if (e.target !== overlay) return;
+        cerrarModalActivoSeguro();
+      });
     });
 
     document.getElementById('nombreNuevaLista').addEventListener('keypress', e => { if (e.key === 'Enter') crearNuevaLista(); });
