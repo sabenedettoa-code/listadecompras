@@ -960,7 +960,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin: 10px 0 14px 0;
+      margin: 14px 0;
       max-height: 280px;
       overflow-y: auto;
       padding-right: 4px;
@@ -983,17 +983,6 @@
 
     .recipe-item-card h4 { margin: 6px 0 2px 0; font-size: 0.92rem; }
     .recipe-item-card p { margin: 0; font-size: 0.75rem; color: var(--text-muted); }
-
-    .counter-recipes-badge {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      font-size: 0.78rem;
-      font-weight: 800;
-      padding: 3px 10px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-    }
 
     #reader {
       width: 100%;
@@ -1224,7 +1213,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 10 de agosto de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 8 de agosto de 2026</span>
         </div>
       </div>
 
@@ -1262,7 +1251,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 10 de agosto de 2026</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: 8 de agosto de 2026</span>
         </div>
       </div>
 
@@ -1537,15 +1526,11 @@
     </div>
   </div>
 
-  <!-- MODAL DE RECETAS CHILENAS (CON CONTADOR, BUSCADOR Y MÁS RECETAS) -->
+  <!-- MODAL DE RECETAS CHILENAS (CON BUSCADOR Y MÁS RECETAS) -->
   <div id="recetasOverlay" class="tutorial-overlay">
     <div class="tutorial-card">
       <div class="tutorial-icon">🍳</div>
       <h3>Recetas Chilenas Típicas</h3>
-      
-      <!-- CONTADOR DINÁMICO DE RECETAS DISPONIBLES -->
-      <span class="counter-recipes-badge" id="badgeContadorRecetas">🇨🇱 17 recetas disponibles</span>
-
       <p style="font-size: 0.85rem; margin-bottom: 10px;">Selecciona la lista y busca o elige tu plato:</p>
 
       <div style="margin-bottom: 10px; text-align: left;">
@@ -1562,87 +1547,88 @@
       </div>
 
       <div class="recipe-grid" id="contenedorGridRecetas">
-        <div class="recipe-item-card" data-nombre="cazuela cazuela de vacuno carne papa zapallo choclo arroz" onclick="cargarIngredientesReceta('cazuela')">
+        <div class="recipe-item-card" data-nombre="cazuela cazuela de vacuno" onclick="cargarIngredientesReceta('cazuela')">
           <div style="font-size: 2rem;">🍲</div>
           <h4>Cazuela de Vacuno</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="pastel pastel de choclo pino pollo cebolla huevo" onclick="cargarIngredientesReceta('pastel')">
+        <div class="recipe-item-card" data-nombre="pastel pastel de choclo" onclick="cargarIngredientesReceta('pastel')">
           <div style="font-size: 2rem;">🥧</div>
           <h4>Pastel de Choclo</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="porotos porotos con riendas tallarines zapallo longaniza" onclick="cargarIngredientesReceta('porotos')">
+        <div class="recipe-item-card" data-nombre="porotos porotos con riendas" onclick="cargarIngredientesReceta('porotos')">
           <div style="font-size: 2rem;">🫘</div>
           <h4>Porotos c/ Riendas</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="carbonada carbonada casera carne papa zapallo choclo" onclick="cargarIngredientesReceta('carbonada')">
+        <div class="recipe-item-card" data-nombre="carbonada carbonada casera" onclick="cargarIngredientesReceta('carbonada')">
           <div style="font-size: 2rem;">🍲</div>
           <h4>Carbonada Casera</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="charquican charquican con huevo carne molida papa zapallo" onclick="cargarIngredientesReceta('charquican')">
+        <div class="recipe-item-card" data-nombre="charquican charquican con huevo" onclick="cargarIngredientesReceta('charquican')">
           <div style="font-size: 2rem;">🥘</div>
           <h4>Charquicán c/ Huevo</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="pebre pebre chileno tomate cebolla cilantro aji" onclick="cargarIngredientesReceta('pebre')">
+        <div class="recipe-item-card" data-nombre="pebre pebre chileno" onclick="cargarIngredientesReceta('pebre')">
           <div style="font-size: 2rem;">🌶️</div>
           <h4>Pebre Chileno</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="pantrucas pantrucas caseras harina carne papa" onclick="cargarIngredientesReceta('pantrucas')">
+        <div class="recipe-item-card" data-nombre="pantrucas pantrucas caseras" onclick="cargarIngredientesReceta('pantrucas')">
           <div style="font-size: 2rem;">🥣</div>
           <h4>Pantrucas Caseras</h4>
           <p>9 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="completo completo italiano vienesa pan palta tomate mayo" onclick="cargarIngredientesReceta('completo')">
+        <div class="recipe-item-card" data-nombre="completo completo italiano" onclick="cargarIngredientesReceta('completo')">
           <div style="font-size: 2rem;">🌭</div>
           <h4>Completo Italiano</h4>
           <p>5 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="empanadas empanadas de pino carne cebolla huevo aceituna" onclick="cargarIngredientesReceta('empanadas')">
+        <div class="recipe-item-card" data-nombre="empanadas empanadas de pino" onclick="cargarIngredientesReceta('empanadas')">
           <div style="font-size: 2rem;">🥟</div>
           <h4>Empanadas de Pino</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="sopaipillas sopaipillas pasadas zapallo chancaca harina" onclick="cargarIngredientesReceta('sopaipillas')">
+        <div class="recipe-item-card" data-nombre="sopaipillas sopaipillas pasadas" onclick="cargarIngredientesReceta('sopaipillas')">
           <div style="font-size: 2rem;">🎃</div>
           <h4>Sopaipillas Pasadas</h4>
           <p>7 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="humitas humita choclo albahaca cebolla" onclick="cargarIngredientesReceta('humitas')">
+        <!-- Recetas Chilenas adicionales -->
+        <div class="recipe-item-card" data-nombre="humitas humita choclo" onclick="cargarIngredientesReceta('humitas')">
           <div style="font-size: 2rem;">🌽</div>
           <h4>Humitas Caseras</h4>
           <p>6 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="caldillo caldillo de congrio pescado vino crema" onclick="cargarIngredientesReceta('caldillo')">
+        <div class="recipe-item-card" data-nombre="caldillo caldillo de congrio" onclick="cargarIngredientesReceta('caldillo')">
           <div style="font-size: 2rem;">🐟</div>
           <h4>Caldillo de Congrio</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="parmesana machas a la parmesana queso mantequilla vino" onclick="cargarIngredientesReceta('parmesana')">
+        <div class="recipe-item-card" data-nombre="parmesana machas a la parmesana" onclick="cargarIngredientesReceta('parmesana')">
           <div style="font-size: 2rem;">🦪</div>
           <h4>Machas a la Parmesana</h4>
           <p>5 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="pobre bistec a lo pobre carne papas cebolla huevo" onclick="cargarIngredientesReceta('pobre')">
+        <div class="recipe-item-card" data-nombre="pobre bistec a lo pobre" onclick="cargarIngredientesReceta('pobre')">
           <div style="font-size: 2rem;">🍳</div>
           <h4>Bistec a lo Pobre</h4>
           <p>5 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="paila paila marina mariscos chorito almeja camaron" onclick="cargarIngredientesReceta('paila')">
+        <div class="recipe-item-card" data-nombre="paila marina mariscos" onclick="cargarIngredientesReceta('paila')">
           <div style="font-size: 2rem;">🦪</div>
           <h4>Paila Marina</h4>
           <p>8 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="asada leche asada postre leche huevo azucar" onclick="cargarIngredientesReceta('lecheasada')">
+        <div class="recipe-item-card" data-nombre="asada leche asada postre" onclick="cargarIngredientesReceta('lecheasada')">
           <div style="font-size: 2rem;">🍮</div>
           <h4>Leche Asada</h4>
           <p>5 ingredientes</p>
         </div>
-        <div class="recipe-item-card" data-nombre="mote mote con huesillo chancaca canela" onclick="cargarIngredientesReceta('mote')">
+        <div class="recipe-item-card" data-nombre="mote mote con huesillo" onclick="cargarIngredientesReceta('mote')">
           <div style="font-size: 2rem;">🍑</div>
           <h4>Mote con Huesillo</h4>
           <p>4 ingredientes</p>
@@ -2409,26 +2395,18 @@
       document.getElementById('recetasOverlay').classList.remove('active');
     }
 
-    // FILTRO Y CONTADOR DINÁMICO DE RECETAS
     function filtrarRecetasChilenas() {
       const q = document.getElementById('inputBuscarReceta').value.toLowerCase().trim();
       const tarjetas = document.querySelectorAll('#contenedorGridRecetas .recipe-item-card');
-      let visibles = 0;
 
       tarjetas.forEach(card => {
         const nombre = card.getAttribute('data-nombre') || '';
         if (!q || nombre.includes(q)) {
           card.style.display = 'block';
-          visibles++;
         } else {
           card.style.display = 'none';
         }
       });
-
-      const badge = document.getElementById('badgeContadorRecetas');
-      if (badge) {
-        badge.textContent = `🇨🇱 ${visibles} receta${visibles !== 1 ? 's' : ''} disponible${visibles !== 1 ? 's' : ''}`;
-      }
     }
 
     function cargarIngredientesReceta(recetaKey) {
@@ -2711,6 +2689,829 @@
         const dot = document.createElement('span');
         dot.className = `dot ${idx === pasoActualTutorial ? 'active' : ''}`;
         dotsContainer.appendChild(dot);
+      });
+    }
+
+    // GESTIÓN DE PESTAÑAS Y ANIMACIONES CON SWIPE
+    let seccionActualNombre = 'inicio';
+
+    function verSeccion(seccion, direccionAnimacion = '') {
+      vibrarConfirmacion();
+      
+      const secPortada = document.getElementById('secPortada');
+      const secInicio = document.getElementById('secInicio');
+      const secMisListas = document.getElementById('secMisListas');
+      const secListaActiva = document.getElementById('secListaActiva');
+
+      const barraNavegacion = document.getElementById('barraNavegacion');
+      const navInicio = document.getElementById('navInicio');
+      const navMisListas = document.getElementById('navMisListas');
+      const navListaActiva = document.getElementById('navListaActiva');
+
+      const seccionesMap = {
+        'portada': secPortada,
+        'inicio': secInicio,
+        'mis-listas': secMisListas,
+        'lista-activa': secListaActiva
+      };
+
+      if (seccion !== 'portada' && coleccionListas.length === 0 && seccion === 'lista-activa') {
+        mostrarToast("⚠️ Primero debes crear una lista de compras");
+        verSeccion('mis-listas');
+        return;
+      }
+
+      Object.values(seccionesMap).forEach(sec => {
+        if (sec) {
+          sec.style.display = 'none';
+          sec.classList.remove('slide-in-right', 'slide-in-left');
+        }
+      });
+
+      navInicio.classList.remove('active');
+      navMisListas.classList.remove('active');
+      navListaActiva.classList.remove('active');
+
+      const objetivoSec = seccionesMap[seccion];
+
+      if (seccion === 'portada') {
+        secPortada.style.display = 'block';
+        barraNavegacion.style.display = 'none';
+      } else {
+        barraNavegacion.style.display = 'flex';
+        
+        if (seccion === 'inicio') navInicio.classList.add('active');
+        if (seccion === 'mis-listas') navMisListas.classList.add('active');
+        if (seccion === 'lista-activa') navListaActiva.classList.add('active');
+
+        if (seccion === 'lista-activa' && !idListaActiva && coleccionListas.length > 0) {
+          idListaActiva = coleccionListas[0].id;
+        }
+
+        if (objetivoSec) {
+          objetivoSec.style.display = 'block';
+          if (direccionAnimacion) {
+            objetivoSec.classList.add(direccionAnimacion === 'derecha' ? 'slide-in-right' : 'slide-in-left');
+          }
+        }
+
+        if (seccion === 'inicio') renderizarInicio();
+        if (seccion === 'mis-listas') renderizarListas();
+        if (seccion === 'lista-activa') {
+          escucharSincronizacionFirebase(idListaActiva);
+          renderizarProductos();
+        }
+      }
+
+      seccionActualNombre = seccion;
+    }
+
+    // INICIALIZADOR DE GESTOS TÁCTILES (SWIPE EN PANTALLA)
+    function inicializarGestosSwipe() {
+      const area = document.getElementById('mainContentArea');
+      if (!area) return;
+
+      area.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }, { passive: true });
+
+      area.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
+        
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+
+        // Validar que el gesto sea horizontal y tenga fuerza
+        if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+          const idxActual = ORDEN_PESTAÑAS.indexOf(seccionActualNombre);
+          if (idxActual === -1) return;
+
+          if (diffX < 0 && idxActual < ORDEN_PESTAÑAS.length - 1) {
+            // Deslizar izquierda -> Siguiente pestaña
+            verSeccion(ORDEN_PESTAÑAS[idxActual + 1], 'derecha');
+          } else if (diffX > 0 && idxActual > 0) {
+            // Deslizar derecha -> Pestaña anterior
+            verSeccion(ORDEN_PESTAÑAS[idxActual - 1], 'izquierda');
+          }
+        }
+      }, { passive: true });
+    }
+
+    function renderizarInicio() {
+      const widget = document.getElementById('widgetUltimaLista');
+      widget.innerHTML = "";
+
+      if (coleccionListas.length > 0) {
+        const ultima = coleccionListas[coleccionListas.length - 1];
+        const pendientes = (ultima.items || []).filter(i => !i.comprado).length;
+
+        widget.innerHTML = `
+          <div class="recent-list-widget" onclick="abrirLista('${ultima.id}')">
+            <h4>📌 Continuar con tu última lista</h4>
+            <div style="font-weight: 800; font-size: 1.1rem; color: var(--text);">${escapeHtml(ultima.nombre)}</div>
+            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
+              ${pendientes} productos pendientes de ${(ultima.items || []).length} en total. ➔
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function exportarBackup() {
+      vibrarConfirmacion();
+      if (coleccionListas.length === 0) {
+        mostrarToast("⚠️ No hay listas para exportar");
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(coleccionListas));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `mis_listas_compras_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      mostrarToast("💾 Respaldo guardado con éxito");
+    }
+
+    function importarBackup(e) {
+      vibrarConfirmacion();
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const importadas = JSON.parse(evt.target.result);
+          if (Array.isArray(importadas)) {
+            coleccionListas = importadas;
+            guardarStorage();
+            renderizarListas();
+            mostrarToast("📂 Respaldo cargado correctamente");
+          } else { throw new Error(); }
+        } catch (err) {
+          mostrarToast("⚠️ Archivo de respaldo no válido");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    function moverCategoria(index, direccion) {
+      vibrarConfirmacion();
+      const nuevoIndex = index + direccion;
+      if (nuevoIndex < 0 || nuevoIndex >= CATEGORIAS.length) return;
+      
+      const temp = CATEGORIAS[index];
+      CATEGORIAS[index] = CATEGORIAS[nuevoIndex];
+      CATEGORIAS[nuevoIndex] = temp;
+
+      guardarOrdenCategorias();
+      renderizarProductos();
+    }
+
+    function guardarOrdenCategorias() {
+      const ordenIds = CATEGORIAS.map(c => c.id);
+      localStorage.setItem('ordenPasillos_v1', JSON.stringify(ordenIds));
+    }
+
+    function cargarOrdenCategorias() {
+      const datos = localStorage.getItem('ordenPasillos_v1');
+      if (datos) {
+        try {
+          const ordenIds = JSON.parse(datos);
+          CATEGORIAS.sort((a, b) => ordenIds.indexOf(a.id) - ordenIds.indexOf(b.id));
+        } catch (e) {}
+      }
+    }
+
+    function desmarcarTodos() {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !lista.items || lista.items.length === 0) return;
+
+      lista.items.forEach(i => i.comprado = false);
+      guardarStorage();
+      sincronizarConFirebase();
+      renderizarProductos();
+      mostrarToast("🔄 Lista desmarcada para una nueva compra");
+    }
+
+    function limpiarProductosComprados() {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !lista.items) return;
+
+      const comprados = lista.items.filter(i => i.comprado);
+      if (comprados.length === 0) {
+        mostrarToast("🧹 No hay productos comprados para borrar");
+        return;
+      }
+
+      const copiaItemsPrevios = JSON.parse(JSON.stringify(lista.items));
+
+      lista.items = lista.items.filter(i => !i.comprado);
+      guardarStorage();
+      sincronizarConFirebase();
+      renderizarProductos();
+
+      mostrarToast(`🧹 ${comprados.length} comprados eliminados`, true, () => {
+        const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+        if (actual) {
+          actual.items = copiaItemsPrevios;
+          guardarStorage();
+          sincronizarConFirebase();
+          renderizarProductos();
+          mostrarToast(`↩️ Eliminación de comprados deshecha`);
+        }
+      });
+    }
+
+    function escucharSincronizacionFirebase(listaId) {
+      if (dbListenerRef) dbListenerRef.off();
+
+      dbListenerRef = db.ref('listas/' + listaId);
+      dbListenerRef.on('value', (snapshot) => {
+        const datosNube = snapshot.val();
+        if (datosNube) {
+          let listaLocal = coleccionListas.find(l => String(l.id) === String(listaId));
+          if (!listaLocal) {
+            listaLocal = { id: listaId, nombre: datosNube.nombre, items: datosNube.items || [] };
+            coleccionListas.push(listaLocal);
+          } else {
+            listaLocal.nombre = datosNube.nombre;
+            listaLocal.items = datosNube.items || [];
+          }
+          guardarStorage();
+          if (String(idListaActiva) === String(listaId)) {
+            renderizarProductos();
+          }
+        }
+      });
+    }
+
+    function sincronizarConFirebase() {
+      if (!idListaActiva || !navigator.onLine) return;
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista) {
+        db.ref('listas/' + lista.id).set({
+          nombre: lista.nombre,
+          items: lista.items || []
+        });
+      }
+    }
+
+    async function compartirListaActiva() {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista) return;
+
+      mostrarToast("☁️ Guardando en la nube para sincronizar...");
+
+      try {
+        await db.ref('listas/' + lista.id).set({
+          nombre: lista.nombre,
+          items: lista.items || []
+        });
+
+        const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
+        const mensajeTexto = `🛒 Te comparto la lista "${lista.nombre}" en vivo.\n🔑 Código de acceso: ${lista.id}`;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: `Lista: ${lista.nombre}`,
+              text: mensajeTexto,
+              url: urlCompartida
+            });
+            return;
+          } catch (e) {
+            if (e.name === 'AbortError') return;
+          }
+        }
+        await copiarEnlace(urlCompartida, lista.nombre, lista.id);
+      } catch (error) {
+        mostrarToast("⚠️ Error al sincronizar en la nube");
+      }
+    }
+
+    async function copiarEnlace(url, nombreLista, codigo) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(url);
+          mostrarToast(`📋 ¡Enlace copiado! Código: ${codigo}`);
+        } else { throw new Error(); }
+      } catch (err) {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Lista "${nombreLista}" (Código: ${codigo}): ${url}`)}`, '_blank');
+      }
+    }
+
+    function unirsePorCodigo() {
+      vibrarConfirmacion();
+      const input = document.getElementById('codigoUnirseInput');
+      const codigo = input.value.trim().toUpperCase();
+
+      if (!codigo) {
+        mostrarToast("⚠️ Escribe un código de 6 caracteres primero");
+        return;
+      }
+
+      mostrarToast("🔍 Buscando lista...");
+
+      db.ref('listas/' + codigo).once('value').then((snapshot) => {
+        const datos = snapshot.val();
+        if (datos) {
+          let local = coleccionListas.find(l => String(l.id) === String(codigo));
+          if (!local) {
+            coleccionListas.push({ id: codigo, nombre: datos.nombre, items: datos.items || [] });
+          } else {
+            local.nombre = datos.nombre;
+            local.items = datos.items || [];
+          }
+          guardarStorage();
+          input.value = '';
+          abrirLista(codigo);
+          mostrarToast(`🎉 ¡Conectado a "${datos.nombre}"!`);
+        } else {
+          mostrarToast("❌ Código no encontrado o no existe");
+        }
+      }).catch(() => {
+        mostrarToast("⚠️ Error al buscar el código");
+      });
+    }
+
+    function procesarListaRecibidaPorURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const listaIdURL = urlParams.get('id');
+
+      if (listaIdURL) {
+        idListaActiva = listaIdURL;
+        db.ref('listas/' + listaIdURL).once('value').then((snapshot) => {
+          const datos = snapshot.val();
+          if (datos) {
+            let local = coleccionListas.find(l => String(l.id) === String(listaIdURL));
+            if (!local) {
+              coleccionListas.push({ id: listaIdURL, nombre: datos.nombre, items: datos.items || [] });
+            } else {
+              local.nombre = datos.nombre;
+              local.items = datos.items || [];
+            }
+            guardarStorage();
+            window.history.replaceState({}, document.title, window.location.pathname);
+            abrirLista(listaIdURL);
+            mostrarToast(`🎉 ¡Lista "${datos.nombre}" conectada en vivo!`);
+          }
+        });
+      }
+    }
+
+    function crearNuevaLista() {
+      vibrarConfirmacion();
+      const input = document.getElementById('nombreNuevaLista');
+      const nombre = input.value.trim();
+      if (!nombre) return;
+
+      const nuevoCodigo = generarCodigoUnico();
+      const nuevaLista = { id: nuevoCodigo, nombre: nombre, items: [] };
+      coleccionListas.push(nuevaLista);
+      guardarStorage();
+      input.value = "";
+      abrirLista(nuevaLista.id);
+      sincronizarConFirebase();
+      mostrarToast(`✨ Lista creada (Código: ${nuevoCodigo})`);
+    }
+
+    function editarNombreLista(e, id) {
+      e.stopPropagation();
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(id));
+      if (!lista) return;
+
+      const nuevoNombre = prompt("Editar nombre de la lista:", lista.nombre);
+      if (nuevoNombre !== null && nuevoNombre.trim() !== "") {
+        lista.nombre = nuevoNombre.trim();
+        guardarStorage();
+        sincronizarConFirebase();
+        renderizarListas();
+        renderizarInicio();
+        if (String(idListaActiva) === String(id)) renderizarProductos();
+        mostrarToast("✏️ Nombre de la lista actualizado");
+      }
+    }
+
+    function abrirLista(id) {
+      vibrarConfirmacion();
+      idListaActiva = id;
+      verSeccion('lista-activa');
+    }
+
+    function eliminarLista(e, id) {
+      e.stopPropagation();
+      vibrarConfirmacion();
+      coleccionListas = coleccionListas.filter(l => String(l.id) !== String(id));
+      if (String(idListaActiva) === String(id)) idListaActiva = null;
+      guardarStorage();
+      renderizarListas();
+      renderizarInicio();
+      mostrarToast(`🗑️ Lista eliminada`);
+    }
+
+    function renderizarListas() {
+      const contenedor = document.getElementById('contenedorListas');
+      contenedor.innerHTML = "";
+      if (coleccionListas.length === 0) {
+        contenedor.innerHTML = '<p class="empty-msg">No tienes listas creadas. ¡Crea una arriba o únete con un código!</p>';
+        return;
+      }
+      coleccionListas.forEach(lista => {
+        const pendientes = (lista.items || []).filter(i => !i.comprado).length;
+        const div = document.createElement('div');
+        div.className = 'list-card';
+        div.onclick = () => abrirLista(lista.id);
+        div.innerHTML = `
+          <div class="list-info">
+            <h4>📌 ${escapeHtml(lista.nombre)}</h4>
+            <p>${pendientes} pendientes de ${(lista.items || []).length} productos</p>
+            <span class="badge-code">CÓDIGO: ${lista.id}</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-action-icon" onclick="editarNombreLista(event, '${lista.id}')" title="Editar nombre">✏️</button>
+            <button class="btn-action-icon" onclick="eliminarLista(event, '${lista.id}')" title="Eliminar lista">🗑️</button>
+          </div>
+        `;
+        contenedor.appendChild(div);
+      });
+    }
+
+    function agregarProducto() {
+      if (!idListaActiva) return;
+      vibrarConfirmacion();
+
+      const input = document.getElementById('itemInput');
+      const qtyInput = document.getElementById('itemQty');
+      const priceInput = document.getElementById('itemPrice');
+      const tiendaSelect = document.getElementById('itemTienda');
+      
+      const texto = input.value.trim();
+      const cantidadAAgregar = parseInt(qtyInput.value) || 1;
+      const precio = Math.round(parseFloat(priceInput.value) || 0);
+      const tiendaVal = tiendaSelect ? tiendaSelect.value : 'Supermercado';
+
+      if (!texto) return;
+
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista) {
+        if (!lista.items) lista.items = [];
+
+        const textoNormalizado = texto.toLowerCase().trim();
+        const productoExistente = lista.items.find(i => i.texto.toLowerCase().trim() === textoNormalizado);
+
+        if (productoExistente) {
+          productoPendienteDuplicado = {
+            productoExistente,
+            cantidadAAgregar,
+            precio
+          };
+          
+          document.getElementById('duplicateDesc').innerHTML = `
+            "<strong>${escapeHtml(productoExistente.texto)}</strong>" ya está en tu lista. ¿Quieres sumar ${cantidadAAgregar > 1 ? cantidadAAgregar + ' unidades' : 'una unidad'} más?
+          `;
+          document.getElementById('duplicateOverlay').classList.add('active');
+          return;
+        } else {
+          if (precio > 0) guardarPrecioEnMemoria(texto, precio);
+          const catInfo = clasificarProducto(texto);
+          lista.items.push({
+            id: Date.now() + Math.random(),
+            texto: texto,
+            cantidad: cantidadAAgregar,
+            precio: precio,
+            categoriaId: catInfo.id,
+            icono: catInfo.icono,
+            tienda: tiendaVal,
+            comprado: false
+          });
+          mostrarToast(`➕ "${texto}" agregado a la lista`);
+        }
+
+        guardarStorage();
+        sincronizarConFirebase();
+        renderizarProductos();
+        input.value = "";
+        qtyInput.value = "1";
+        priceInput.value = "";
+      }
+    }
+
+    function confirmarSumarDuplicado() {
+      vibrarConfirmacion();
+      if (productoPendienteDuplicado) {
+        const { productoExistente, cantidadAAgregar, precio } = productoPendienteDuplicado;
+        
+        productoExistente.cantidad += cantidadAAgregar;
+        if (precio > 0) {
+          productoExistente.precio = precio;
+          guardarPrecioEnMemoria(productoExistente.texto, precio);
+        }
+
+        guardarStorage();
+        sincronizarConFirebase();
+        renderizarProductos();
+
+        mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
+
+        document.getElementById('itemInput').value = "";
+        document.getElementById('itemQty').value = "1";
+        document.getElementById('itemPrice').value = "";
+      }
+      
+      productoPendienteDuplicado = null;
+      document.getElementById('duplicateOverlay').classList.remove('active');
+    }
+
+    function cancelarSumarDuplicado() {
+      vibrarConfirmacion();
+      productoPendienteDuplicado = null;
+      document.getElementById('duplicateOverlay').classList.remove('active');
+      mostrarToast("🚫 Se canceló agregar la unidad repetida");
+    }
+
+    function editarProducto(prodId) {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !lista.items) return;
+
+      const prod = lista.items.find(i => i.id === prodId);
+      if (!prod) return;
+
+      const nuevoTexto = prompt("Editar producto:", prod.texto);
+      if (nuevoTexto !== null && nuevoTexto.trim() !== "") {
+        prod.texto = nuevoTexto.trim();
+        const catInfo = clasificarProducto(prod.texto);
+        prod.categoriaId = catInfo.id;
+        prod.icono = catInfo.icono;
+
+        guardarStorage();
+        sincronizarConFirebase();
+        renderizarProductos();
+        mostrarToast("✏️ Producto actualizado");
+      }
+    }
+
+    function cambiarEstadoProducto(prodId) {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista && lista.items) {
+        const prod = lista.items.find(i => i.id === prodId);
+        if (prod) {
+          prod.comprado = !prod.comprado;
+          guardarStorage();
+          sincronizarConFirebase();
+          renderizarProductos();
+
+          const accionTxt = prod.comprado ? 'comprado' : 'pendiente';
+          const iconoTxt = prod.comprado ? '✅' : '▫️';
+
+          mostrarToast(`${iconoTxt} "${prod.texto}" marcado como ${accionTxt}`, true, () => {
+            const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+            if (actual && actual.items) {
+              const itemRevertir = actual.items.find(i => i.id === prodId);
+              if (itemRevertir) {
+                itemRevertir.comprado = !itemRevertir.comprado;
+                guardarStorage();
+                sincronizarConFirebase();
+                renderizarProductos();
+                mostrarToast(`↩️ Cambio en "${itemRevertir.texto}" deshecho`);
+              }
+            }
+          });
+        }
+      }
+    }
+
+    function cambiarCantidadProducto(prodId, cambio) {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista && lista.items) {
+        const prod = lista.items.find(i => i.id === prodId);
+        if (prod) {
+          prod.cantidad = Math.max(1, prod.cantidad + cambio);
+          guardarStorage();
+          sincronizarConFirebase();
+          renderizarProductos();
+        }
+      }
+    }
+
+    function actualizarPrecioProducto(prodId, nuevoPrecio) {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista && lista.items) {
+        const prod = lista.items.find(i => i.id === prodId);
+        if (prod) {
+          const valorValido = Math.max(0, Math.round(parseFloat(nuevoPrecio) || 0));
+          prod.precio = valorValido;
+          if (valorValido > 0) {
+            guardarPrecioEnMemoria(prod.texto, valorValido);
+          }
+          guardarStorage();
+          sincronizarConFirebase();
+          renderizarProductos();
+        }
+      }
+    }
+
+    function eliminarProducto(prodId) {
+      vibrarConfirmacion();
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista && lista.items) {
+        const prodIndex = lista.items.findIndex(i => i.id === prodId);
+        if (prodIndex !== -1) {
+          const itemEliminado = lista.items[prodIndex];
+
+          lista.items.splice(prodIndex, 1);
+          guardarStorage();
+          sincronizarConFirebase();
+          renderizarProductos();
+
+          mostrarToast(`🗑️ "${itemEliminado.texto}" borrado`, true, () => {
+            const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+            if (actual && actual.items) {
+              actual.items.splice(prodIndex, 0, itemEliminado);
+              guardarStorage();
+              sincronizarConFirebase();
+              renderizarProductos();
+              mostrarToast(`↩️ "${itemEliminado.texto}" restaurado`);
+            }
+          });
+        }
+      }
+    }
+
+    function cambiarFiltro(filtro) {
+      vibrarConfirmacion();
+      filtroProductos = filtro;
+      document.getElementById('subTabPendientes').classList.toggle('active', filtro === 'pendientes');
+      document.getElementById('subTabComprados').classList.toggle('active', filtro === 'comprados');
+      renderizarProductos();
+    }
+
+    function filtrarProductosPorBusqueda() {
+      const searchInput = document.getElementById('searchInput');
+      const btnClear = document.getElementById('btnClearSearch');
+      textoBusquedaActual = searchInput.value.toLowerCase().trim();
+
+      btnClear.style.display = textoBusquedaActual ? 'block' : 'none';
+      renderizarProductos();
+    }
+
+    function limpiarBusqueda() {
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = '';
+      filtrarProductosPorBusqueda();
+    }
+
+    function actualizarPresupuestoYProgreso(lista) {
+      let gastado = 0;
+      let total = 0;
+      let compradosCount = 0;
+      const items = lista.items || [];
+      const totalItems = items.length;
+
+      items.forEach(item => {
+        const subtotal = item.cantidad * Math.round(item.precio || 0);
+        total += subtotal;
+        if (item.comprado) {
+          gastado += subtotal;
+          compradosCount++;
+        }
+      });
+
+      document.getElementById('valGastado').textContent = formatoCLP.format(gastado);
+      document.getElementById('valTotal').textContent = formatoCLP.format(total);
+
+      const panelProgreso = document.getElementById('panelProgreso');
+      const fillProgreso = document.getElementById('fillProgreso');
+
+      if (limitePresupuestoActual > 0 && gastado > limitePresupuestoActual) {
+        panelProgreso.classList.add('exceeded');
+        fillProgreso.classList.add('exceeded');
+        document.getElementById('txtProgresoEstado').textContent = `🚨 ¡TE PASASTE DEL LÍMITE! ($${formatoCLP.format(gastado)})`;
+      } else {
+        panelProgreso.classList.remove('exceeded');
+        fillProgreso.classList.remove('exceeded');
+        document.getElementById('txtProgresoEstado').textContent = `${compradosCount} de ${totalItems} productos en el carro`;
+      }
+
+      const pct = totalItems > 0 ? Math.round((compradosCount / totalItems) * 100) : 0;
+      document.getElementById('txtProgresoPorcentaje').textContent = `${pct}%`;
+      fillProgreso.style.width = `${pct}%`;
+    }
+
+    function renderizarProductos() {
+      const contenedor = document.getElementById('contenedorProductosCategorizados');
+      const titulo = document.getElementById('tituloListaActiva');
+      const badgeCod = document.getElementById('badgeCodigoLista');
+      const filtroTiendaSel = document.getElementById('filtroTiendaSelect');
+      const tiendaFiltroVal = filtroTiendaSel ? filtroTiendaSel.value : 'TODOS';
+
+      contenedor.innerHTML = "";
+
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista) return;
+
+      titulo.textContent = lista.nombre;
+      badgeCod.textContent = `CÓDIGO: ${lista.id}`;
+      actualizarPresupuestoYProgreso(lista);
+
+      const items = lista.items || [];
+      const filtrados = items.filter(item => {
+        const cumpleEstado = filtroProductos === 'pendientes' ? !item.comprado : item.comprado;
+        const cumpleBusqueda = !textoBusquedaActual || item.texto.toLowerCase().includes(textoBusquedaActual);
+        const cumpleTienda = tiendaFiltroVal === 'TODOS' || (item.tienda || 'Supermercado') === tiendaFiltroVal;
+        return cumpleEstado && cumpleBusqueda && cumpleTienda;
+      });
+
+      if (filtrados.length === 0) {
+        if (textoBusquedaActual) {
+          contenedor.innerHTML = `<p class="empty-msg">No se encontraron productos para "${escapeHtml(textoBusquedaActual)}"</p>`;
+        } else {
+          contenedor.innerHTML = `<p class="empty-msg">${filtroProductos === 'pendientes' ? '¡Todo comprado!' : 'No hay productos comprados.'}</p>`;
+        }
+        return;
+      }
+
+      CATEGORIAS.forEach((cat, index) => {
+        const itemsDeCat = filtrados.filter(i => (i.categoriaId || clasificarProducto(i.texto).id) === cat.id);
+
+        if (itemsDeCat.length > 0) {
+          const header = document.createElement('div');
+          header.className = 'category-header';
+          header.innerHTML = `
+            <div class="category-title">
+              <span>${cat.icono}</span> <span>${cat.nombre}</span>
+            </div>
+            <div class="category-nav-btns">
+              <button class="btn-cat-order" onclick="moverCategoria(${index}, -1)" title="Subir pasillo">▲</button>
+              <button class="btn-cat-order" onclick="moverCategoria(${index}, 1)" title="Bajar pasillo">▼</button>
+            </div>
+          `;
+          contenedor.appendChild(header);
+
+          const ul = document.createElement('ul');
+
+          itemsDeCat.forEach(item => {
+            const li = document.createElement('li');
+            const subtotal = item.cantidad * (item.precio || 0);
+
+            let botonAccionPrincipal = '';
+            if (!item.comprado) {
+              botonAccionPrincipal = `
+                <button class="btn-check-action" onclick="cambiarEstadoProducto(${item.id})" title="Marcar como comprado">
+                  ✓
+                </button>
+              `;
+            } else {
+              botonAccionPrincipal = `
+                <button class="btn-uncheck-action" onclick="cambiarEstadoProducto(${item.id})" title="Devolver a Por Comprar">
+                  ↩️
+                </button>
+              `;
+            }
+
+            li.innerHTML = `
+              <div class="product-list-item">
+                <div class="item-main-details ${item.comprado ? 'comprado' : ''}" onclick="cambiarEstadoProducto(${item.id})">
+                  <div class="item-name-row">
+                    <span class="item-name">${escapeHtml(item.texto)}</span>
+                    <span class="badge-tienda-tag">${item.tienda || 'Súper'}</span>
+                  </div>
+                  <div class="item-price-status">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}</div>
+                </div>
+                
+                <div class="item-controls-right">
+                  <input type="number" class="inline-price" value="${item.precio || ''}" placeholder="$ CLP" 
+                         onchange="actualizarPrecioProducto(${item.id}, this.value)" title="Precio CLP">
+
+                  <div class="qty-controls">
+                    <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, -1)">-</button>
+                    <span style="font-size:0.85rem; font-weight:800; width:18px; text-align:center;">${item.cantidad}</span>
+                    <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, 1)">+</button>
+                  </div>
+
+                  <button class="btn-action-icon" onclick="editarProducto(${item.id})" title="Editar producto">✏️</button>
+
+                  ${botonAccionPrincipal}
+
+                  <button class="btn-action-icon" onclick="eliminarProducto(${item.id})" title="Borrar producto">✕</button>
+                </div>
+              </div>
+            `;
+            ul.appendChild(li);
+          });
+
+          contenedor.appendChild(ul);
+        }
       });
     }
 
