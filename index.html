@@ -124,28 +124,9 @@
       letter-spacing: 0.3px;
     }
 
-    /* ANIMACIONES Y TRANSICIONES CORREGIDAS DE PESTAÑAS */
+    /* SECCIONES SIN TRANSICIONES NI BUGS */
     .tab-seccion {
       width: 100%;
-      will-change: transform, opacity;
-    }
-
-    .tab-seccion.slide-in-right {
-      animation: slideInRight 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    }
-
-    .tab-seccion.slide-in-left {
-      animation: slideInLeft 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    }
-
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(40px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-40px); }
-      to { opacity: 1; transform: translateX(0); }
     }
 
     .header-top {
@@ -1754,10 +1735,6 @@
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
 
-    const ORDEN_PESTAÑAS = ['inicio', 'mis-listas', 'lista-activa'];
-    let touchStartX = 0;
-    let touchStartY = 0;
-
     window.addEventListener('online', actualizarEstadoRed);
     window.addEventListener('offline', actualizarEstadoRed);
 
@@ -1766,21 +1743,16 @@
       const ahora = new Date();
       const horas = ahora.getHours();
       
-      // Aplicar modo oscuro entre las 20:00 y las 07:00 hrs
       if (horas >= 20 || horas < 7) {
         document.documentElement.classList.add('theme-dark');
       } else {
         document.documentElement.classList.remove('theme-dark');
       }
 
-      // Formateo de fecha completa (sin abreviar) y hora en formato 24 horas
       const opcionesFecha = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
       let fechaTxt = ahora.toLocaleDateString('es-CL', opcionesFecha);
-      
-      // Capitalizar la primera letra del día de la semana
       fechaTxt = fechaTxt.charAt(0).toUpperCase() + fechaTxt.slice(1);
 
-      // Formato de hora 24 horas (HH:mm:ss)
       const horaTxt = ahora.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
       
       const clockEl = document.getElementById('clockBarLive');
@@ -2640,7 +2612,6 @@
       cargarMemoriaPrecios();
       procesarListaRecibidaPorURL();
       actualizarEstadoRed();
-      inicializarGestosSwipe();
 
       if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
         const btnInstalar = document.getElementById('btnInstalarPWA');
@@ -2777,10 +2748,10 @@
       });
     }
 
-    // GESTIÓN DE PESTAÑAS Y ANIMACIONES CON SWIPE (CORREGIDO)
+    // NAVEGACIÓN Y CAMBIO INSTANTÁNEO DE SECCIONES (SIN TRANSICIONES PROBLEMÁTICAS)
     let seccionActualNombre = 'inicio';
 
-    function verSeccion(seccion, direccionAnimacion = '') {
+    function verSeccion(seccion) {
       vibrarConfirmacion();
       
       const secPortada = document.getElementById('secPortada');
@@ -2807,10 +2778,7 @@
       }
 
       Object.values(seccionesMap).forEach(sec => {
-        if (sec) {
-          sec.style.display = 'none';
-          sec.classList.remove('slide-in-right', 'slide-in-left');
-        }
+        if (sec) sec.style.display = 'none';
       });
 
       navInicio.classList.remove('active');
@@ -2833,18 +2801,7 @@
           idListaActiva = coleccionListas[0].id;
         }
 
-        if (objetivoSec) {
-          objetivoSec.style.display = 'block';
-          if (direccionAnimacion) {
-            const claseClave = direccionAnimacion === 'derecha' ? 'slide-in-right' : 'slide-in-left';
-            objetivoSec.classList.add(claseClave);
-
-            // Limpiar clases de animación al terminar para evitar bloqueos
-            setTimeout(() => {
-              objetivoSec.classList.remove('slide-in-right', 'slide-in-left');
-            }, 260);
-          }
-        }
+        if (objetivoSec) objetivoSec.style.display = 'block';
 
         if (seccion === 'inicio') renderizarInicio();
         if (seccion === 'mis-listas') renderizarListas();
@@ -2855,36 +2812,6 @@
       }
 
       seccionActualNombre = seccion;
-    }
-
-    // INICIALIZADOR DE GESTOS TÁCTILES (SWIPE EN PANTALLA CORREGIDO)
-    function inicializarGestosSwipe() {
-      const area = document.getElementById('mainContentArea');
-      if (!area) return;
-
-      area.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-      }, { passive: true });
-
-      area.addEventListener('touchend', (e) => {
-        const touchEndX = e.changedTouches[0].screenX;
-        const touchEndY = e.changedTouches[0].screenY;
-        
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-
-        if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY) * 1.2) {
-          const idxActual = ORDEN_PESTAÑAS.indexOf(seccionActualNombre);
-          if (idxActual === -1) return;
-
-          if (diffX < 0 && idxActual < ORDEN_PESTAÑAS.length - 1) {
-            verSeccion(ORDEN_PESTAÑAS[idxActual + 1], 'derecha');
-          } else if (diffX > 0 && idxActual > 0) {
-            verSeccion(ORDEN_PESTAÑAS[idxActual - 1], 'izquierda');
-          }
-        }
-      }, { passive: true });
     }
 
     function renderizarInicio() {
@@ -3016,7 +2943,7 @@
       });
     }
 
-    // SINCRONIZACIÓN Y PROTECCIÓN DE DATOS FIREBASE (BLINDADA CONTRA BORRADOS)
+    // SINCRONIZACIÓN Y PROTECCIÓN DE DATOS FIREBASE (PROTECCIÓN TOTAL CONTRA BORRADOS)
     function escucharSincronizacionFirebase(listaId) {
       if (dbListenerRef) dbListenerRef.off();
       if (presenceRef) presenceRef.off();
@@ -3025,7 +2952,6 @@
       dbListenerRef.on('value', (snapshot) => {
         const datosNube = snapshot.val();
         
-        // Solo actualizar localmente si Firebase trae datos válidos (protección de borrado)
         if (datosNube && (datosNube.nombre || (datosNube.items && datosNube.items.length > 0))) {
           let listaLocal = coleccionListas.find(l => String(l.id) === String(listaId));
           if (!listaLocal) {
@@ -3033,7 +2959,10 @@
             coleccionListas.push(listaLocal);
           } else {
             listaLocal.nombre = datosNube.nombre || listaLocal.nombre;
-            listaLocal.items = datosNube.items || listaLocal.items || [];
+            // Solo sobreescribir si la nube trae datos reales
+            if (Array.isArray(datosNube.items) && datosNube.items.length > 0) {
+              listaLocal.items = datosNube.items;
+            }
           }
           guardarStorage();
           if (String(idListaActiva) === String(listaId)) {
@@ -3065,7 +2994,7 @@
     function sincronizarConFirebase() {
       if (!idListaActiva || !navigator.onLine) return;
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista) {
+      if (lista && lista.id) {
         db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
         db.ref('listas/' + lista.id + '/items').set(lista.items || []);
       }
