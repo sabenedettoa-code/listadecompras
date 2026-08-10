@@ -110,7 +110,6 @@
       padding: 12px;
       -webkit-overflow-scrolling: touch;
       position: relative;
-      touch-action: pan-y;
     }
 
     /* BARRA DE FECHA Y HORA EN TIEMPO REAL */
@@ -125,27 +124,27 @@
       letter-spacing: 0.3px;
     }
 
-    /* ANIMACIONES DE PESTAÑAS (SWIPE) */
+    /* ANIMACIONES Y TRANSICIONES CORREGIDAS DE PESTAÑAS */
     .tab-seccion {
       width: 100%;
-      transition: opacity 0.25s ease, transform 0.25s ease;
+      will-change: transform, opacity;
     }
 
     .tab-seccion.slide-in-right {
-      animation: slideInRight 0.25s forwards;
+      animation: slideInRight 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
     .tab-seccion.slide-in-left {
-      animation: slideInLeft 0.25s forwards;
+      animation: slideInLeft 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
     @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(30px); }
+      from { opacity: 0; transform: translateX(40px); }
       to { opacity: 1; transform: translateX(0); }
     }
 
     @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-30px); }
+      from { opacity: 0; transform: translateX(-40px); }
       to { opacity: 1; transform: translateX(0); }
     }
 
@@ -701,7 +700,6 @@
       font-weight: 700; font-size: 0.92rem; word-break: break-word;
     }
 
-    /* BADGES DE COMPARACIÓN Y HISTORIAL DE INFLACIÓN */
     .badge-price-diff {
       font-size: 0.65rem;
       padding: 2px 6px;
@@ -1764,7 +1762,7 @@
     window.addEventListener('offline', actualizarEstadoRed);
 
     // MODO OSCURO AUTOMÁTICO VÍA HORA + RELOJ EN VIVO
-  function actualizarRelojYModoOscuro() {
+    function actualizarRelojYModoOscuro() {
       const ahora = new Date();
       const horas = ahora.getHours();
       
@@ -2779,7 +2777,7 @@
       });
     }
 
-    // GESTIÓN DE PESTAÑAS Y ANIMACIONES CON SWIPE
+    // GESTIÓN DE PESTAÑAS Y ANIMACIONES CON SWIPE (CORREGIDO)
     let seccionActualNombre = 'inicio';
 
     function verSeccion(seccion, direccionAnimacion = '') {
@@ -2838,7 +2836,13 @@
         if (objetivoSec) {
           objetivoSec.style.display = 'block';
           if (direccionAnimacion) {
-            objetivoSec.classList.add(direccionAnimacion === 'derecha' ? 'slide-in-right' : 'slide-in-left');
+            const claseClave = direccionAnimacion === 'derecha' ? 'slide-in-right' : 'slide-in-left';
+            objetivoSec.classList.add(claseClave);
+
+            // Limpiar clases de animación al terminar para evitar bloqueos
+            setTimeout(() => {
+              objetivoSec.classList.remove('slide-in-right', 'slide-in-left');
+            }, 260);
           }
         }
 
@@ -2853,7 +2857,7 @@
       seccionActualNombre = seccion;
     }
 
-    // INICIALIZADOR DE GESTOS TÁCTILES (SWIPE EN PANTALLA)
+    // INICIALIZADOR DE GESTOS TÁCTILES (SWIPE EN PANTALLA CORREGIDO)
     function inicializarGestosSwipe() {
       const area = document.getElementById('mainContentArea');
       if (!area) return;
@@ -2870,7 +2874,7 @@
         const diffX = touchEndX - touchStartX;
         const diffY = touchEndY - touchStartY;
 
-        if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+        if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY) * 1.2) {
           const idxActual = ORDEN_PESTAÑAS.indexOf(seccionActualNombre);
           if (idxActual === -1) return;
 
@@ -3012,23 +3016,24 @@
       });
     }
 
-    // SINCRONIZACIÓN E INDICADOR "EN VIVO" CON FIREBASE
+    // SINCRONIZACIÓN Y PROTECCIÓN DE DATOS FIREBASE (BLINDADA CONTRA BORRADOS)
     function escucharSincronizacionFirebase(listaId) {
       if (dbListenerRef) dbListenerRef.off();
       if (presenceRef) presenceRef.off();
 
-      // Sincronización de lista
       dbListenerRef = db.ref('listas/' + listaId);
       dbListenerRef.on('value', (snapshot) => {
         const datosNube = snapshot.val();
-        if (datosNube) {
+        
+        // Solo actualizar localmente si Firebase trae datos válidos (protección de borrado)
+        if (datosNube && (datosNube.nombre || (datosNube.items && datosNube.items.length > 0))) {
           let listaLocal = coleccionListas.find(l => String(l.id) === String(listaId));
           if (!listaLocal) {
-            listaLocal = { id: listaId, nombre: datosNube.nombre, items: datosNube.items || [] };
+            listaLocal = { id: listaId, nombre: datosNube.nombre || "Mi Lista", items: datosNube.items || [] };
             coleccionListas.push(listaLocal);
           } else {
-            listaLocal.nombre = datosNube.nombre;
-            listaLocal.items = datosNube.items || [];
+            listaLocal.nombre = datosNube.nombre || listaLocal.nombre;
+            listaLocal.items = datosNube.items || listaLocal.items || [];
           }
           guardarStorage();
           if (String(idListaActiva) === String(listaId)) {
@@ -3037,7 +3042,6 @@
         }
       });
 
-      // Registro de presencia en tiempo real
       const myPresenceRef = db.ref(`listas/${listaId}/presencia`).push();
       myPresenceRef.onDisconnect().remove();
       myPresenceRef.set(true);
@@ -3511,7 +3515,6 @@
       fillProgreso.style.width = `${pct}%`;
     }
 
-    // CALCULAR HISTORIAL DE INFLACIÓN O COMPARACIÓN DE PRECIOS
     function obtenerBadgeVariacionPrecio(textoNorm, precioActual) {
       if (!precioActual || precioActual <= 0) return '';
       const precioAnterior = memoriaPreciosLocal[textoNorm];
