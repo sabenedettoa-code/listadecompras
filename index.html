@@ -149,16 +149,6 @@
     .net-badge.online { color: var(--success); }
     .net-badge.offline { color: var(--danger); }
 
-    .badge-users-online {
-      font-size: 0.72rem;
-      padding: 3px 8px;
-      border-radius: 10px;
-      font-weight: 800;
-      background: rgba(99, 102, 241, 0.12);
-      color: var(--primary);
-      border: 1px solid var(--primary);
-    }
-
     .btn-menu-burger {
       background: var(--tab-bg);
       border: 1px solid var(--border);
@@ -400,7 +390,7 @@
     .add-row-1 { display: flex; gap: 6px; }
     .add-row-2 { 
       display: grid; 
-      grid-template-columns: 1fr 1.2fr 1fr auto; 
+      grid-template-columns: 1fr 1.5fr auto; 
       gap: 6px; 
       align-items: center; 
     }
@@ -443,16 +433,6 @@
 
     .qty-clean { text-align: center; }
     .price-clean { text-align: right; }
-
-    .select-tienda {
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      font-size: 0.8rem;
-      font-weight: 800;
-      outline: none;
-    }
 
     .btn-main-add {
       background-color: var(--primary);
@@ -672,14 +652,6 @@
     .item-name-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
     .item-name { 
       font-weight: 800; font-size: 0.92rem; word-break: break-word;
-    }
-    
-    .badge-tienda-tag {
-      font-size: 0.68rem;
-      padding: 2px 6px;
-      border-radius: 6px;
-      background: var(--tab-bg);
-      font-weight: 800;
     }
 
     .item-price-status { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
@@ -1140,7 +1112,6 @@
         <h1 class="app-title">Mis Listas</h1>
       </div>
       <div class="header-right-controls">
-        <span id="badgeUsuariosVivo" class="badge-users-online" style="display: none;">👥 1 en vivo</span>
         <span id="netStatusBadge" class="net-badge online">🟢 Online</span>
         <button class="btn-menu-burger" onclick="toggleSidebar()">☰</button>
       </div>
@@ -1313,16 +1284,6 @@
               <input type="number" id="itemPrice" class="input-clean price-clean" placeholder="CLP" min="0" step="1">
             </div>
 
-            <div class="field-box">
-              <label for="itemTienda">🛒</label>
-              <select id="itemTienda" class="select-tienda">
-                <option value="Supermercado">Súper</option>
-                <option value="Feria">Feria</option>
-                <option value="Mayorista">Mayorista</option>
-                <option value="Farmacia">Farmacia</option>
-              </select>
-            </div>
-
             <button class="btn-main-add" onclick="agregarProducto()">➕ Agregar</button>
           </div>
 
@@ -1380,13 +1341,6 @@
 
         <div class="search-box-container" style="display: flex; gap: 6px;">
           <input type="text" id="searchInput" class="input-search-product" placeholder="🔍 Buscar en esta lista..." oninput="filtrarProductosPorBusqueda()">
-          <select id="filtroTiendaSelect" class="input-search-product" style="width: auto; font-size: 0.82rem;" onchange="renderizarProductos()">
-            <option value="TODOS">Todas las Tiendas</option>
-            <option value="Supermercado">Supermercado</option>
-            <option value="Feria">Feria</option>
-            <option value="Mayorista">Mayorista</option>
-            <option value="Farmacia">Farmacia</option>
-          </select>
           <button id="btnClearSearch" class="btn-clear-search" onclick="limpiarBusqueda()">✕</button>
         </div>
 
@@ -1679,9 +1633,6 @@
     let diferidoPromptInstalacion = null;
     let textoBusquedaActual = '';
     let dbListenerRef = null;
-    let presenceRef = null;
-    let myPresenceRef = null; // Guardará la conexión activa de este usuario
-    let listaIdSuscrito = null; // Controla qué lista ya está siendo escuchada
     let html5QrcodeScanner = null;
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
@@ -1926,7 +1877,6 @@
                 precio: precioFinal,
                 categoriaId: catInfo.id,
                 icono: catInfo.icono,
-                tienda: prod.tienda || 'Supermercado',
                 comprado: false
               });
             }
@@ -2074,8 +2024,8 @@
       },
       {
         icon: '🎯',
-        title: 'Modo Focus y Filtro por Tienda',
-        desc: 'Activa [🎯 Modo Focus] para limpiar la pantalla y comprar rápido en los pasillos, y asigna etiquetas (Feria, Supermercado, Farmacia) para filtrar lo que compras en cada lugar.'
+        title: 'Modo Focus',
+        desc: 'Activa [🎯 Modo Focus] para limpiar la pantalla y comprar rápido en los pasillos sin distracciones.'
       }
     ];
 
@@ -2430,7 +2380,6 @@
             precio: memoriaPreciosLocal[normalizado] || 0,
             categoriaId: catInfo.id,
             icono: catInfo.icono,
-            tienda: 'Supermercado',
             comprado: false
           });
         }
@@ -2639,7 +2588,7 @@
       });
     }
 
-    // NAVEGACIÓN INSTANTÁNEA ENTRE SECCIONES (SIN BUGS DE TRANSICIONES)
+    // NAVEGACIÓN INSTANTÁNEA ENTRE SECCIONES
     function verSeccion(seccion) {
       vibrarConfirmacion();
       const secPortada = document.getElementById('secPortada');
@@ -2831,7 +2780,6 @@
       dbListenerRef.on('value', (snapshot) => {
         const datosNube = snapshot.val();
         
-        // Protección contra sobreescritura si la nube envía datos vacíos
         if (datosNube && (datosNube.nombre || (Array.isArray(datosNube.items) && datosNube.items.length > 0))) {
           let listaLocal = coleccionListas.find(l => String(l.id) === String(listaId));
           if (!listaLocal) {
@@ -3047,12 +2995,10 @@
       const input = document.getElementById('itemInput');
       const qtyInput = document.getElementById('itemQty');
       const priceInput = document.getElementById('itemPrice');
-      const tiendaSelect = document.getElementById('itemTienda');
       
       const texto = input.value.trim();
       const cantidadAAgregar = parseInt(qtyInput.value) || 1;
       const precio = Math.round(parseFloat(priceInput.value) || 0);
-      const tiendaVal = tiendaSelect ? tiendaSelect.value : 'Supermercado';
 
       if (!texto) return;
 
@@ -3085,7 +3031,6 @@
             precio: precio,
             categoriaId: catInfo.id,
             icono: catInfo.icono,
-            tienda: tiendaVal,
             comprado: false
           });
           mostrarToast(`➕ "${texto}" agregado a la lista`);
@@ -3308,8 +3253,6 @@
       const contenedor = document.getElementById('contenedorProductosCategorizados');
       const titulo = document.getElementById('tituloListaActiva');
       const badgeCod = document.getElementById('badgeCodigoLista');
-      const filtroTiendaSel = document.getElementById('filtroTiendaSelect');
-      const tiendaFiltroVal = filtroTiendaSel ? filtroTiendaSel.value : 'TODOS';
 
       contenedor.innerHTML = "";
 
@@ -3324,8 +3267,7 @@
       const filtrados = items.filter(item => {
         const cumpleEstado = filtroProductos === 'pendientes' ? !item.comprado : item.comprado;
         const cumpleBusqueda = !textoBusquedaActual || item.texto.toLowerCase().includes(textoBusquedaActual);
-        const cumpleTienda = tiendaFiltroVal === 'TODOS' || (item.tienda || 'Supermercado') === tiendaFiltroVal;
-        return cumpleEstado && cumpleBusqueda && cumpleTienda;
+        return cumpleEstado && cumpleBusqueda;
       });
 
       if (filtrados.length === 0) {
@@ -3380,7 +3322,6 @@
                 <div class="item-main-details ${item.comprado ? 'comprado' : ''}" onclick="cambiarEstadoProducto(${item.id})">
                   <div class="item-name-row">
                     <span class="item-name">${escapeHtml(item.texto)}</span>
-                    <span class="badge-tienda-tag">${item.tienda || 'Súper'}</span>
                   </div>
                   <div class="item-price-status">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}</div>
                 </div>
