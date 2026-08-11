@@ -1510,7 +1510,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.4 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1611,7 +1611,18 @@
       .tutorial-icon { width: 54px; height: 54px; border-radius: 17px; font-size: 1.85rem; }
       .tutorial-actions { flex-direction: column-reverse; }
       .tutorial-actions .btn-tut { width: 100%; flex: none; }
-      #presupuestoOverlay .tutorial-actions { flex-direction: row; }
+      #presupuestoOverlay .tutorial-actions {
+        flex-direction: row;
+        width: 100%;
+        min-width: 0;
+      }
+      #presupuestoOverlay .tutorial-actions .btn-tut {
+        width: auto;
+        min-width: 0;
+        flex: 1 1 0;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1793,7 +1804,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.4</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5</span>
         </div>
       </div>
 
@@ -1831,7 +1842,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.4</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5</span>
         </div>
       </div>
 
@@ -2151,7 +2162,7 @@
       <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
         🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
         👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 5.4 (Agosto 2026)
+        📌 <strong>Versión Actual:</strong> 5.5 (Agosto 2026)
       </div>
 
       <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
@@ -2202,7 +2213,7 @@
         <li><strong>Listas compartidas:</strong> Cuando compartes o te unes a una lista mediante un código, esa lista se sincroniza a través de Firebase para que pueda actualizarse entre dispositivos.</li>
         <li><strong>Micrófono y cámara:</strong> Solo se solicitan cuando usas funciones que los necesitan, como dictado, escáner de códigos o análisis de una imagen.</li>
         <li><strong>ListAI e imágenes:</strong> Cuando utilizas ListAI, el texto o la imagen que adjuntas se envía al servicio necesario para procesar tu solicitud.</li>
-        <li><strong>Analítica y publicidad:</strong> El sitio utiliza servicios de Google Analytics y Google AdSense. Estos servicios pueden procesar datos técnicos conforme a sus propias políticas y a la configuración de consentimiento aplicable.</li>
+        <li><strong>Analítica y publicidad:</strong> El sitio utiliza Google Analytics y Google AdSense. Para medir el uso de la app se registran eventos funcionales anónimos —por ejemplo crear una lista, usar Focus, cargar una receta o completar una compra—, pero no se envían a Analytics nombres de productos, precios, nombres de listas ni contenido de fotografías. Estos servicios también pueden procesar datos técnicos conforme a sus propias políticas y a la configuración de consentimiento aplicable.</li>
         <li><strong>Sin venta de listas:</strong> La plataforma fue creada sin fines de lucro y no vende el contenido de tus listas de compras a terceros.</li>
       </ul>
 
@@ -2377,6 +2388,27 @@
     let compraCompletadaRegistrada = new Set();
     let colaSyncPendiente = {};
 
+    // ANALÍTICA DE USO ANÓNIMA (GA4): solo eventos funcionales. No envía nombres de productos/listas, precios ni fotos.
+    function registrarEventoGA(nombre, parametros = {}) {
+      try {
+        if (typeof window.gtag !== 'function') return;
+        const seguros = {};
+        Object.entries(parametros || {}).forEach(([k,v]) => {
+          if (['string','number','boolean'].includes(typeof v)) seguros[k] = v;
+        });
+        window.gtag('event', nombre, seguros);
+      } catch (e) {}
+    }
+
+    function registrarAperturaAppUnaVez() {
+      try {
+        if (sessionStorage.getItem('ga_app_open_v1')) return;
+        sessionStorage.setItem('ga_app_open_v1', '1');
+        registrarEventoGA('app_open', { standalone: !!(window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true), online: navigator.onLine });
+      } catch (e) { registrarEventoGA('app_open', { online: navigator.onLine }); }
+    }
+    window.addEventListener('DOMContentLoaded', registrarAperturaAppUnaVez);
+
     let dialogoAppResolver = null;
     let dialogoAppConfig = null;
 
@@ -2513,10 +2545,14 @@
         badge.textContent = '🟢 Online';
         badge.className = 'net-badge online';
         banner?.classList.remove('show');
+        if (actualizarEstadoRed.ultimoEstado === false) registrarEventoGA('network_online');
+        actualizarEstadoRed.ultimoEstado = true;
       } else {
         badge.textContent = '🟠 Sin conexión';
         badge.className = 'net-badge offline';
         banner?.classList.add('show');
+        if (actualizarEstadoRed.ultimoEstado !== false) registrarEventoGA('network_offline');
+        actualizarEstadoRed.ultimoEstado = false;
       }
     }
 
@@ -2533,10 +2569,12 @@
         appContainer.classList.add('focus-mode-active');
         btn.textContent = '🎯 Salir Focus';
         mostrarToast("🎯 Modo Focus activado");
+        registrarEventoGA('focus_toggled', { enabled: true });
       } else {
         appContainer.classList.remove('focus-mode-active');
         btn.textContent = '🎯 Modo Focus';
         mostrarToast("🎯 Modo normal");
+        registrarEventoGA('focus_toggled', { enabled: false });
       }
     }
 
@@ -2784,6 +2822,7 @@
       cerrarModalIA();
       verSeccion('lista-activa');
       mostrarToast(`🤖 ListAI agregó ${agregados} y actualizó ${actualizados}`);
+      registrarEventoGA('listai_applied', { added_count: agregados, updated_count: actualizados });
     }
 
     async function procesarPromptIA() {
@@ -2803,6 +2842,7 @@
         return;
       }
 
+      registrarEventoGA('listai_request', { has_text: !!promptTexto, has_image: !!imagenBase64Cargada });
       const errorBox = document.getElementById('listaiErrorBox');
       if (errorBox) { errorBox.classList.remove('show'); errorBox.innerHTML=''; }
       btnGen.disabled = true;
@@ -2831,12 +2871,14 @@
         targetIdIAPendiente = targetId;
         renderizarPreviewIA();
         mostrarToast(`✨ ListAI preparó ${productos.length} productos`);
+        registrarEventoGA('listai_success', { product_count: productos.length });
 
       } catch (err) {
         console.error("Error al procesar con ListAI:", err);
         const errorBox = document.getElementById('listaiErrorBox');
         if (errorBox) { errorBox.classList.add('show'); errorBox.innerHTML = `⚠️ ${escapeHtml(err.message || 'No pudimos completar la solicitud.')}<button class="btn-tut next" type="button" onclick="procesarPromptIA()">🔄 Reintentar sin perder lo escrito</button>`; }
         mostrarToast(`⚠️ ListAI: ${err.message}`);
+        registrarEventoGA('listai_error');
       } finally {
         btnGen.disabled = false;
         btnGen.innerHTML = "✨ Analizar con ListAI";
@@ -3254,6 +3296,7 @@
       obtenerFrecuentes(15).reverse().forEach(f=>{ const o=document.createElement('option'); o.value=f.nombre; o.dataset.smart='1'; dl.prepend(o); });
     }
     function abrirFrecuentes() {
+      registrarEventoGA('frequents_opened');
       const box=document.getElementById('frecuentesLista'); const lista=coleccionListas.find(l=>String(l.id)===String(idListaActiva));
       const freq=obtenerFrecuentes(30); box.innerHTML='';
       if(!freq.length) box.innerHTML='<div class="smart-empty">Todavía no hay productos habituales. A medida que uses la app aparecerán aquí.</div>';
@@ -3267,9 +3310,9 @@
       if(!lista.items) lista.items=[]; if(lista.items.some(i=>normalizarClaveFrecuente(i.texto)===normalizarClaveFrecuente(nombre))) return;
       const cat=clasificarProducto(nombre), mem=obtenerUltimoPrecio(nombre)||0;
       const item={id:Date.now()*1000+Math.floor(Math.random()*1000),texto:nombre,cantidad:1,precio:mem,categoriaId:cat.id,icono:cat.icono,comprado:false,precioOrigen:mem?'estimado':'sin-precio'};
-      lista.items.push(item); guardarStorage(); sincronizarProductoFirebase(item); renderizarProductos(); abrirFrecuentes(); mostrarToast(`⭐ "${nombre}" agregado`);
+      lista.items.push(item); guardarStorage(); sincronizarProductoFirebase(item); renderizarProductos(); abrirFrecuentes(); mostrarToast(`⭐ "${nombre}" agregado`); registrarEventoGA('frequent_added');
     }
-    function agregarTopFrecuentes(){ obtenerFrecuentes(5).forEach(f=>agregarFrecuente(f.nombre)); cerrarFrecuentes(); }
+    function agregarTopFrecuentes(){ obtenerFrecuentes(5).forEach(f=>agregarFrecuente(f.nombre)); cerrarFrecuentes(); registrarEventoGA('frequents_top5_added'); }
 
     function guardarCompraEnHistorial(lista) {
       if(!lista || !lista.items?.length) return;
@@ -3281,8 +3324,10 @@
       historialCompras=historialCompras.slice(0,40);
       try{localStorage.setItem('historialCompras_v1',JSON.stringify(historialCompras));}catch(e){}
       registrarCompraCompletadaEnEstadisticas(lista, total);
+      registrarEventoGA('purchase_completed', { item_count: lista.items.length });
     }
     function abrirHistorialCompras(){
+      registrarEventoGA('purchase_history_opened');
       const box=document.getElementById('historialComprasLista'); box.innerHTML='';
       if(!historialCompras.length) box.innerHTML='<div class="smart-empty">Aún no hay compras completadas. Cuando marques todos los productos como comprados se guardará un resumen aquí.</div>';
       historialCompras.forEach(h=>{ const f=new Date(h.fecha).toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'}); box.insertAdjacentHTML('beforeend',`<div class="smart-list-card"><div class="smart-list-row"><div><div class="smart-list-title">${escapeHtml(h.nombre)}</div><div class="smart-list-meta">${f} · ${h.items.length} productos · ${formatoCLP.format(h.total||0)}</div></div><button class="smart-mini-btn" onclick="repetirCompra('${h.id}')">🔁 Repetir</button></div></div>`); });
@@ -3292,7 +3337,7 @@
     function repetirCompra(id){
       const h=historialCompras.find(x=>x.id===id); if(!h) return;
       const codigo=generarCodigoUnico(); const nueva={id:codigo,nombre:`${h.nombre} · Repetida`,items:h.items.map((i,idx)=>({...i,id:Date.now()*1000+idx+Math.floor(Math.random()*500),comprado:false})),presupuesto:0,ui:{filter:'pendientes',focus:false}};
-      coleccionListas.push(nueva); guardarStorage(); cerrarHistorialCompras(); abrirLista(codigo); sincronizarConFirebase(); mostrarToast('🔁 Compra anterior lista para reutilizar');
+      coleccionListas.push(nueva); guardarStorage(); cerrarHistorialCompras(); abrirLista(codigo); sincronizarConFirebase(); mostrarToast('🔁 Compra anterior lista para reutilizar'); registrarEventoGA('purchase_repeated', { item_count: nueva.items.length });
     }
 
     const pasosTutorialData = [
@@ -3320,6 +3365,7 @@
     }
 
     function activarDictadoVoz() {
+      registrarEventoGA('voice_dictation_used');
       if (!idListaActiva) {
         abrirModalSinLista();
         return;
@@ -3417,6 +3463,7 @@
     }
 
     function abrirEscanerBarras() {
+      registrarEventoGA('scanner_opened');
       vibrarConfirmacion();
 
       if (!idListaActiva) {
@@ -3447,6 +3494,7 @@
 
           if (nombreGuardado) {
             mostrarFeedbackEscaner(true, nombreGuardado);
+            registrarEventoGA('scanner_product_found', { source: 'memory' });
             document.getElementById('itemInput').value = nombreGuardado;
             if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
             
@@ -3468,6 +3516,7 @@
               const nombreEncontrado = prod.product_name_es || prod.product_name || prod.brands || '';
               if (nombreEncontrado) {
                 mostrarFeedbackEscaner(true, nombreEncontrado);
+                registrarEventoGA('scanner_product_found', { source: 'database' });
                 document.getElementById('itemInput').value = nombreEncontrado;
                 guardarNombreCodigoEnMemoria(barcode, nombreEncontrado);
                 if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
@@ -3482,6 +3531,7 @@
             throw new Error('Producto no en base de datos');
           } catch (err) {
             mostrarFeedbackEscaner(false, "Código No Detectado");
+            registrarEventoGA('scanner_product_not_found');
             cerrarEscanerBarras(false);
             setTimeout(async () => {
               const resp = await abrirDialogoApp({
@@ -3653,6 +3703,7 @@
       renderizarProductos();
       vibrarConfirmacion();
       mostrarToast(`💰 Tope fijado en ${formatoCLP.format(monto)}`);
+      registrarEventoGA('budget_set');
     }
 
     function desactivarPresupuestoDesdeModal() {
@@ -3666,6 +3717,7 @@
       renderizarProductos();
       vibrarConfirmacion();
       mostrarToast('💰 Tope de presupuesto desactivado');
+      registrarEventoGA('budget_removed');
     }
 
     document.addEventListener('input', (e) => {
@@ -3865,6 +3917,7 @@
 
       idListaActiva = lista.id;
       registrarRecetaEnEstadisticas(receta);
+      registrarEventoGA('recipe_loaded', { ingredient_count: receta.ingredientes.length });
       guardarStorage();
       sincronizarConFirebase();
       cerrarModalRecetas();
@@ -3968,6 +4021,9 @@
         diferidoPromptInstalacion.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
             document.getElementById('btnInstalarPWA').style.display = 'none';
+            registrarEventoGA('pwa_install_accepted');
+          } else {
+            registrarEventoGA('pwa_install_declined');
           }
           diferidoPromptInstalacion = null;
         });
@@ -4175,6 +4231,7 @@
       downloadAnchor.click();
       downloadAnchor.remove();
       mostrarToast("💾 Respaldo guardado con éxito");
+      registrarEventoGA('backup_exported');
     }
 
     function importarBackup(e) {
@@ -4206,8 +4263,10 @@
           actualizarSugerenciasFrecuentes();
           renderizarListas();
           mostrarToast("📂 Respaldo completo cargado correctamente");
+          registrarEventoGA('backup_imported');
         } catch (err) {
           mostrarToast("⚠️ Archivo de respaldo no válido");
+          registrarEventoGA('backup_import_error');
         }
       };
       reader.readAsText(file);
@@ -4262,6 +4321,7 @@
       guardarStorage();
       renderizarProductos();
       mostrarToast("🔄 Lista desmarcada para una nueva compra");
+      registrarEventoGA('list_reused', { item_count: lista.items.length });
     }
 
     function limpiarProductosComprados() {
@@ -4282,6 +4342,7 @@
       comprados.forEach(i => eliminarProductoFirebase(i.id));
       renderizarProductos();
 
+      registrarEventoGA('purchased_items_cleared', { item_count: comprados.length });
       mostrarToast(`🧹 ${comprados.length} comprados eliminados`, true, () => {
         const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
         if (actual) {
@@ -4459,6 +4520,7 @@
 
     async function compartirListaActiva() {
       vibrarConfirmacion();
+      registrarEventoGA('list_share_started');
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista) return;
 
@@ -4479,6 +4541,7 @@
               text: mensajeTexto,
               url: urlCompartida
             });
+            registrarEventoGA('list_shared', { method: 'native_share' });
             return;
           } catch (e) {
             if (e.name === 'AbortError') return;
@@ -4557,6 +4620,7 @@
             window.history.replaceState({}, document.title, window.location.pathname);
             abrirLista(listaIdURL);
             mostrarToast(`🎉 ¡Lista "${datos.nombre}" conectada en vivo!`);
+          registrarEventoGA('list_joined');
           }
         });
       }
@@ -4576,6 +4640,7 @@
       abrirLista(nuevaLista.id);
       sincronizarConFirebase();
       mostrarToast(`✨ Lista creada (Código: ${nuevoCodigo})`);
+      registrarEventoGA('list_created');
     }
 
     async function editarNombreLista(e, id) {
@@ -4720,6 +4785,7 @@
           });
           registrarUsoProducto(texto, 1);
           mostrarToast(`➕ "${texto}" agregado a la lista`);
+          registrarEventoGA('product_added', { quantity: cantidadAAgregar, has_price: precio > 0 });
         }
 
         guardarStorage();
@@ -4813,6 +4879,7 @@
       const finalizar = () => {
         prod.comprado = nuevoEstado;
         if (nuevoEstado) {
+          registrarEventoGA('product_marked_bought');
           registrarUsoProducto(prod.texto, 2);
           tokenEstadistica = registrarProductoEnEstadisticas(lista, prod);
           if (tokenEstadistica) tokensCompraSesion.set(tokenKey, tokenEstadistica);
@@ -4853,6 +4920,7 @@
     }
 
     function actualizarPrecioProducto(prodId, nuevoPrecio) {
+      registrarEventoGA('product_price_edited');
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (lista && lista.items) {
         const prod = lista.items.find(i => i.id === prodId);
