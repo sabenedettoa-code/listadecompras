@@ -173,6 +173,18 @@
       border: 1px solid var(--primary);
     }
 
+    .badge-users-online.active-live {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 4px;
+      animation: liveBadgePulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes liveBadgePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+      50% { box-shadow: 0 0 0 4px rgba(99,102,241,0.10); }
+    }
+
     .btn-menu-burger {
       background: var(--tab-bg);
       border: 1px solid var(--border);
@@ -1125,6 +1137,75 @@
       list-style-position: inside;
     }
 
+    .recipe-tools {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 10px 0 8px;
+    }
+
+    .recipe-search-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .recipe-search-input {
+      width: 100%;
+      padding: 10px 36px 10px 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .recipe-search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+    }
+
+    .recipe-search-clear {
+      position: absolute;
+      right: 7px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      display: none;
+    }
+
+    .recipe-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(99,102,241,.09);
+      border: 1px solid rgba(99,102,241,.25);
+      color: var(--primary);
+      font-size: .76rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .recipe-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 22px 12px;
+      color: var(--text-muted);
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
     .recipe-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1256,6 +1337,11 @@
       justify-content: flex-start;
       flex-wrap: wrap;
       gap: 6px;
+    }
+
+    /* En Focus se mantienen solo las acciones esenciales de compra */
+    .focus-mode-active .item-controls-right > .btn-action-icon {
+      display: none !important;
     }
 
     .focus-mode-active .inline-price {
@@ -1424,7 +1510,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v4.9 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.3 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1534,6 +1620,90 @@
       .btn-tut { transition: none !important; }
     }
 
+  
+
+    /* BOTONERA 3x2 RESPONSIVA: conserva el estilo sin salirse en móviles */
+    @media (max-width: 520px) {
+      .action-bar {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-content: stretch;
+        gap: 6px;
+      }
+
+      .btn-sec {
+        width: 100%;
+        max-width: none;
+        min-height: 36px;
+        padding: 6px 5px;
+        font-size: 0.72rem;
+        white-space: normal;
+        line-height: 1.08;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .btn-sec {
+        padding-left: 3px;
+        padding-right: 3px;
+        font-size: 0.68rem;
+      }
+    }
+
+  
+
+    /* V5.2 CONSOLIDACION: animaciones, offline, frecuentes, historial y precios estimados */
+    .offline-banner {
+      display:none; margin:0; padding:8px 14px; text-align:center;
+      background:rgba(245,158,11,.13); border-bottom:1px solid rgba(245,158,11,.35);
+      color:var(--text); font-size:.8rem; font-weight:800; line-height:1.35;
+    }
+    .offline-banner.show { display:block; animation:softDrop .22s ease-out; }
+    @keyframes softDrop { from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none} }
+
+    .budget-status-message {
+      margin-top:8px; padding:8px 11px; border-radius:11px; text-align:center;
+      font-size:.8rem; font-weight:900; background:var(--tab-bg); color:var(--text);
+    }
+    .budget-status-message.good { color:var(--success); background:rgba(16,185,129,.09); }
+    .budget-status-message.warn { color:var(--danger); background:rgba(239,68,68,.09); }
+
+    .estimated-price-tag, .real-price-tag {
+      display:inline-flex; align-items:center; margin-left:5px; padding:1px 6px;
+      border-radius:999px; font-size:.64rem; font-weight:900; vertical-align:middle;
+    }
+    .estimated-price-tag { color:#b45309; background:rgba(245,158,11,.13); border:1px dashed rgba(245,158,11,.55); }
+    .real-price-tag { color:var(--success); background:rgba(16,185,129,.09); }
+    .inline-price.price-estimated { border-style:dashed; border-color:#f59e0b; }
+
+    .product-list-item { transition: transform .22s ease, opacity .22s ease, box-shadow .22s ease; }
+    li.item-buying .product-list-item { animation:itemPurchased .30s ease forwards; }
+    @keyframes itemPurchased {
+      0%{transform:scale(1); opacity:1}
+      45%{transform:scale(.985); box-shadow:0 0 0 3px rgba(16,185,129,.12)}
+      100%{transform:translateX(18px); opacity:0}
+    }
+
+    .smart-list-container { display:flex; flex-direction:column; gap:8px; max-height:55vh; overflow:auto; margin:12px 0; }
+    .smart-list-card { border:1px solid var(--border); border-radius:13px; padding:10px 12px; background:var(--bg); }
+    .smart-list-row { display:flex; gap:8px; justify-content:space-between; align-items:center; }
+    .smart-list-title { font-weight:900; font-size:.92rem; }
+    .smart-list-meta { color:var(--text-muted); font-size:.74rem; font-weight:700; margin-top:3px; line-height:1.35; }
+    .smart-mini-btn { border:1px solid var(--border); background:var(--card-bg); color:var(--primary); border-radius:10px; padding:7px 9px; font-weight:900; cursor:pointer; white-space:nowrap; }
+    .smart-empty { color:var(--text-muted); text-align:center; padding:18px 8px; font-weight:700; }
+
+    .listai-error-box { display:none; margin:0 0 10px; padding:10px 12px; border-radius:12px; background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.22); color:var(--text); text-align:left; font-size:.82rem; font-weight:700; }
+    .listai-error-box.show { display:block; }
+    .listai-error-box button { margin-top:8px; width:100%; }
+
+    .tutorial-tip {
+      margin-top:10px; padding:9px 11px; border-radius:11px; background:rgba(99,102,241,.07);
+      border:1px solid rgba(99,102,241,.15); color:var(--text); font-size:.78rem; font-weight:700; line-height:1.4;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      li.item-buying .product-list-item, .offline-banner.show { animation:none !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -1551,6 +1721,7 @@
         <button class="btn-menu-burger" onclick="toggleSidebar()" aria-label="Abrir menú" title="Abrir menú">☰</button>
       </div>
     </div>
+    <div id="offlineBanner" class="offline-banner" role="status" aria-live="polite">📶 Sin conexión · tus cambios se guardan en este dispositivo y se sincronizarán al volver Internet.</div>
 
     <div id="sidebarMenu" class="sidebar-menu">
       <div class="sidebar-header">
@@ -1562,6 +1733,8 @@
       <button class="btn-sidebar-tool" onclick="abrirModalAcercaDe(); toggleSidebar();">ℹ️ Acerca de esta App</button>
       <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
       <button class="btn-sidebar-tool" onclick="abrirMemoriaPrecios(); toggleSidebar();">🧠 Memoria de Precios</button>
+      <button class="btn-sidebar-tool" onclick="abrirFrecuentes(); toggleSidebar();">⭐ Productos Habituales</button>
+      <button class="btn-sidebar-tool" onclick="abrirHistorialCompras(); toggleSidebar();">📅 Historial de Compras</button>
       
       <div class="compact-field" style="margin-top: 10px;">
         <label style="font-size: 0.85rem; font-weight: 700;">Tamaño Letra:</label>
@@ -1620,7 +1793,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v4.9 · v4.9</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.3</span>
         </div>
       </div>
 
@@ -1658,7 +1831,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v4.9 · v4.9</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.3</span>
         </div>
       </div>
 
@@ -1687,7 +1860,10 @@
           <button class="btn-back" onclick="verSeccion('mis-listas')">← Listas</button>
           <div style="text-align: center;">
             <h3 id="tituloListaActiva" style="margin: 0;">Lista</h3>
-            <span id="badgeCodigoLista" class="badge-code">CÓDIGO: ------</span>
+            <div style="display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; margin-top:2px;">
+              <span id="badgeCodigoLista" class="badge-code">CÓDIGO: ------</span>
+              <span id="badgeUsuariosLista" class="badge-users-online" style="display:none;">👥 1 en vivo</span>
+            </div>
           </div>
           <button class="btn-share" onclick="compartirListaActiva()">📲 Compartir</button>
         </div>
@@ -1801,6 +1977,7 @@
             <div class="budget-val" id="valDisponible">Sin tope</div>
           </div>
         </div>
+        <div id="budgetStatusMessage" class="budget-status-message" style="display:none;"></div>
       </div>
 
     </div>
@@ -1823,7 +2000,7 @@
     </div>
   </div>
 
-  <div id="toast" class="toast">
+  <div id="toast" class="toast" role="status" aria-live="polite">
     <span id="toastMsg">Mensaje del sistema</span>
     <button id="btnUndoToast" class="btn-undo" onclick="ejecutarAccionDeshacer()" style="display:none;">↩️ Deshacer</button>
   </div>
@@ -1908,6 +2085,7 @@
       </div>
 
       <div id="panelSolicitudIA">
+        <div id="listaiErrorBox" class="listai-error-box" role="alert"></div>
         <button id="btnGenerarIA" class="btn-start-large" onclick="procesarPromptIA()" style="width:100%; background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); margin-bottom:10px;">
           ✨ Analizar con ListAI
         </button>
@@ -1973,7 +2151,7 @@
       <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
         🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
         👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 4.9 (Agosto 2026)
+        📌 <strong>Versión Actual:</strong> 5.3 (Agosto 2026)
       </div>
 
       <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
@@ -2001,6 +2179,7 @@
       <div id="tutBadge" class="tutorial-badge">Paso 1 de 7</div>
       <h3 id="tutTitle">¡Bienvenido!</h3>
       <p id="tutDesc">Esta aplicación te ayudará a hacer tus compras de forma fácil y ordenada.</p>
+      <div id="tutTip" class="tutorial-tip" style="display:none;"></div>
       
       <div class="tutorial-dots" id="tutorialDots"></div>
 
@@ -2054,60 +2233,36 @@
         </select>
       </div>
 
-      <div class="recipe-grid">
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('cazuela')">
-          <div style="font-size: 2rem;">🍲</div>
-          <h4>Cazuela de Vacuno</h4>
-          <p>8 ingredientes</p>
+      <div class="recipe-tools">
+        <div class="recipe-search-wrap">
+          <input id="buscarRecetaInput" class="recipe-search-input" type="search" placeholder="🔎 Buscar receta chilena..." aria-label="Buscar recetas chilenas" oninput="filtrarRecetasChilenas()">
+          <button id="limpiarBusquedaRecetaBtn" class="recipe-search-clear" type="button" onclick="limpiarBusquedaRecetas()" aria-label="Limpiar búsqueda">✕</button>
         </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pastel')">
-          <div style="font-size: 2rem;">🥧</div>
-          <h4>Pastel de Choclo</h4>
-          <p>8 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('porotos')">
-          <div style="font-size: 2rem;">🫘</div>
-          <h4>Porotos c/ Riendas</h4>
-          <p>7 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('carbonada')">
-          <div style="font-size: 2rem;">🍲</div>
-          <h4>Carbonada Casera</h4>
-          <p>8 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('charquican')">
-          <div style="font-size: 2rem;">🥘</div>
-          <h4>Charquicán c/ Huevo</h4>
-          <p>7 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pebre')">
-          <div style="font-size: 2rem;">🌶️</div>
-          <h4>Pebre Chileno</h4>
-          <p>7 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('pantrucas')">
-          <div style="font-size: 2rem;">🥣</div>
-          <h4>Pantrucas Caseras</h4>
-          <p>9 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('completo')">
-          <div style="font-size: 2rem;">🌭</div>
-          <h4>Completo Italiano</h4>
-          <p>5 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('empanadas')">
-          <div style="font-size: 2rem;">🥟</div>
-          <h4>Empanadas de Pino</h4>
-          <p>7 ingredientes</p>
-        </div>
-        <div class="recipe-item-card" onclick="cargarIngredientesReceta('sopaipillas')">
-          <div style="font-size: 2rem;">🎃</div>
-          <h4>Sopaipillas Pasadas</h4>
-          <p>7 ingredientes</p>
-        </div>
+        <div id="contadorRecetas" class="recipe-count-badge" aria-live="polite">0 recetas</div>
       </div>
 
+      <div id="recipeGrid" class="recipe-grid"></div>
+
       <button class="btn-tut prev" onclick="cerrarModalRecetas()" style="width: 100%;">Cerrar</button>
+    </div>
+  </div>
+
+
+  <div id="frecuentesOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
+    <div class="tutorial-card" style="max-width:520px; text-align:left;">
+      <div class="tutorial-icon">⭐</div><h3 style="text-align:center;">Productos Habituales</h3>
+      <p style="text-align:center;">Se ordenan según lo que agregas y compras con mayor frecuencia en este dispositivo.</p>
+      <div id="frecuentesLista" class="smart-list-container"></div>
+      <div class="tutorial-actions"><button class="btn-tut prev" onclick="cerrarFrecuentes()">Cerrar</button><button class="btn-tut next" onclick="agregarTopFrecuentes()">⭐ Agregar mis 5 habituales</button></div>
+    </div>
+  </div>
+
+  <div id="historialComprasOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
+    <div class="tutorial-card" style="max-width:560px; text-align:left;">
+      <div class="tutorial-icon">📅</div><h3 style="text-align:center;">Historial de Compras</h3>
+      <p style="text-align:center;">Cuando completas una lista, la app guarda un resumen local para que puedas repetirla más adelante.</p>
+      <div id="historialComprasLista" class="smart-list-container"></div>
+      <button class="btn-tut prev" style="width:100%;" onclick="cerrarHistorialCompras()">Cerrar</button>
     </div>
   </div>
 
@@ -2195,6 +2350,13 @@
     let presenceRef = null;
     let myPresenceRef = null; // Guardará la conexión activa de este usuario
     let listaIdSuscrito = null; // Controla qué lista ya está siendo escuchada
+    const presenceSessionId = (() => {
+      const existente = sessionStorage.getItem('misListasPresenceId');
+      if (existente) return existente;
+      const nuevo = 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+      sessionStorage.setItem('misListasPresenceId', nuevo);
+      return nuevo;
+    })();
     let html5QrcodeScanner = null;
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
@@ -2207,6 +2369,10 @@
     let resultadoIAPendiente = [];
     let mensajeIAPendiente = "";
     let targetIdIAPendiente = null;
+    let estadisticasFrecuencia = {};
+    let historialCompras = [];
+    let compraCompletadaRegistrada = new Set();
+    let colaSyncPendiente = {};
 
     let dialogoAppResolver = null;
     let dialogoAppConfig = null;
@@ -2299,8 +2465,19 @@
     let memoriaPreciosLocal = {};
     let memoriaNombresCodigos = {};
 
-    window.addEventListener('online', actualizarEstadoRed);
-    window.addEventListener('offline', actualizarEstadoRed);
+    window.addEventListener('online', async () => {
+      actualizarEstadoRed();
+      await vaciarColaSincronizacion();
+      const secLista = document.getElementById('secListaActiva');
+      if (idListaActiva && secLista && secLista.style.display !== 'none') {
+        escucharSincronizacionFirebase(idListaActiva);
+      }
+      mostrarToast('☁️ Conexión recuperada · cambios sincronizados');
+    });
+    window.addEventListener('offline', () => {
+      actualizarEstadoRed();
+      limpiarPresenciaLista();
+    });
 
     function toggleSidebar() {
       document.getElementById('sidebarMenu').classList.toggle('active');
@@ -2328,18 +2505,24 @@
 
     function actualizarEstadoRed() {
       const badge = document.getElementById('netStatusBadge');
+      const banner = document.getElementById('offlineBanner');
       if (navigator.onLine) {
         badge.textContent = '🟢 Online';
         badge.className = 'net-badge online';
+        banner?.classList.remove('show');
       } else {
-        badge.textContent = '🟠 Sin Señal';
+        badge.textContent = '🟠 Sin conexión';
         badge.className = 'net-badge offline';
+        banner?.classList.add('show');
       }
     }
 
     function toggleModoFocus() {
       vibrarConfirmacion();
       modoFocusActivo = !modoFocusActivo;
+      const listaEstado = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (listaEstado) { listaEstado.ui = { ...(listaEstado.ui||{}), focus: modoFocusActivo }; guardarStorage(); }
+      localStorage.setItem('modoFocus_v1', modoFocusActivo ? '1' : '0');
       const appContainer = document.getElementById('appContainer');
       const btn = document.getElementById('btnToggleFocus');
 
@@ -2583,9 +2766,9 @@
           const catInfo = clasificarProducto(texto);
           const precioFinal = precioCapturado > 0 ? precioCapturado : (obtenerUltimoPrecio(normalizado) || 0);
           lista.items.push({
-            id: Date.now() + Math.random(), texto,
+            id: Date.now() * 1000 + Math.floor(Math.random() * 1000), texto,
             cantidad: Math.max(1, parseInt(prod.cantidad)||1), precio: precioFinal,
-            categoriaId: catInfo.id, icono: catInfo.icono, comprado: false
+            categoriaId: catInfo.id, icono: catInfo.icono, comprado: false, precioOrigen: precioCapturado > 0 ? 'real' : (precioFinal > 0 ? 'estimado' : 'sin-precio')
           });
           agregados++;
         }
@@ -2617,6 +2800,8 @@
         return;
       }
 
+      const errorBox = document.getElementById('listaiErrorBox');
+      if (errorBox) { errorBox.classList.remove('show'); errorBox.innerHTML=''; }
       btnGen.disabled = true;
       btnGen.innerHTML = "⏳ ListAI analizando...";
 
@@ -2646,6 +2831,8 @@
 
       } catch (err) {
         console.error("Error al procesar con ListAI:", err);
+        const errorBox = document.getElementById('listaiErrorBox');
+        if (errorBox) { errorBox.classList.add('show'); errorBox.innerHTML = `⚠️ ${escapeHtml(err.message || 'No pudimos completar la solicitud.')}<button class="btn-tut next" type="button" onclick="procesarPromptIA()">🔄 Reintentar sin perder lo escrito</button>`; }
         mostrarToast(`⚠️ ListAI: ${err.message}`);
       } finally {
         btnGen.disabled = false;
@@ -2893,42 +3080,82 @@
       mostrarToast('🧠 Memoria de precios borrada');
     }
 
+
+    function normalizarClaveFrecuente(texto) { return String(texto||'').toLowerCase().trim(); }
+    function cargarInteligenciaLocal() {
+      try { estadisticasFrecuencia = JSON.parse(localStorage.getItem('frecuentes_v1') || '{}') || {}; } catch(e){ estadisticasFrecuencia = {}; }
+      try { historialCompras = JSON.parse(localStorage.getItem('historialCompras_v1') || '[]') || []; } catch(e){ historialCompras = []; }
+      actualizarSugerenciasFrecuentes();
+    }
+    function registrarUsoProducto(texto, peso=1) {
+      const key = normalizarClaveFrecuente(texto); if (!key) return;
+      const actual = estadisticasFrecuencia[key] || { nombre:String(texto).trim(), usos:0, ultima:0 };
+      actual.nombre = String(texto).trim(); actual.usos = (Number(actual.usos)||0) + peso; actual.ultima = Date.now();
+      estadisticasFrecuencia[key] = actual;
+      try { localStorage.setItem('frecuentes_v1', JSON.stringify(estadisticasFrecuencia)); } catch(e){}
+      actualizarSugerenciasFrecuentes();
+    }
+    function obtenerFrecuentes(limite=20) {
+      return Object.values(estadisticasFrecuencia).sort((a,b)=>(b.usos-a.usos)||(b.ultima-a.ultima)).slice(0,limite);
+    }
+    function actualizarSugerenciasFrecuentes() {
+      const dl=document.getElementById('sugerenciasGenericasChilenas'); if(!dl) return;
+      dl.querySelectorAll('option[data-smart="1"]').forEach(o=>o.remove());
+      obtenerFrecuentes(15).reverse().forEach(f=>{ const o=document.createElement('option'); o.value=f.nombre; o.dataset.smart='1'; dl.prepend(o); });
+    }
+    function abrirFrecuentes() {
+      const box=document.getElementById('frecuentesLista'); const lista=coleccionListas.find(l=>String(l.id)===String(idListaActiva));
+      const freq=obtenerFrecuentes(30); box.innerHTML='';
+      if(!freq.length) box.innerHTML='<div class="smart-empty">Todavía no hay productos habituales. A medida que uses la app aparecerán aquí.</div>';
+      freq.forEach(f=>{ const ya=lista?.items?.some(i=>normalizarClaveFrecuente(i.texto)===normalizarClaveFrecuente(f.nombre)); box.insertAdjacentHTML('beforeend',`<div class="smart-list-card"><div class="smart-list-row"><div><div class="smart-list-title">${escapeHtml(f.nombre)}</div><div class="smart-list-meta">Usado ${f.usos} vez${f.usos===1?'':'es'} · ${ya?'Ya está en la lista':'Listo para agregar'}</div></div><button class="smart-mini-btn" ${ya?'disabled':''} onclick="agregarFrecuente(decodeURIComponent('${encodeURIComponent(f.nombre)}'))">${ya?'✓':'＋ Agregar'}</button></div></div>`); });
+      document.getElementById('frecuentesOverlay').classList.add('active');
+    }
+    function cerrarFrecuentes(){document.getElementById('frecuentesOverlay')?.classList.remove('active');}
+    function agregarFrecuente(nombre){
+      if(!idListaActiva){cerrarFrecuentes(); verSeccion('mis-listas'); return;}
+      const lista=coleccionListas.find(l=>String(l.id)===String(idListaActiva)); if(!lista) return;
+      if(!lista.items) lista.items=[]; if(lista.items.some(i=>normalizarClaveFrecuente(i.texto)===normalizarClaveFrecuente(nombre))) return;
+      const cat=clasificarProducto(nombre), mem=obtenerUltimoPrecio(nombre)||0;
+      const item={id:Date.now()*1000+Math.floor(Math.random()*1000),texto:nombre,cantidad:1,precio:mem,categoriaId:cat.id,icono:cat.icono,comprado:false,precioOrigen:mem?'estimado':'sin-precio'};
+      lista.items.push(item); guardarStorage(); sincronizarProductoFirebase(item); renderizarProductos(); abrirFrecuentes(); mostrarToast(`⭐ "${nombre}" agregado`);
+    }
+    function agregarTopFrecuentes(){ obtenerFrecuentes(5).forEach(f=>agregarFrecuente(f.nombre)); cerrarFrecuentes(); }
+
+    function guardarCompraEnHistorial(lista) {
+      if(!lista || !lista.items?.length) return;
+      const clave=String(lista.id)+'_'+lista.items.map(i=>i.id).sort().join('-'); if(compraCompletadaRegistrada.has(clave)) return;
+      const todos=lista.items.every(i=>i.comprado); if(!todos) return;
+      compraCompletadaRegistrada.add(clave);
+      const total=lista.items.reduce((a,i)=>a+(Number(i.cantidad)||1)*(Number(i.precio)||obtenerUltimoPrecio(i.texto)||0),0);
+      historialCompras.unshift({id:'h_'+Date.now(),fecha:Date.now(),nombre:lista.nombre,total,items:JSON.parse(JSON.stringify(lista.items)).map(i=>({...i,comprado:false}))});
+      historialCompras=historialCompras.slice(0,40);
+      try{localStorage.setItem('historialCompras_v1',JSON.stringify(historialCompras));}catch(e){}
+    }
+    function abrirHistorialCompras(){
+      const box=document.getElementById('historialComprasLista'); box.innerHTML='';
+      if(!historialCompras.length) box.innerHTML='<div class="smart-empty">Aún no hay compras completadas. Cuando marques todos los productos como comprados se guardará un resumen aquí.</div>';
+      historialCompras.forEach(h=>{ const f=new Date(h.fecha).toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'}); box.insertAdjacentHTML('beforeend',`<div class="smart-list-card"><div class="smart-list-row"><div><div class="smart-list-title">${escapeHtml(h.nombre)}</div><div class="smart-list-meta">${f} · ${h.items.length} productos · ${formatoCLP.format(h.total||0)}</div></div><button class="smart-mini-btn" onclick="repetirCompra('${h.id}')">🔁 Repetir</button></div></div>`); });
+      document.getElementById('historialComprasOverlay').classList.add('active');
+    }
+    function cerrarHistorialCompras(){document.getElementById('historialComprasOverlay')?.classList.remove('active');}
+    function repetirCompra(id){
+      const h=historialCompras.find(x=>x.id===id); if(!h) return;
+      const codigo=generarCodigoUnico(); const nueva={id:codigo,nombre:`${h.nombre} · Repetida`,items:h.items.map((i,idx)=>({...i,id:Date.now()*1000+idx+Math.floor(Math.random()*500),comprado:false})),presupuesto:0,ui:{filter:'pendientes',focus:false}};
+      coleccionListas.push(nueva); guardarStorage(); cerrarHistorialCompras(); abrirLista(codigo); sincronizarConFirebase(); mostrarToast('🔁 Compra anterior lista para reutilizar');
+    }
+
     const pasosTutorialData = [
-      {
-        icon: '👋',
-        title: '¡Bienvenid@ a tu Lista!',
-        desc: 'Esta plataforma fue creada sin fines de lucro por Santiago Benedetto (@sabenedettoa) para ayudarte a comprar sin estrés. Te enseñamos lo básico en simples pasos.'
-      },
-      {
-        icon: '🔑',
-        title: 'Crea o Únete con un Código',
-        desc: 'Ingresa un CÓDIGO de 6 caracteres (ej: A8K9P2) en [🔑 Unirse] para conectarte a la lista de un familiar, o escribe un nombre abajo y presiona [Crear] para crear una lista nueva.'
-      },
-      {
-        icon: '🎤',
-        title: 'Escribe, Dicta por Voz 🎤 o Escanea 📸',
-        desc: 'Escribe en la casilla, toca el micrófono 🎤 para dictar hablando de corrido o usa la cámara 📸 para escanear el código de barras.'
-      },
-      {
-        icon: '🍳',
-        title: 'Carga Recetas o Genera con ListAI',
-        desc: 'Presiona [🍳 Cargar Recetas] para recetas chilenas o usa [✨ Generar Lista con ListAI] para pedirle cualquier menú o lectura de boletas.'
-      },
-      {
-        icon: '📊',
-        title: 'Tope de Gastos y Gráficos',
-        desc: 'Fija un presupuesto máximo con [🚨 Tope Gastos] para que la app te avise si te pasas, o mira el desglose en [📊 Gráfico Gastos].'
-      },
-      {
-        icon: '👓',
-        title: 'Agranda la letra y fija la pantalla',
-        desc: 'Usa los botones [A+] arriba para ver más grande. Y en el supermercado, toca [💡 Encendida] arriba para que el teléfono no se apague solo mientras compras.'
-      },
-      {
-        icon: '🎯',
-        title: 'Modo Focus',
-        desc: 'Activa [🎯 Modo Focus] para limpiar la pantalla y comprar rápido en los pasillos.'
-      }
+      {icon:'👋',title:'¡Bienvenid@ a Mis Listas!',desc:'Tu lista de compras está pensada para ser rápida y simple tanto al planificar como al recorrer el supermercado.',tip:'Puedes volver a este tutorial cuando quieras desde ☰ Ajustes y Ayuda.'},
+      {icon:'🔑',title:'Crea, comparte o únete',desc:'Crea una lista o entra con el código de otra persona. Si comparten la misma lista, verás cuántas personas están usándola en vivo.',tip:'Los cambios normales se sincronizan producto por producto para reducir choques entre usuarios.'},
+      {icon:'🎤',title:'Agrega productos como prefieras',desc:'Puedes escribir, dictar varios productos de corrido o escanear códigos de barras. La app también aprende qué productos usas con más frecuencia.',tip:'Al escribir, los productos habituales aparecen primero entre las sugerencias.'},
+      {icon:'⭐',title:'Tus productos habituales',desc:'En el menú encontrarás ⭐ Productos Habituales para volver a cargar rápidamente lo que compras seguido.',tip:'La frecuencia se aprende localmente en este dispositivo.'},
+      {icon:'🧠',title:'Memoria inteligente de precios',desc:'La app recuerda precios anteriores. Si completa un precio desde memoria, lo marca como estimado hasta que tú lo confirmes o modifiques.',tip:'Cuando escribes el precio real en el supermercado, pasa a considerarse confirmado.'},
+      {icon:'💰',title:'Presupuesto y gastos',desc:'Define un tope, revisa cuánto llevas gastado y cuánto te queda. El cálculo puede incluir precios estimados cuando todavía faltan precios reales.',tip:'El aviso te dirá claramente cuánto te queda o cuánto vas sobre el tope.'},
+      {icon:'🤖',title:'ListAI con revisión',desc:'Pídele menús, compras, lectura de boletas o listas desde una foto. Primero revisas la propuesta y luego decides qué agregar.',tip:'Si ListAI falla, tu texto y tu foto se conservan para que puedas reintentar.'},
+      {icon:'🎯',title:'Modo Focus',desc:'En el supermercado, Focus prioriza nombre, cantidad, precio editable y botón ✓ para comprar sin distracciones.',tip:'Editar o borrar quedan fuera de Focus, pero el precio sigue disponible.'},
+      {icon:'📶',title:'También funciona sin señal',desc:'Si pierdes Internet, tus cambios siguen guardándose en este dispositivo. Al recuperar conexión, la app vuelve a sincronizar.',tip:'Verás una franja informativa mientras estés sin conexión.'},
+      {icon:'📅',title:'Historial de compras',desc:'Al completar todos los productos de una lista, guardamos un resumen local. Luego puedes repetir esa compra desde el menú.',tip:'Ideal para compras mensuales o rutinas que se repiten.'},
+      {icon:'👓',title:'Accesibilidad y comodidad',desc:'Puedes agrandar la letra, mantener la pantalla encendida y usar controles grandes. La app también respeta la preferencia de reducir animaciones.',tip:'Todo está pensado para seguir siendo legible y cómodo en el celular.'}
     ];
 
     function abrirModalSinLista() {
@@ -3316,6 +3543,94 @@
       }
     });
 
+    const RECETAS_CHILENAS = [
+      { key:'cazuela', icono:'🍲', nombre:'Cazuela de Vacuno', tipo:'Plato de fondo', ingredientes:['1kg Vacuno','Papas 1kg','Zapallo','Choclo','Zanahoria','Porotos verdes','Arroz','Cilantro'] },
+      { key:'cazuela-pollo', icono:'🍗', nombre:'Cazuela de Pollo', tipo:'Plato de fondo', ingredientes:['Trutros de pollo','Papas 1kg','Zapallo','Choclo','Zanahoria','Porotos verdes','Arroz','Cilantro'] },
+      { key:'pastel', icono:'🥧', nombre:'Pastel de Choclo', tipo:'Plato de fondo', ingredientes:['Choclo molido','Carne molida','Pechuga de pollo','Cebolla','Huevos','Aceitunas','Pasas','Albahaca'] },
+      { key:'porotos', icono:'🫘', nombre:'Porotos con Riendas', tipo:'Plato de fondo', ingredientes:['Porotos hallados','Tallarines','Zapallo','Cebolla','Ajo','Longaniza','Ají color'] },
+      { key:'porotos-granados', icono:'🫘', nombre:'Porotos Granados', tipo:'Plato de fondo', ingredientes:['Porotos granados','Choclo','Zapallo','Cebolla','Tomate','Albahaca','Ajo','Ají color'] },
+      { key:'carbonada', icono:'🍲', nombre:'Carbonada Casera', tipo:'Plato de fondo', ingredientes:['Carne de vacuno en cubos','Papas 1kg','Zapallo','Zanahoria','Choclo','Porotos verdes','Arroz','Ajo y Cebolla'] },
+      { key:'charquican', icono:'🥘', nombre:'Charquicán con Huevo', tipo:'Plato de fondo', ingredientes:['Carne molida','Papas 1kg','Zapallo','Choclo','Porotos verdes','Cebolla','Huevos'] },
+      { key:'tomatican', icono:'🍅', nombre:'Tomaticán', tipo:'Plato de fondo', ingredientes:['Tomates 1kg','Choclo','Carne de vacuno','Cebolla','Ajo','Ají color','Huevos'] },
+      { key:'pollo-arvejado', icono:'🍗', nombre:'Pollo Arvejado', tipo:'Plato de fondo', ingredientes:['Piezas de pollo','Arvejas','Zanahoria','Cebolla','Ajo','Vino blanco','Caldo de pollo','Papas'] },
+      { key:'plateada', icono:'🥩', nombre:'Plateada al Horno', tipo:'Plato de fondo', ingredientes:['Plateada de vacuno','Cebolla','Zanahoria','Ajo','Vino tinto','Caldo de carne','Papas'] },
+      { key:'ajiaco', icono:'🥣', nombre:'Ajiaco Chileno', tipo:'Sopa', ingredientes:['Carne asada o vacuno','Papas','Cebolla','Ajo','Ají color','Orégano','Comino','Huevos','Cilantro'] },
+      { key:'pantrucas', icono:'🥣', nombre:'Pantrucas Caseras', tipo:'Sopa', ingredientes:['Harina 1kg','Agua tibia','Carne molida','Cebolla','Zanahoria','Papas','Huevo','Caldo de carne','Cilantro'] },
+      { key:'caldillo-congrio', icono:'🐟', nombre:'Caldillo de Congrio', tipo:'Pescados y mariscos', ingredientes:['Congrio','Papas','Cebolla','Tomates','Zanahoria','Ajo','Vino blanco','Caldo de pescado','Cilantro'] },
+      { key:'pescado-frito', icono:'🐟', nombre:'Pescado Frito con Ensalada', tipo:'Pescados y mariscos', ingredientes:['Reineta o merluza','Harina','Huevos','Limón','Aceite','Tomates','Cebolla','Cilantro'] },
+      { key:'chupe-jaiba', icono:'🦀', nombre:'Chupe de Jaiba', tipo:'Pescados y mariscos', ingredientes:['Carne de jaiba','Pan de molde','Leche','Cebolla','Ajo','Crema','Queso parmesano','Ají color'] },
+      { key:'machas-parmesana', icono:'🐚', nombre:'Machas a la Parmesana', tipo:'Pescados y mariscos', ingredientes:['Machas','Queso parmesano','Mantequilla','Vino blanco','Limón','Pimienta'] },
+      { key:'curanto', icono:'🦪', nombre:'Curanto en Olla', tipo:'Sur de Chile', ingredientes:['Choritos','Almejas','Pollo','Longanizas','Costillar de cerdo','Papas','Repollo','Milcaos o chapaleles'] },
+      { key:'milcaos', icono:'🥔', nombre:'Milcaos Chilotes', tipo:'Sur de Chile', ingredientes:['Papas 2kg','Manteca','Sal','Chicharrones'] },
+      { key:'chapaleles', icono:'🥔', nombre:'Chapaleles', tipo:'Sur de Chile', ingredientes:['Papas','Harina','Manteca','Sal'] },
+      { key:'humitas', icono:'🌽', nombre:'Humitas', tipo:'Temporada', ingredientes:['Choclos','Cebolla','Albahaca','Leche','Mantequilla','Ají color','Hojas de choclo'] },
+      { key:'empanadas', icono:'🥟', nombre:'Empanadas de Pino', tipo:'Masa y horno', ingredientes:['Harina 1kg','Manteca','Carne picada 1kg','Cebolla 1kg','Huevos','Aceitunas','Pasas'] },
+      { key:'sopaipillas', icono:'🎃', nombre:'Sopaipillas Pasadas', tipo:'Dulce y masa', ingredientes:['Zapallo','Harina 1kg','Manteca','Chancaca','Cáscara de naranja','Clavo de olor','Maicena'] },
+      { key:'sopaipillas-secas', icono:'🫓', nombre:'Sopaipillas', tipo:'Dulce y masa', ingredientes:['Zapallo','Harina 1kg','Manteca','Sal','Aceite'] },
+      { key:'calzones-rotos', icono:'🍩', nombre:'Calzones Rotos', tipo:'Dulce y masa', ingredientes:['Harina','Huevos','Azúcar','Mantequilla','Leche','Ralladura de limón','Polvos de hornear','Azúcar flor','Aceite'] },
+      { key:'pan-amasado', icono:'🍞', nombre:'Pan Amasado', tipo:'Panadería', ingredientes:['Harina','Levadura','Manteca','Agua tibia','Sal','Azúcar'] },
+      { key:'completo', icono:'🌭', nombre:'Completo Italiano', tipo:'Sándwich', ingredientes:['Vienesas','Pan de completo','Paltas','Tomates 1kg','Mayonesa'] },
+      { key:'chacarero', icono:'🥪', nombre:'Chacarero', tipo:'Sándwich', ingredientes:['Pan frica','Carne para churrasco','Tomates','Porotos verdes','Ají verde','Mayonesa'] },
+      { key:'churrasco-italiano', icono:'🥪', nombre:'Churrasco Italiano', tipo:'Sándwich', ingredientes:['Pan frica','Carne para churrasco','Paltas','Tomates','Mayonesa'] },
+      { key:'lomito-italiano', icono:'🥪', nombre:'Lomito Italiano', tipo:'Sándwich', ingredientes:['Pan frica','Lomo de cerdo','Paltas','Tomates','Mayonesa'] },
+      { key:'pebre', icono:'🌶️', nombre:'Pebre Chileno', tipo:'Acompañamiento', ingredientes:['Tomates 1kg','Cebolla','Cilantro fresco','Ají verde','Ajo','Aceite','Vinagre'] },
+      { key:'ensalada-chilena', icono:'🥗', nombre:'Ensalada Chilena', tipo:'Acompañamiento', ingredientes:['Tomates','Cebolla','Cilantro','Aceite','Vinagre o limón','Sal'] },
+      { key:'papas-mayo', icono:'🥔', nombre:'Papas Mayo', tipo:'Acompañamiento', ingredientes:['Papas','Mayonesa','Cilantro','Limón','Sal'] },
+      { key:'mote-huesillos', icono:'🍑', nombre:'Mote con Huesillos', tipo:'Postre y bebida', ingredientes:['Huesillos','Mote','Azúcar','Canela','Cáscara de naranja'] },
+      { key:'leche-asada', icono:'🍮', nombre:'Leche Asada', tipo:'Postre', ingredientes:['Leche','Huevos','Azúcar','Esencia de vainilla'] },
+      { key:'arroz-leche', icono:'🍚', nombre:'Arroz con Leche', tipo:'Postre', ingredientes:['Arroz','Leche','Azúcar','Canela','Cáscara de limón'] },
+      { key:'brazo-reina', icono:'🍰', nombre:'Brazo de Reina', tipo:'Postre', ingredientes:['Huevos','Harina','Azúcar','Polvos de hornear','Manjar','Azúcar flor'] }
+    ];
+
+    function normalizarTextoBusquedaReceta(texto) {
+      return String(texto || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    }
+
+    function renderizarRecetasChilenas() {
+      const grid = document.getElementById('recipeGrid');
+      const contador = document.getElementById('contadorRecetas');
+      const input = document.getElementById('buscarRecetaInput');
+      const btnClear = document.getElementById('limpiarBusquedaRecetaBtn');
+      if (!grid || !contador) return;
+
+      const filtro = normalizarTextoBusquedaReceta(input?.value);
+      const filtradas = RECETAS_CHILENAS.filter(r => {
+        const texto = normalizarTextoBusquedaReceta(`${r.nombre} ${r.tipo} ${r.ingredientes.join(' ')}`);
+        return !filtro || texto.includes(filtro);
+      });
+
+      contador.textContent = filtro
+        ? `${filtradas.length} de ${RECETAS_CHILENAS.length}`
+        : `${RECETAS_CHILENAS.length} recetas`;
+      contador.title = filtro ? `${filtradas.length} recetas coinciden con tu búsqueda` : `${RECETAS_CHILENAS.length} recetas chilenas disponibles`;
+      if (btnClear) btnClear.style.display = filtro ? 'block' : 'none';
+
+      if (!filtradas.length) {
+        grid.innerHTML = '<div class="recipe-empty">🔎 No encontré recetas con esa búsqueda. Prueba con otro plato o ingrediente.</div>';
+        return;
+      }
+
+      grid.innerHTML = filtradas.map(r => `
+        <div class="recipe-item-card" role="button" tabindex="0" onclick="cargarIngredientesReceta('${r.key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); cargarIngredientesReceta('${r.key}');}">
+          <div style="font-size: 2rem;">${r.icono}</div>
+          <h4>${escapeHtml(r.nombre)}</h4>
+          <p>${escapeHtml(r.tipo)} · ${r.ingredientes.length} ingredientes</p>
+        </div>`).join('');
+    }
+
+    function filtrarRecetasChilenas() {
+      renderizarRecetasChilenas();
+    }
+
+    function limpiarBusquedaRecetas() {
+      const input = document.getElementById('buscarRecetaInput');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      renderizarRecetasChilenas();
+    }
+
     function abrirModalRecetas() {
       vibrarConfirmacion();
 
@@ -3334,12 +3649,13 @@
         const option = document.createElement('option');
         option.value = l.id;
         option.textContent = `${l.nombre} (${(l.items || []).length} items)`;
-        if (String(l.id) === String(idListaActiva)) {
-          option.selected = true;
-        }
+        if (String(l.id) === String(idListaActiva)) option.selected = true;
         select.appendChild(option);
       });
 
+      const inputBusqueda = document.getElementById('buscarRecetaInput');
+      if (inputBusqueda) inputBusqueda.value = '';
+      renderizarRecetasChilenas();
       document.getElementById('recetasOverlay').classList.add('active');
     }
 
@@ -3349,49 +3665,46 @@
 
     function cargarIngredientesReceta(recetaKey) {
       vibrarConfirmacion();
-      
+
       const selectDestino = document.getElementById('selectListaDestinoReceta');
       const targetId = selectDestino ? selectDestino.value : idListaActiva;
-
       const lista = coleccionListas.find(l => String(l.id) === String(targetId));
       if (!lista) {
         mostrarToast("⚠️ Ocurrió un error al seleccionar la lista");
         return;
       }
 
-      const recetas = {
-        cazuela: ["1kg Vacuno", "Papas 1kg", "Zapallo", "Choclo", "Zanahoria", "Porotos verdes", "Arroz", "Cilantro"],
-        pastel: ["Choclo molido", "Carne molida", "Pechuga de pollo", "Cebolla", "Huevos", "Aceitunas", "Pasas", "Albahaca"],
-        porotos: ["Porotos hallados", "Tallarines", "Zapallo", "Cebolla", "Ajo", "Longaniza", "Ají color"],
-        carbonada: ["Carne de vacuno en cubos", "Papas 1kg", "Zapallo", "Zanahoria", "Choclo", "Porotos verdes", "Arroz", "Ajo y Cebolla"],
-        charquican: ["Carne molida", "Papas 1kg", "Zapallo", "Choclo", "Porotos verdes", "Cebolla", "Huevos"],
-        pebre: ["Tomates 1kg", "Cebolla", "Cilantro fresco", "Ají verde", "Ajo", "Aceite", "Vinagre"],
-        pantrucas: ["Harina 1kg", "Agua tibia", "Carne molida", "Cebolla", "Zanahoria", "Papas", "Huevo", "Caldo de carne", "Cilantro"],
-        completo: ["Vienesas", "Pan de completo", "Paltas", "Tomates 1kg", "Mayonesa"],
-        empanadas: ["Harina 1kg", "Manteca", "Carne picada 1kg", "Cebolla 1kg", "Huevos", "Aceitunas", "Pasas"],
-        sopaipillas: ["Zapallo", "Harina 1kg", "Manteca", "Chancaca", "Cáscara de naranja", "Clavo de olor", "Maicena"]
-      };
+      const receta = RECETAS_CHILENAS.find(r => r.key === recetaKey);
+      if (!receta) {
+        mostrarToast('⚠️ Receta no encontrada');
+        return;
+      }
 
-      const ingredientes = recetas[recetaKey] || [];
       if (!lista.items) lista.items = [];
+      let agregados = 0;
+      let repetidos = 0;
 
-      ingredientes.forEach(ing => {
+      receta.ingredientes.forEach(ing => {
         const normalizado = ing.toLowerCase().trim();
         const existente = lista.items.find(i => i.texto.toLowerCase().trim() === normalizado);
 
         if (existente) {
           existente.cantidad += 1;
+          repetidos++;
         } else {
           const catInfo = clasificarProducto(ing);
+          const precioMemoria = obtenerUltimoPrecio(normalizado) || 0;
           lista.items.push({
-            id: Date.now() + Math.random(),
+            id: Date.now() * 1000 + Math.floor(Math.random() * 1000),
             texto: ing,
             cantidad: 1,
-            precio: obtenerUltimoPrecio(normalizado) || 0,
+            precio: precioMemoria,
             categoriaId: catInfo.id,
             icono: catInfo.icono,
-            comprado: false
+            comprado: false,
+            precioOrigen: precioMemoria > 0 ? 'estimado' : 'sin-precio'
           });
+          agregados++;
         }
       });
 
@@ -3399,9 +3712,8 @@
       guardarStorage();
       sincronizarConFirebase();
       cerrarModalRecetas();
-      
       verSeccion('lista-activa');
-      mostrarToast(`🍳 Ingredientes agregados a "${lista.nombre}"`);
+      mostrarToast(`${receta.icono} ${receta.nombre}: ${agregados} ingrediente${agregados===1?'':'s'} agregado${agregados===1?'':'s'}${repetidos ? ` · ${repetidos} ya estaba${repetidos===1?'':'n'} en la lista` : ''}`);
     }
 
     function generarCodigoUnico() {
@@ -3582,6 +3894,8 @@
       document.getElementById('tutBadge').textContent = `Paso ${pasoActualTutorial + 1} de ${pasosTutorialData.length}`;
       document.getElementById('tutTitle').textContent = data.title;
       document.getElementById('tutDesc').textContent = data.desc;
+      const tutTip = document.getElementById('tutTip');
+      if (tutTip) { tutTip.textContent = data.tip || ''; tutTip.style.display = data.tip ? 'block' : 'none'; }
 
       const btnPrev = document.getElementById('btnTutPrev');
       const btnNext = document.getElementById('btnTutNext');
@@ -3619,6 +3933,14 @@
       navInicio.classList.remove('active');
       navMisListas.classList.remove('active');
       navListaActiva.classList.remove('active');
+
+      if (seccion !== 'lista-activa') {
+        if (dbListenerRef) {
+          try { dbListenerRef.off(); } catch(e) {}
+          dbListenerRef = null;
+        }
+        limpiarPresenciaLista();
+      }
 
       if (seccion === 'portada') {
         secPortada.style.display = 'block';
@@ -3726,7 +4048,15 @@
 
     function guardarOrdenCategorias() {
       const ordenIds = CATEGORIAS.map(c => c.id);
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if(lista){ lista.ui={...(lista.ui||{}),categoryOrder:ordenIds}; guardarStorage(); }
       localStorage.setItem('ordenPasillos_v1', JSON.stringify(ordenIds));
+    }
+
+    function aplicarOrdenCategoriasLista(lista) {
+      let orden = lista?.ui?.categoryOrder;
+      if(!Array.isArray(orden)){ try{orden=JSON.parse(localStorage.getItem('ordenPasillos_v1')||'[]');}catch(e){orden=[];} }
+      if(Array.isArray(orden)&&orden.length){ CATEGORIAS.sort((a,b)=>{const ia=orden.indexOf(a.id),ib=orden.indexOf(b.id); return (ia<0?999:ia)-(ib<0?999:ib);}); }
     }
 
     function cargarOrdenCategorias() {
@@ -3744,9 +4074,11 @@
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista || !lista.items || lista.items.length === 0) return;
 
-      lista.items.forEach(i => i.comprado = false);
+      lista.items.forEach(i => {
+        i.comprado = false;
+        sincronizarProductoFirebase(i);
+      });
       guardarStorage();
-      sincronizarConFirebase();
       renderizarProductos();
       mostrarToast("🔄 Lista desmarcada para una nueva compra");
     }
@@ -3766,7 +4098,7 @@
 
       lista.items = lista.items.filter(i => !i.comprado);
       guardarStorage();
-      sincronizarConFirebase();
+      comprados.forEach(i => eliminarProductoFirebase(i.id));
       renderizarProductos();
 
       mostrarToast(`🧹 ${comprados.length} comprados eliminados`, true, () => {
@@ -3774,28 +4106,143 @@
         if (actual) {
           actual.items = copiaItemsPrevios;
           guardarStorage();
-          sincronizarConFirebase();
+          comprados.forEach(i => sincronizarProductoFirebase(i));
           renderizarProductos();
           mostrarToast(`↩️ Eliminación de comprados deshecha`);
         }
       });
     }
 
-    // SINCRONIZACIÓN FIREBASE ULTRA-SEGURA (SIN BORRADOS ACCIDENTALES)
+    // SINCRONIZACIÓN FIREBASE POR PRODUCTO + PRESENCIA EN VIVO
+
+    function cargarColaSincronizacion() {
+      try { colaSyncPendiente = JSON.parse(localStorage.getItem('colaSync_v1') || '{}') || {}; } catch(e){ colaSyncPendiente = {}; }
+    }
+    function guardarColaSincronizacion() { try { localStorage.setItem('colaSync_v1', JSON.stringify(colaSyncPendiente)); } catch(e){} }
+    function encolarSync(tipo, listaId, itemId, data=null) {
+      if(!listaId) return;
+      const key = `${listaId}__${tipo}__${itemId ?? 'meta'}`;
+      colaSyncPendiente[key] = { tipo, listaId:String(listaId), itemId:itemId ?? null, data, ts:Date.now() };
+      guardarColaSincronizacion();
+    }
+    async function vaciarColaSincronizacion() {
+      if(!navigator.onLine) return;
+      cargarColaSincronizacion();
+      const ops = Object.entries(colaSyncPendiente).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
+      for(const [key,op] of ops) {
+        try {
+          if(op.tipo==='set-item') await db.ref(`listas/${op.listaId}/items/${firebaseItemKey(op.itemId)}`).set(op.data);
+          else if(op.tipo==='delete-item') await db.ref(`listas/${op.listaId}/items/${firebaseItemKey(op.itemId)}`).remove();
+          else if(op.tipo==='meta') await db.ref(`listas/${op.listaId}`).update(op.data||{});
+          delete colaSyncPendiente[key];
+        } catch(e) { break; }
+      }
+      guardarColaSincronizacion();
+    }
+
+    function firebaseItemKey(id) {
+      return String(id).replace(/[.#$\[\]\/]/g, '_');
+    }
+
+    function itemsAObjetoFirebase(items) {
+      const obj = {};
+      (items || []).forEach(item => {
+        if (!item || item.id === undefined || item.id === null) return;
+        obj[firebaseItemKey(item.id)] = item;
+      });
+      return obj;
+    }
+
+    function itemsDesdeFirebase(raw) {
+      if (!raw) return [];
+      if (Array.isArray(raw)) return raw.filter(Boolean);
+      if (typeof raw === 'object') return Object.values(raw).filter(Boolean);
+      return [];
+    }
+
+    function sincronizarProductoFirebase(item) {
+      if (!idListaActiva || !item) return;
+      if (!navigator.onLine) { encolarSync('set-item', idListaActiva, item.id, item); return; }
+      return db.ref(`listas/${idListaActiva}/items/${firebaseItemKey(item.id)}`).set(item).catch(() => encolarSync('set-item', idListaActiva, item.id, item));
+    }
+
+    function eliminarProductoFirebase(itemId) {
+      if (!idListaActiva || itemId === undefined || itemId === null) return;
+      if (!navigator.onLine) { encolarSync('delete-item', idListaActiva, itemId); return; }
+      return db.ref(`listas/${idListaActiva}/items/${firebaseItemKey(itemId)}`).remove().catch(() => encolarSync('delete-item', idListaActiva, itemId));
+    }
+
+    function sincronizarMetaListaFirebase(lista) {
+      if (!lista || !lista.id) return;
+      const meta={nombre:lista.nombre,presupuesto:obtenerPresupuestoLista(lista)};
+      if(!navigator.onLine){encolarSync('meta',lista.id,null,meta);return;}
+      return db.ref('listas/' + lista.id).update(meta).catch(()=>encolarSync('meta',lista.id,null,meta));
+    }
+
+    function limpiarPresenciaLista() {
+      if (presenceRef) {
+        try { presenceRef.off(); } catch(e) {}
+      }
+      presenceRef = null;
+      if (myPresenceRef) {
+        try { myPresenceRef.remove(); } catch(e) {}
+      }
+      myPresenceRef = null;
+      listaIdSuscrito = null;
+      ['badgeUsuariosVivo', 'badgeUsuariosLista'].forEach(id => {
+        const badge = document.getElementById(id);
+        if (badge) {
+          badge.classList.remove('active-live');
+          badge.style.display = 'none';
+        }
+      });
+    }
+
+    function activarPresenciaLista(listaId) {
+      if (!listaId || !navigator.onLine) return;
+      if (String(listaIdSuscrito) === String(listaId) && presenceRef && myPresenceRef) return;
+
+      limpiarPresenciaLista();
+      listaIdSuscrito = String(listaId);
+      const ruta = `listas/${listaId}/presencia`;
+      presenceRef = db.ref(ruta);
+      myPresenceRef = db.ref(`${ruta}/${presenceSessionId}`);
+
+      myPresenceRef.set({ conectadoEn: firebase.database.ServerValue.TIMESTAMP });
+      try { myPresenceRef.onDisconnect().remove(); } catch(e) {}
+
+      presenceRef.on('value', snapshot => {
+        const datos = snapshot.val() || {};
+        const cantidad = Object.keys(datos).length;
+        ['badgeUsuariosVivo', 'badgeUsuariosLista'].forEach(id => {
+          const badge = document.getElementById(id);
+          if (!badge) return;
+          if (cantidad > 0) {
+            badge.textContent = `👥 ${cantidad} en vivo`;
+            badge.style.display = 'inline-flex';
+            badge.classList.add('active-live');
+            badge.title = `${cantidad} persona${cantidad === 1 ? '' : 's'} usando esta misma lista ahora`;
+          } else {
+            badge.classList.remove('active-live');
+            badge.style.display = 'none';
+          }
+        });
+      });
+    }
+
     function escucharSincronizacionFirebase(listaId) {
       if (!listaId) return;
       if (dbListenerRef) dbListenerRef.off();
 
+      activarPresenciaLista(listaId);
       dbListenerRef = db.ref('listas/' + listaId);
       dbListenerRef.on('value', (snapshot) => {
         const datosNube = snapshot.val();
-        
-        // Sincroniza también una lista realmente vacía. En Firebase, un array vacío puede volver como null/ausente.
         if (datosNube && datosNube.nombre) {
           let listaLocal = coleccionListas.find(l => String(l.id) === String(listaId));
-          const itemsNube = Array.isArray(datosNube.items) ? datosNube.items : [];
+          const itemsNube = itemsDesdeFirebase(datosNube.items);
           if (!listaLocal) {
-            listaLocal = { id: listaId, nombre: datosNube.nombre || "Mi Lista", items: itemsNube, presupuesto: Number(datosNube.presupuesto) || 0 };
+            listaLocal = { id: listaId, nombre: datosNube.nombre || 'Mi Lista', items: itemsNube, presupuesto: Number(datosNube.presupuesto) || 0 };
             coleccionListas.push(listaLocal);
           } else {
             listaLocal.nombre = datosNube.nombre || listaLocal.nombre;
@@ -3803,22 +4250,30 @@
             listaLocal.presupuesto = Number(datosNube.presupuesto) || 0;
           }
           guardarStorage();
-          if (String(idListaActiva) === String(listaId)) {
-            renderizarProductos();
-          }
+          if (String(idListaActiva) === String(listaId)) renderizarProductos();
         }
       });
     }
 
+    // Sincronización completa: se reserva para acciones masivas (recetas, IA, reutilizar, etc.).
+    // Las ediciones normales usan sincronización por producto para evitar que dos usuarios se pisen.
     function sincronizarConFirebase() {
-      if (!idListaActiva || !navigator.onLine) return;
+      if (!idListaActiva) return;
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista && lista.id) {
-        db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
-        db.ref('listas/' + lista.id + '/items').set(lista.items || []);
-        db.ref('listas/' + lista.id + '/presupuesto').set(obtenerPresupuestoLista(lista));
+      if (!lista || !lista.id) return;
+      if(!navigator.onLine){
+        encolarSync('meta', lista.id, null, {nombre:lista.nombre,presupuesto:obtenerPresupuestoLista(lista)});
+        (lista.items||[]).forEach(i=>encolarSync('set-item',lista.id,i.id,i));
+        return;
       }
+      db.ref('listas/' + lista.id).update({nombre:lista.nombre,presupuesto:obtenerPresupuestoLista(lista),items:itemsAObjetoFirebase(lista.items || [])});
     }
+
+    window.addEventListener('beforeunload', () => {
+      if (myPresenceRef) {
+        try { myPresenceRef.remove(); } catch(e) {}
+      }
+    });
 
     async function compartirListaActiva() {
       vibrarConfirmacion();
@@ -3829,7 +4284,7 @@
 
       try {
         await db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
-        await db.ref('listas/' + lista.id + '/items').set(lista.items || []);
+        await db.ref('listas/' + lista.id + '/items').set(itemsAObjetoFirebase(lista.items || []));
         await db.ref('listas/' + lista.id + '/presupuesto').set(obtenerPresupuestoLista(lista));
 
         const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
@@ -3881,10 +4336,10 @@
         if (datos) {
           let local = coleccionListas.find(l => String(l.id) === String(codigo));
           if (!local) {
-            coleccionListas.push({ id: codigo, nombre: datos.nombre, items: datos.items || [], presupuesto: Number(datos.presupuesto) || 0 });
+            coleccionListas.push({ id: codigo, nombre: datos.nombre, items: itemsDesdeFirebase(datos.items), presupuesto: Number(datos.presupuesto) || 0, ui:{filter:'pendientes',focus:false} });
           } else {
             local.nombre = datos.nombre;
-            local.items = datos.items || [];
+            local.items = itemsDesdeFirebase(datos.items);
             local.presupuesto = Number(datos.presupuesto) || 0;
           }
           guardarStorage();
@@ -3975,14 +4430,24 @@
     function abrirLista(id) {
       vibrarConfirmacion();
       idListaActiva = id;
+      const lista = coleccionListas.find(l => String(l.id) === String(id));
+      aplicarOrdenCategoriasLista(lista);
+      filtroProductos = lista?.ui?.filter || 'pendientes';
+      modoFocusActivo = !!lista?.ui?.focus;
+      localStorage.setItem('ultimaListaActiva_v1', String(id));
       verSeccion('lista-activa');
+      document.getElementById('subTabPendientes')?.classList.toggle('active', filtroProductos === 'pendientes');
+      document.getElementById('subTabComprados')?.classList.toggle('active', filtroProductos === 'comprados');
+      const app=document.getElementById('appContainer'), btn=document.getElementById('btnToggleFocus');
+      app?.classList.toggle('focus-mode-active', modoFocusActivo); if(btn) btn.textContent = modoFocusActivo ? '🎯 Salir Focus' : '🎯 Modo Focus';
     }
 
-    function eliminarLista(e, id) {
-      e.stopPropagation();
-      vibrarConfirmacion();
-      const index = coleccionListas.findIndex(l => String(l.id) === String(id));
-      if (index === -1) return;
+    async function eliminarLista(e, id) {
+      e.stopPropagation(); vibrarConfirmacion();
+      const index = coleccionListas.findIndex(l => String(l.id) === String(id)); if (index === -1) return;
+      const objetivo = coleccionListas[index];
+      const resp = await abrirDialogoApp({icon:'🗑️',title:'Eliminar lista',message:`¿Quieres eliminar <strong>${escapeHtml(objetivo.nombre)}</strong> de este dispositivo?`,helperText:'Podrás deshacer inmediatamente desde el aviso inferior.',confirmText:'Eliminar',cancelText:'Cancelar',danger:true});
+      if(!resp.confirmed) return;
       const eliminada = JSON.parse(JSON.stringify(coleccionListas[index]));
       coleccionListas.splice(index, 1);
       if (String(idListaActiva) === String(id)) idListaActiva = null;
@@ -4062,19 +4527,23 @@
           if (precio > 0) guardarPrecioEnMemoria(texto, precio);
           const catInfo = clasificarProducto(texto);
           lista.items.push({
-            id: Date.now() + Math.random(),
+            id: Date.now() * 1000 + Math.floor(Math.random() * 1000),
             texto: texto,
             cantidad: cantidadAAgregar,
             precio: precio,
             categoriaId: catInfo.id,
             icono: catInfo.icono,
-            comprado: false
+            comprado: false,
+            precioOrigen: precio > 0 ? 'real' : 'sin-precio'
           });
+          registrarUsoProducto(texto, 1);
           mostrarToast(`➕ "${texto}" agregado a la lista`);
         }
 
         guardarStorage();
-        sincronizarConFirebase();
+        const recienAgregado = lista.items[lista.items.length - 1];
+        sincronizarProductoFirebase(recienAgregado);
+        sincronizarMetaListaFirebase(lista);
         renderizarProductos();
         input.value = "";
         qtyInput.value = "1";
@@ -4094,7 +4563,7 @@
         }
 
         guardarStorage();
-        sincronizarConFirebase();
+        sincronizarProductoFirebase(productoExistente);
         renderizarProductos();
 
         mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
@@ -4144,7 +4613,7 @@
         prod.icono = catInfo.icono;
 
         guardarStorage();
-        sincronizarConFirebase();
+        sincronizarProductoFirebase(prod);
         renderizarProductos();
         mostrarToast('✏️ Producto actualizado');
       }
@@ -4153,32 +4622,25 @@
     function cambiarEstadoProducto(prodId) {
       vibrarConfirmacion();
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-      if (lista && lista.items) {
-        const prod = lista.items.find(i => i.id === prodId);
-        if (prod) {
-          prod.comprado = !prod.comprado;
-          guardarStorage();
-          sincronizarConFirebase();
-          renderizarProductos();
-
-          const accionTxt = prod.comprado ? 'comprado' : 'pendiente';
-          const iconoTxt = prod.comprado ? '✅' : '▫️';
-
-          mostrarToast(`${iconoTxt} "${prod.texto}" marcado como ${accionTxt}`, true, () => {
-            const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
-            if (actual && actual.items) {
-              const itemRevertir = actual.items.find(i => i.id === prodId);
-              if (itemRevertir) {
-                itemRevertir.comprado = !itemRevertir.comprado;
-                guardarStorage();
-                sincronizarConFirebase();
-                renderizarProductos();
-                mostrarToast(`↩️ Cambio en "${itemRevertir.texto}" deshecho`);
-              }
-            }
-          });
-        }
-      }
+      if (!lista?.items) return;
+      const prod = lista.items.find(i => i.id === prodId); if(!prod) return;
+      const estadoAnterior = !!prod.comprado;
+      const nuevoEstado = !estadoAnterior;
+      const finalizar = () => {
+        prod.comprado = nuevoEstado;
+        if (nuevoEstado) registrarUsoProducto(prod.texto, 2);
+        guardarStorage(); sincronizarProductoFirebase(prod); renderizarProductos();
+        if (nuevoEstado) guardarCompraEnHistorial(lista);
+        const accionTxt = nuevoEstado ? 'comprado' : 'pendiente';
+        const iconoTxt = nuevoEstado ? '✅' : '▫️';
+        mostrarToast(`${iconoTxt} "${prod.texto}" marcado como ${accionTxt}`, true, () => {
+          const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+          const itemRevertir = actual?.items?.find(i => i.id === prodId);
+          if(itemRevertir){ itemRevertir.comprado = estadoAnterior; guardarStorage(); sincronizarProductoFirebase(itemRevertir); renderizarProductos(); mostrarToast(`↩️ Cambio en "${itemRevertir.texto}" deshecho`); }
+        });
+      };
+      const el=document.querySelector(`li[data-item-id="${prodId}"]`);
+      if(nuevoEstado && el && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.classList.add('item-buying');setTimeout(finalizar,270);} else finalizar();
     }
 
     function cambiarCantidadProducto(prodId, cambio) {
@@ -4189,7 +4651,7 @@
         if (prod) {
           prod.cantidad = Math.max(1, prod.cantidad + cambio);
           guardarStorage();
-          sincronizarConFirebase();
+          sincronizarProductoFirebase(prod);
           renderizarProductos();
         }
       }
@@ -4202,11 +4664,12 @@
         if (prod) {
           const valorValido = Math.max(0, Math.round(parseFloat(nuevoPrecio) || 0));
           prod.precio = valorValido;
+          prod.precioOrigen = valorValido > 0 ? 'real' : 'sin-precio';
           if (valorValido > 0) {
             guardarPrecioEnMemoria(prod.texto, valorValido);
           }
           guardarStorage();
-          sincronizarConFirebase();
+          sincronizarProductoFirebase(prod);
           renderizarProductos();
         }
       }
@@ -4222,7 +4685,7 @@
 
           lista.items.splice(prodIndex, 1);
           guardarStorage();
-          sincronizarConFirebase();
+          eliminarProductoFirebase(itemEliminado.id);
           renderizarProductos();
 
           mostrarToast(`🗑️ "${itemEliminado.texto}" borrado`, true, () => {
@@ -4230,7 +4693,7 @@
             if (actual && actual.items) {
               actual.items.splice(prodIndex, 0, itemEliminado);
               guardarStorage();
-              sincronizarConFirebase();
+              sincronizarProductoFirebase(itemEliminado);
               renderizarProductos();
               mostrarToast(`↩️ "${itemEliminado.texto}" restaurado`);
             }
@@ -4242,6 +4705,9 @@
     function cambiarFiltro(filtro) {
       vibrarConfirmacion();
       filtroProductos = filtro;
+      const listaEstado = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (listaEstado) { listaEstado.ui = { ...(listaEstado.ui||{}), filter: filtro }; guardarStorage(); }
+      localStorage.setItem('filtroProductos_v1', filtro);
       document.getElementById('subTabPendientes').classList.toggle('active', filtro === 'pendientes');
       document.getElementById('subTabComprados').classList.toggle('active', filtro === 'comprados');
       renderizarProductos();
@@ -4287,7 +4753,7 @@
       });
 
       document.getElementById('valGastado').textContent = formatoCLP.format(gastado);
-      document.getElementById('valTotal').textContent = formatoCLP.format(total);
+      document.getElementById('valTotal').textContent = formatoCLP.format(productosEstimados > 0 ? estimadoConMemoria : total);
 
       const boxEstimacion = document.getElementById('estimacionMemoriaBox');
       if (boxEstimacion) {
@@ -4313,7 +4779,15 @@
         valDisponible.style.color = limitePresupuesto > 0 && basePresupuesto > limitePresupuesto ? 'var(--danger)' : '';
       }
 
-      const referenciaLimite = productosEstimados > 0 ? estimadoConMemoria : gastado;
+      const referenciaLimite = productosEstimados > 0 ? estimadoConMemoria : (total > 0 ? total : gastado);
+      const budgetMsg = document.getElementById('budgetStatusMessage');
+      if (budgetMsg) {
+        if (limitePresupuesto > 0) {
+          const diferencia = limitePresupuesto - referenciaLimite;
+          budgetMsg.style.display = 'block'; budgetMsg.className = 'budget-status-message ' + (diferencia >= 0 ? 'good' : 'warn');
+          budgetMsg.textContent = diferencia >= 0 ? `💰 Te quedan ${formatoCLP.format(diferencia)} de tu tope` : `⚠️ Vas ${formatoCLP.format(Math.abs(diferencia))} sobre tu tope${productosEstimados ? ' según la estimación actual' : ''}`;
+        } else { budgetMsg.style.display='none'; budgetMsg.textContent=''; }
+      }
       if (limitePresupuesto > 0 && referenciaLimite > limitePresupuesto) {
         panelProgreso.classList.add('exceeded');
         fillProgreso.classList.add('exceeded');
@@ -4337,11 +4811,14 @@
         return;
       }
       let completados = 0;
+      const modificados = [];
       lista.items.forEach(item => {
         if (!(Number(item.precio) > 0)) {
           const recordado = obtenerUltimoPrecio(item.texto);
           if (recordado > 0) {
             item.precio = recordado;
+            item.precioOrigen = 'estimado';
+            modificados.push(item);
             completados++;
           }
         }
@@ -4351,7 +4828,7 @@
         return;
       }
       guardarStorage();
-      sincronizarConFirebase();
+      modificados.forEach(i => sincronizarProductoFirebase(i));
       renderizarProductos();
       mostrarToast(`🧠 ${completados} precio${completados === 1 ? '' : 's'} completado${completados === 1 ? '' : 's'} desde tu memoria`);
     }
@@ -4407,6 +4884,7 @@
 
           itemsDeCat.forEach(item => {
             const li = document.createElement('li');
+            li.dataset.itemId = String(item.id);
             const subtotal = item.cantidad * (item.precio || 0);
 
             let botonAccionPrincipal = '';
@@ -4430,7 +4908,7 @@
                   <div class="item-name-row">
                     <span class="item-name">${escapeHtml(item.texto)}</span>
                   </div>
-                  <div class="item-price-status">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}</div>
+                  <div class="item-price-status">${subtotal > 0 ? `Subtotal: ${formatoCLP.format(subtotal)}` : 'Sin precio'}${item.precio > 0 ? (item.precioOrigen === 'estimado' ? '<span class="estimated-price-tag">Estimado</span>' : '<span class="real-price-tag">Real</span>') : ''}</div>
                   ${(() => {
                     const mem = obtenerRegistroPrecio(item.texto);
                     if (!mem || !Number(mem.ultimoPrecio)) return '';
@@ -4440,13 +4918,13 @@
                 </div>
                 
                 <div class="item-controls-right">
-                  <input type="number" class="inline-price" value="${item.precio || ''}" placeholder="$ CLP" 
-                         onchange="actualizarPrecioProducto(${item.id}, this.value)" title="Precio CLP">
+                  <input type="number" class="inline-price ${item.precioOrigen === 'estimado' ? 'price-estimated' : ''}" value="${item.precio || ''}" placeholder="$ CLP" 
+                         onchange="actualizarPrecioProducto(${item.id}, this.value)" title="Precio CLP" aria-label="Precio de ${escapeHtml(item.texto)} en pesos chilenos">
 
                   <div class="qty-controls">
-                    <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, -1)">-</button>
+                    <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, -1)" aria-label="Restar una unidad a ${escapeHtml(item.texto)}">-</button>
                     <span style="font-size:0.85rem; font-weight:800; width:18px; text-align:center;">${item.cantidad}</span>
-                    <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, 1)">+</button>
+                    <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, 1)" aria-label="Sumar una unidad a ${escapeHtml(item.texto)}">+</button>
                   </div>
 
                   <button class="btn-action-icon" onclick="editarProducto(${item.id})" title="Editar producto">✏️</button>
@@ -4510,6 +4988,8 @@
       cargarStorage();
       cargarOrdenCategorias();
       cargarMemoriaPrecios();
+      cargarInteligenciaLocal();
+      cargarColaSincronizacion();
       procesarListaRecibidaPorURL();
       actualizarEstadoRed();
 
