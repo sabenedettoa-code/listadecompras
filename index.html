@@ -1510,7 +1510,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.3 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.4 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1793,7 +1793,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.3</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.4</span>
         </div>
       </div>
 
@@ -1831,7 +1831,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.3</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.4</span>
         </div>
       </div>
 
@@ -2151,7 +2151,7 @@
       <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
         🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
         👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 5.3 (Agosto 2026)
+        📌 <strong>Versión Actual:</strong> 5.4 (Agosto 2026)
       </div>
 
       <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
@@ -2198,6 +2198,7 @@
       <ul class="privacy-list">
         <li><strong>Sin registro obligatorio:</strong> La app no te pide crear una cuenta con nombre, correo o teléfono para usar tus listas.</li>
         <li><strong>Almacenamiento local:</strong> Tus listas se guardan en el almacenamiento de este dispositivo para que puedas seguir usándolas incluso sin conexión.</li>
+        <li><strong>Estadísticas personales:</strong> La app registra localmente datos agregados de uso —como productos comprados, cantidades, precios, recetas e historial— para habilitar futuros resúmenes anuales. Estas estadísticas permanecen en este dispositivo y no se envían a Firebase.</li>
         <li><strong>Listas compartidas:</strong> Cuando compartes o te unes a una lista mediante un código, esa lista se sincroniza a través de Firebase para que pueda actualizarse entre dispositivos.</li>
         <li><strong>Micrófono y cámara:</strong> Solo se solicitan cuando usas funciones que los necesitan, como dictado, escáner de códigos o análisis de una imagen.</li>
         <li><strong>ListAI e imágenes:</strong> Cuando utilizas ListAI, el texto o la imagen que adjuntas se envía al servicio necesario para procesar tu solicitud.</li>
@@ -2371,6 +2372,8 @@
     let targetIdIAPendiente = null;
     let estadisticasFrecuencia = {};
     let historialCompras = [];
+    let estadisticasAnualesLocal = { version: 1, inicioRegistro: null, anios: {} };
+    const tokensCompraSesion = new Map();
     let compraCompletadaRegistrada = new Set();
     let colaSyncPendiente = {};
 
@@ -3082,9 +3085,156 @@
 
 
     function normalizarClaveFrecuente(texto) { return String(texto||'').toLowerCase().trim(); }
+
+    function estructuraAnioEstadisticas() {
+      return {
+        productos: {},
+        meses: {},
+        recetas: {},
+        comprasCompletadas: { cantidad: 0, total: 0, productos: 0, mayorTotal: 0, mayorNombre: '' },
+        colaboracion: { maxPersonas: 1, listaMax: '', maxPorLista: {} },
+        totales: { marcasCompra: 0, unidades: 0, gastoReal: 0, gastoEstimado: 0 }
+      };
+    }
+
+    function cargarEstadisticasAnuales() {
+      try {
+        const guardadas = JSON.parse(localStorage.getItem('estadisticasAnuales_v1') || 'null');
+        if (guardadas && typeof guardadas === 'object') estadisticasAnualesLocal = guardadas;
+      } catch(e) {}
+      if (!estadisticasAnualesLocal || typeof estadisticasAnualesLocal !== 'object') {
+        estadisticasAnualesLocal = { version: 1, inicioRegistro: null, anios: {} };
+      }
+      estadisticasAnualesLocal.version = 1;
+      estadisticasAnualesLocal.anios = estadisticasAnualesLocal.anios || {};
+      if (!estadisticasAnualesLocal.inicioRegistro) estadisticasAnualesLocal.inicioRegistro = Date.now();
+      guardarEstadisticasAnuales();
+    }
+
+    function guardarEstadisticasAnuales() {
+      try { localStorage.setItem('estadisticasAnuales_v1', JSON.stringify(estadisticasAnualesLocal)); } catch(e) {}
+    }
+
+    function obtenerAnioEstadisticas(fecha = Date.now()) {
+      const anio = String(new Date(fecha).getFullYear());
+      if (!estadisticasAnualesLocal.anios[anio]) estadisticasAnualesLocal.anios[anio] = estructuraAnioEstadisticas();
+      const obj = estadisticasAnualesLocal.anios[anio];
+      obj.productos = obj.productos || {};
+      obj.meses = obj.meses || {};
+      obj.recetas = obj.recetas || {};
+      obj.comprasCompletadas = obj.comprasCompletadas || { cantidad:0,total:0,productos:0,mayorTotal:0,mayorNombre:'' };
+      obj.colaboracion = obj.colaboracion || { maxPersonas:1,listaMax:'',maxPorLista:{} };
+      obj.colaboracion.maxPorLista = obj.colaboracion.maxPorLista || {};
+      obj.totales = obj.totales || { marcasCompra:0,unidades:0,gastoReal:0,gastoEstimado:0 };
+      return obj;
+    }
+
+    function registrarProductoEnEstadisticas(lista, prod) {
+      if (!lista || !prod) return null;
+      const ahora = Date.now();
+      const stats = obtenerAnioEstadisticas(ahora);
+      const key = normalizarClaveFrecuente(prod.texto);
+      if (!key) return null;
+      const cantidad = Math.max(1, Number(prod.cantidad) || 1);
+      const precio = Math.max(0, Number(prod.precio) || 0);
+      const gasto = cantidad * precio;
+      const esReal = prod.precioOrigen === 'real';
+      const mes = String(new Date(ahora).getMonth() + 1).padStart(2, '0');
+      const p = stats.productos[key] || {
+        nombre: String(prod.texto).trim(), compras: 0, unidades: 0,
+        gastoReal: 0, gastoEstimado: 0, primeraCompra: ahora, ultimaCompra: ahora,
+        categoriaId: prod.categoriaId || '', recetaOrigen: {}
+      };
+      p.nombre = String(prod.texto).trim();
+      p.compras += 1;
+      p.unidades += cantidad;
+      p.ultimaCompra = ahora;
+      p.primeraCompra = Math.min(Number(p.primeraCompra) || ahora, ahora);
+      p.categoriaId = prod.categoriaId || p.categoriaId || '';
+      if (esReal) p.gastoReal = (Number(p.gastoReal) || 0) + gasto;
+      else p.gastoEstimado = (Number(p.gastoEstimado) || 0) + gasto;
+      if (prod.origenReceta) {
+        p.recetaOrigen = p.recetaOrigen || {};
+        p.recetaOrigen[prod.origenReceta] = (Number(p.recetaOrigen[prod.origenReceta]) || 0) + 1;
+      }
+      stats.productos[key] = p;
+
+      const m = stats.meses[mes] || { marcasCompra:0, unidades:0, gastoReal:0, gastoEstimado:0 };
+      m.marcasCompra += 1; m.unidades += cantidad;
+      if (esReal) m.gastoReal += gasto; else m.gastoEstimado += gasto;
+      stats.meses[mes] = m;
+      stats.totales.marcasCompra += 1;
+      stats.totales.unidades += cantidad;
+      if (esReal) stats.totales.gastoReal += gasto; else stats.totales.gastoEstimado += gasto;
+
+      guardarEstadisticasAnuales();
+      return { anio:String(new Date(ahora).getFullYear()), mes, key, cantidad, gasto, esReal };
+    }
+
+    function revertirProductoEnEstadisticas(token) {
+      if (!token) return;
+      const stats = estadisticasAnualesLocal.anios?.[token.anio];
+      if (!stats) return;
+      const p = stats.productos?.[token.key];
+      if (p) {
+        p.compras = Math.max(0, (Number(p.compras)||0)-1);
+        p.unidades = Math.max(0, (Number(p.unidades)||0)-token.cantidad);
+        if (token.esReal) p.gastoReal = Math.max(0,(Number(p.gastoReal)||0)-token.gasto);
+        else p.gastoEstimado = Math.max(0,(Number(p.gastoEstimado)||0)-token.gasto);
+        if (p.compras === 0 && p.unidades === 0) delete stats.productos[token.key];
+      }
+      const m = stats.meses?.[token.mes];
+      if (m) {
+        m.marcasCompra=Math.max(0,(Number(m.marcasCompra)||0)-1);
+        m.unidades=Math.max(0,(Number(m.unidades)||0)-token.cantidad);
+        if(token.esReal) m.gastoReal=Math.max(0,(Number(m.gastoReal)||0)-token.gasto);
+        else m.gastoEstimado=Math.max(0,(Number(m.gastoEstimado)||0)-token.gasto);
+      }
+      stats.totales.marcasCompra=Math.max(0,(Number(stats.totales.marcasCompra)||0)-1);
+      stats.totales.unidades=Math.max(0,(Number(stats.totales.unidades)||0)-token.cantidad);
+      if(token.esReal) stats.totales.gastoReal=Math.max(0,(Number(stats.totales.gastoReal)||0)-token.gasto);
+      else stats.totales.gastoEstimado=Math.max(0,(Number(stats.totales.gastoEstimado)||0)-token.gasto);
+      guardarEstadisticasAnuales();
+    }
+
+    function registrarRecetaEnEstadisticas(receta) {
+      if (!receta) return;
+      const stats = obtenerAnioEstadisticas();
+      const r = stats.recetas[receta.key] || { nombre: receta.nombre, veces:0, ultima:0 };
+      r.nombre = receta.nombre; r.veces += 1; r.ultima = Date.now();
+      stats.recetas[receta.key] = r;
+      guardarEstadisticasAnuales();
+    }
+
+    function registrarCompraCompletadaEnEstadisticas(lista, total) {
+      if (!lista) return;
+      const stats = obtenerAnioEstadisticas();
+      const c = stats.comprasCompletadas;
+      c.cantidad += 1;
+      c.total += Math.max(0, Number(total)||0);
+      c.productos += Array.isArray(lista.items) ? lista.items.length : 0;
+      if ((Number(total)||0) > (Number(c.mayorTotal)||0)) { c.mayorTotal = Number(total)||0; c.mayorNombre = lista.nombre || 'Compra'; }
+      guardarEstadisticasAnuales();
+      (lista.items || []).forEach(i => tokensCompraSesion.delete(`${lista.id}:${i.id}`));
+    }
+
+    function registrarMaximoColaboracion(listaId, cantidad) {
+      if (!listaId || !cantidad) return;
+      const stats = obtenerAnioEstadisticas();
+      const actual = Number(stats.colaboracion.maxPorLista[listaId]) || 0;
+      if (cantidad > actual) stats.colaboracion.maxPorLista[listaId] = cantidad;
+      if (cantidad > (Number(stats.colaboracion.maxPersonas)||1)) {
+        stats.colaboracion.maxPersonas = cantidad;
+        const lista = coleccionListas.find(l => String(l.id) === String(listaId));
+        stats.colaboracion.listaMax = lista?.nombre || String(listaId);
+      }
+      guardarEstadisticasAnuales();
+    }
+
     function cargarInteligenciaLocal() {
       try { estadisticasFrecuencia = JSON.parse(localStorage.getItem('frecuentes_v1') || '{}') || {}; } catch(e){ estadisticasFrecuencia = {}; }
       try { historialCompras = JSON.parse(localStorage.getItem('historialCompras_v1') || '[]') || []; } catch(e){ historialCompras = []; }
+      cargarEstadisticasAnuales();
       actualizarSugerenciasFrecuentes();
     }
     function registrarUsoProducto(texto, peso=1) {
@@ -3130,6 +3280,7 @@
       historialCompras.unshift({id:'h_'+Date.now(),fecha:Date.now(),nombre:lista.nombre,total,items:JSON.parse(JSON.stringify(lista.items)).map(i=>({...i,comprado:false}))});
       historialCompras=historialCompras.slice(0,40);
       try{localStorage.setItem('historialCompras_v1',JSON.stringify(historialCompras));}catch(e){}
+      registrarCompraCompletadaEnEstadisticas(lista, total);
     }
     function abrirHistorialCompras(){
       const box=document.getElementById('historialComprasLista'); box.innerHTML='';
@@ -3690,6 +3841,8 @@
 
         if (existente) {
           existente.cantidad += 1;
+          existente.origenReceta = existente.origenReceta || receta.key;
+          existente.origenRecetaNombre = existente.origenRecetaNombre || receta.nombre;
           repetidos++;
         } else {
           const catInfo = clasificarProducto(ing);
@@ -3702,13 +3855,16 @@
             categoriaId: catInfo.id,
             icono: catInfo.icono,
             comprado: false,
-            precioOrigen: precioMemoria > 0 ? 'estimado' : 'sin-precio'
+            precioOrigen: precioMemoria > 0 ? 'estimado' : 'sin-precio',
+            origenReceta: receta.key,
+            origenRecetaNombre: receta.nombre
           });
           agregados++;
         }
       });
 
       idListaActiva = lista.id;
+      registrarRecetaEnEstadisticas(receta);
       guardarStorage();
       sincronizarConFirebase();
       cerrarModalRecetas();
@@ -4000,7 +4156,18 @@
         mostrarToast("⚠️ No hay listas para exportar");
         return;
       }
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(coleccionListas));
+      const respaldoCompleto = {
+        formato: 'mis-listas-compras-backup', version: 2, fecha: Date.now(),
+        listas: coleccionListas,
+        datosLocales: {
+          memoriaPrecios: memoriaPreciosLocal,
+          memoriaNombresCodigos,
+          frecuentes: estadisticasFrecuencia,
+          historialCompras,
+          estadisticasAnuales: estadisticasAnualesLocal
+        }
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(respaldoCompleto));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
       downloadAnchor.setAttribute("download", `mis_listas_compras_${Date.now()}.json`);
@@ -4021,10 +4188,24 @@
           const importadas = JSON.parse(evt.target.result);
           if (Array.isArray(importadas)) {
             coleccionListas = importadas;
-            guardarStorage();
-            renderizarListas();
-            mostrarToast("📂 Respaldo cargado correctamente");
+          } else if (importadas && Array.isArray(importadas.listas)) {
+            coleccionListas = importadas.listas;
+            const d = importadas.datosLocales || {};
+            if (d.memoriaPrecios && typeof d.memoriaPrecios === 'object') memoriaPreciosLocal = d.memoriaPrecios;
+            if (d.memoriaNombresCodigos && typeof d.memoriaNombresCodigos === 'object') memoriaNombresCodigos = d.memoriaNombresCodigos;
+            if (d.frecuentes && typeof d.frecuentes === 'object') estadisticasFrecuencia = d.frecuentes;
+            if (Array.isArray(d.historialCompras)) historialCompras = d.historialCompras;
+            if (d.estadisticasAnuales && typeof d.estadisticasAnuales === 'object') estadisticasAnualesLocal = d.estadisticasAnuales;
+            try { localStorage.setItem('memoriaPrecios_v2', JSON.stringify(memoriaPreciosLocal)); } catch(e){}
+            try { localStorage.setItem('memoriaNombresCodigos_v1', JSON.stringify(memoriaNombresCodigos)); } catch(e){}
+            try { localStorage.setItem('frecuentes_v1', JSON.stringify(estadisticasFrecuencia)); } catch(e){}
+            try { localStorage.setItem('historialCompras_v1', JSON.stringify(historialCompras)); } catch(e){}
+            guardarEstadisticasAnuales();
           } else { throw new Error(); }
+          guardarStorage();
+          actualizarSugerenciasFrecuentes();
+          renderizarListas();
+          mostrarToast("📂 Respaldo completo cargado correctamente");
         } catch (err) {
           mostrarToast("⚠️ Archivo de respaldo no válido");
         }
@@ -4214,6 +4395,7 @@
       presenceRef.on('value', snapshot => {
         const datos = snapshot.val() || {};
         const cantidad = Object.keys(datos).length;
+        registrarMaximoColaboracion(listaId, cantidad);
         ['badgeUsuariosVivo', 'badgeUsuariosLista'].forEach(id => {
           const badge = document.getElementById(id);
           if (!badge) return;
@@ -4626,9 +4808,18 @@
       const prod = lista.items.find(i => i.id === prodId); if(!prod) return;
       const estadoAnterior = !!prod.comprado;
       const nuevoEstado = !estadoAnterior;
+      const tokenKey = `${lista.id}:${prod.id}`;
+      let tokenEstadistica = null;
       const finalizar = () => {
         prod.comprado = nuevoEstado;
-        if (nuevoEstado) registrarUsoProducto(prod.texto, 2);
+        if (nuevoEstado) {
+          registrarUsoProducto(prod.texto, 2);
+          tokenEstadistica = registrarProductoEnEstadisticas(lista, prod);
+          if (tokenEstadistica) tokensCompraSesion.set(tokenKey, tokenEstadistica);
+        } else if (tokensCompraSesion.has(tokenKey)) {
+          revertirProductoEnEstadisticas(tokensCompraSesion.get(tokenKey));
+          tokensCompraSesion.delete(tokenKey);
+        }
         guardarStorage(); sincronizarProductoFirebase(prod); renderizarProductos();
         if (nuevoEstado) guardarCompraEnHistorial(lista);
         const accionTxt = nuevoEstado ? 'comprado' : 'pendiente';
@@ -4636,7 +4827,11 @@
         mostrarToast(`${iconoTxt} "${prod.texto}" marcado como ${accionTxt}`, true, () => {
           const actual = coleccionListas.find(l => String(l.id) === String(idListaActiva));
           const itemRevertir = actual?.items?.find(i => i.id === prodId);
-          if(itemRevertir){ itemRevertir.comprado = estadoAnterior; guardarStorage(); sincronizarProductoFirebase(itemRevertir); renderizarProductos(); mostrarToast(`↩️ Cambio en "${itemRevertir.texto}" deshecho`); }
+          if(itemRevertir){
+            itemRevertir.comprado = estadoAnterior;
+            if (nuevoEstado && tokenEstadistica) { revertirProductoEnEstadisticas(tokenEstadistica); tokensCompraSesion.delete(tokenKey); }
+            guardarStorage(); sincronizarProductoFirebase(itemRevertir); renderizarProductos(); mostrarToast(`↩️ Cambio en "${itemRevertir.texto}" deshecho`);
+          }
         });
       };
       const el=document.querySelector(`li[data-item-id="${prodId}"]`);
