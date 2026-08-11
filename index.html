@@ -1510,7 +1510,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.1 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1715,6 +1715,20 @@
       li.item-buying .product-list-item, .offline-banner.show { animation:none !important; }
     }
 
+  
+    .sidebar-section-title {
+      margin: 8px 2px 2px;
+      font-size: 0.7rem;
+      font-weight: 900;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .sidebar-section-title:first-of-type {
+      margin-top: 0;
+    }
+
   </style>
 </head>
 <body>
@@ -1740,20 +1754,24 @@
         <button class="btn-close-menu" onclick="toggleSidebar()" aria-label="Cerrar menú" title="Cerrar menú">✕</button>
       </div>
 
-      <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();">💡 Mantener Pantalla Encendida</button>
-      <button class="btn-sidebar-tool" onclick="abrirModalAcercaDe(); toggleSidebar();">ℹ️ Acerca de esta App</button>
-      <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
-      <button class="btn-sidebar-tool" onclick="abrirMemoriaPrecios(); toggleSidebar();">🧠 Memoria de Precios</button>
+      <div class="sidebar-section-title">Mis compras</div>
       <button class="btn-sidebar-tool" onclick="abrirFrecuentes(); toggleSidebar();">⭐ Productos Habituales</button>
       <button class="btn-sidebar-tool" onclick="abrirHistorialCompras(); toggleSidebar();">📅 Historial de Compras</button>
-      
-      <div class="compact-field" style="margin-top: 10px;">
-        <label style="font-size: 0.85rem; font-weight: 700;">Tamaño Letra:</label>
+      <button class="btn-sidebar-tool" onclick="abrirMemoriaPrecios(); toggleSidebar();">🧠 Memoria de Precios</button>
+
+      <div class="sidebar-section-title">Preferencias</div>
+      <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();">💡 Mantener Pantalla Encendida</button>
+      <div class="compact-field" style="margin-top: 2px;">
+        <label style="font-size: 0.85rem; font-weight: 700;">🔤 Tamaño de letra</label>
         <div style="display:flex; gap:6px; margin-left:auto;">
-          <button class="btn-qty" onclick="cambiarTamanoLetra(-0.15)" style="border:1px solid var(--border); border-radius:6px; width:32px; height:32px;">A-</button>
-          <button class="btn-qty" onclick="cambiarTamanoLetra(0.15)" style="border:1px solid var(--border); border-radius:6px; width:32px; height:32px;">A+</button>
+          <button class="btn-qty" onclick="cambiarTamanoLetra(-0.15)" aria-label="Disminuir tamaño de letra" style="border:1px solid var(--border); border-radius:6px; width:32px; height:32px;">A-</button>
+          <button class="btn-qty" onclick="cambiarTamanoLetra(0.15)" aria-label="Aumentar tamaño de letra" style="border:1px solid var(--border); border-radius:6px; width:32px; height:32px;">A+</button>
         </div>
       </div>
+
+      <div class="sidebar-section-title">Ayuda</div>
+      <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
+      <button class="btn-sidebar-tool" onclick="abrirModalAcercaDe(); toggleSidebar();">ℹ️ Acerca de esta App</button>
     </div>
 
     <button id="btnInstalarPWA" class="btn-sidebar-tool" onclick="instalarAplicacionPWA()" style="display:none; background:#10b981; color:white; margin:10px auto 0 auto; width: calc(100% - 24px); max-width: 576px; justify-content:center; align-items:center; text-align:center;">
@@ -1804,7 +1822,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.1</span>
         </div>
       </div>
 
@@ -1842,7 +1860,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.1</span>
         </div>
       </div>
 
