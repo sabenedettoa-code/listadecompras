@@ -1471,6 +1471,19 @@
   
 
 
+
+
+    body.dialogo-secundario-abierto .tutorial-overlay.active:not(#appDialogOverlay) .tutorial-card {
+      opacity: 0.38 !important;
+      transform: translateY(0) scale(0.985) !important;
+      filter: saturate(0.65) brightness(0.82);
+      pointer-events: none !important;
+      transition: opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
+    }
+
+    body.dialogo-secundario-abierto .tutorial-overlay.active:not(#appDialogOverlay) {
+      pointer-events: none !important;
+    }
     #appDialogOverlay {
       z-index: 12000 !important;
     }
@@ -1518,7 +1531,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.2 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.4 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1830,7 +1843,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.2</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.4</span>
         </div>
       </div>
 
@@ -1868,7 +1881,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.2</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.4</span>
         </div>
       </div>
 
@@ -2477,6 +2490,10 @@
       btnCancel.textContent = dialogoAppConfig.cancelText || 'Cancelar';
       btnConfirm.textContent = dialogoAppConfig.confirmText || 'Aceptar';
       btnConfirm.classList.toggle('danger', !!dialogoAppConfig.danger);
+
+      const hayOtroModalActivo = Array.from(document.querySelectorAll('.tutorial-overlay.active'))
+        .some(el => el.id !== 'appDialogOverlay');
+      document.body.classList.toggle('dialogo-secundario-abierto', hayOtroModalActivo);
       overlay.classList.add('active');
 
       return new Promise(resolve => {
@@ -2498,6 +2515,7 @@
       const resolver = dialogoAppResolver;
       dialogoAppResolver = null;
       dialogoAppConfig = null;
+      document.body.classList.remove('dialogo-secundario-abierto');
       if (resolver) resolver(resultado);
     }
 
@@ -2848,6 +2866,7 @@
       cerrarModalIA();
       verSeccion('lista-activa');
       mostrarToast(`🤖 ListAI agregó ${agregados} y actualizó ${actualizados}`);
+      if (agregados + actualizados > 0) feedbackProductoAgregado((agregados + actualizados) > 1);
       registrarEventoGA('listai_applied', { added_count: agregados, updated_count: actualizados });
     }
 
@@ -3336,7 +3355,7 @@
       if(!lista.items) lista.items=[]; if(lista.items.some(i=>normalizarClaveFrecuente(i.texto)===normalizarClaveFrecuente(nombre))) return;
       const cat=clasificarProducto(nombre), mem=obtenerUltimoPrecio(nombre)||0;
       const item={id:Date.now()*1000+Math.floor(Math.random()*1000),texto:nombre,cantidad:1,precio:mem,categoriaId:cat.id,icono:cat.icono,comprado:false,precioOrigen:mem?'estimado':'sin-precio'};
-      lista.items.push(item); guardarStorage(); sincronizarProductoFirebase(item); renderizarProductos(); abrirFrecuentes(); mostrarToast(`⭐ "${nombre}" agregado`); registrarEventoGA('frequent_added');
+      lista.items.push(item); guardarStorage(); sincronizarProductoFirebase(item); renderizarProductos(); abrirFrecuentes(); mostrarToast(`⭐ "${nombre}" agregado`); feedbackProductoAgregado(false); registrarEventoGA('frequent_added');
     }
     function agregarTopFrecuentes(){ obtenerFrecuentes(5).forEach(f=>agregarFrecuente(f.nombre)); cerrarFrecuentes(); registrarEventoGA('frequents_top5_added'); }
 
@@ -3369,7 +3388,7 @@
     const pasosTutorialData = [
       {icon:'👋',title:'¡Bienvenid@ a Mis Listas!',desc:'Tu lista de compras está pensada para ser rápida y simple tanto al planificar como al recorrer el supermercado.',tip:'Puedes volver a este tutorial cuando quieras desde ☰ Ajustes y Ayuda.'},
       {icon:'🔑',title:'Crea, comparte o únete',desc:'Crea una lista o entra con el código de otra persona. Si comparten la misma lista, verás cuántas personas están usándola en vivo.',tip:'Los cambios normales se sincronizan producto por producto para reducir choques entre usuarios.'},
-      {icon:'🎤',title:'Agrega productos como prefieras',desc:'Puedes escribir, dictar varios productos de corrido o escanear códigos de barras. La app también aprende qué productos usas con más frecuencia.',tip:'Al escribir, los productos habituales aparecen primero entre las sugerencias.'},
+      {icon:'🎤',title:'Agrega productos como prefieras',desc:'Puedes escribir, dictar varios productos de una sola vez o escanear códigos de barras. Para dictar, di por ejemplo: “leche, pan, huevos” o “leche y pan y huevos”.',tip:'La app separará los productos y los agregará individualmente; los habituales siguen apareciendo primero al escribir.'},
       {icon:'⭐',title:'Tus productos habituales',desc:'En el menú encontrarás ⭐ Productos Habituales para volver a cargar rápidamente lo que compras seguido.',tip:'La frecuencia se aprende localmente en este dispositivo.'},
       {icon:'🧠',title:'Memoria inteligente de precios',desc:'La app recuerda precios anteriores. Si completa un precio desde memoria, lo marca como estimado hasta que tú lo confirmes o modifiques.',tip:'Cuando escribes el precio real en el supermercado, pasa a considerarse confirmado.'},
       {icon:'💰',title:'Presupuesto y gastos',desc:'Define un tope, revisa cuánto llevas gastado y cuánto te queda. El cálculo puede incluir precios estimados cuando todavía faltan precios reales.',tip:'El aviso te dirá claramente cuánto te queda o cuánto vas sobre el tope.'},
@@ -3388,6 +3407,90 @@
     function cerrarModalSinLista() {
       vibrarConfirmacion();
       document.getElementById('noListOverlay').classList.remove('active');
+    }
+
+    function normalizarNombreDictado(texto) {
+      const limpio = String(texto || '')
+        .replace(/[.;:!?]+$/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (!limpio) return '';
+      return limpio.charAt(0).toUpperCase() + limpio.slice(1);
+    }
+
+    function extraerProductosDesdeDictado(transcripcion) {
+      let texto = String(transcripcion || '').trim();
+      if (!texto) return [];
+
+      texto = texto
+        .replace(/\b(coma|punto y coma)\b/gi, ',')
+        .replace(/\b(y después|y despues|después|despues|luego|además|ademas|también|tambien)\b/gi, ',')
+        .replace(/\s+\by\b\s+/gi, ',')
+        .replace(/\s*[;|/]\s*/g, ',')
+        .replace(/^[\s,]*(agrega|anota|pon|añade|anade|comprar|agregar|necesito|quiero|me falta|faltan)\s+/i, '')
+        .replace(/\s*,\s*/g, ',')
+        .trim();
+
+      return texto.split(',')
+        .map(parte => parte.trim())
+        .filter(parte => parte.length > 1)
+        .map(parte => {
+          let cantidad = 1;
+          let nombre = parte;
+          const match = parte.match(/^(\d{1,2})\s*(?:x|unidades?\s+de\s+)?\s*(.+)$/i);
+          if (match) {
+            cantidad = Math.max(1, Math.min(99, parseInt(match[1], 10) || 1));
+            nombre = match[2];
+          }
+          return { nombre: normalizarNombreDictado(nombre), cantidad };
+        })
+        .filter(p => p.nombre.length > 1);
+    }
+
+    function agregarLoteDesdeVoz(productos) {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista || !Array.isArray(productos) || !productos.length) return 0;
+      if (!lista.items) lista.items = [];
+
+      let agregados = 0;
+      const actualizados = [];
+
+      productos.forEach(({ nombre, cantidad }) => {
+        const nombreLimpio = normalizarNombreDictado(nombre);
+        if (!nombreLimpio) return;
+        const key = nombreLimpio.toLowerCase().trim();
+        const existente = lista.items.find(i => String(i.texto || '').toLowerCase().trim() === key);
+
+        if (existente) {
+          existente.cantidad = Math.min(99, (Number(existente.cantidad) || 1) + (Number(cantidad) || 1));
+          actualizados.push(existente);
+        } else {
+          const catInfo = clasificarProducto(nombreLimpio);
+          const precioMemoria = obtenerUltimoPrecio(nombreLimpio);
+          const nuevo = {
+            id: Date.now() * 1000 + Math.floor(Math.random() * 1000) + agregados,
+            texto: nombreLimpio,
+            cantidad: Number(cantidad) || 1,
+            precio: precioMemoria || 0,
+            categoriaId: catInfo.id,
+            icono: catInfo.icono,
+            comprado: false,
+            precioOrigen: precioMemoria > 0 ? 'estimado' : 'sin-precio'
+          };
+          lista.items.push(nuevo);
+          actualizados.push(nuevo);
+          agregados++;
+        }
+        registrarUsoProducto(nombreLimpio, 1);
+      });
+
+      if (!actualizados.length) return 0;
+      guardarStorage();
+      actualizados.forEach(item => sincronizarProductoFirebase(item));
+      sincronizarMetaListaFirebase(lista);
+      renderizarProductos();
+      registrarEventoGA('voice_batch_added', { product_count: productos.length });
+      return productos.length;
     }
 
     function activarDictadoVoz() {
@@ -3421,7 +3524,8 @@
       objetoReconocimientoVoz = new SpeechRecognition();
       objetoReconocimientoVoz.lang = 'es-CL';
       objetoReconocimientoVoz.interimResults = false;
-      
+      objetoReconocimientoVoz.maxAlternatives = 1;
+
       const esMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       objetoReconocimientoVoz.continuous = !esMovil;
 
@@ -3430,33 +3534,31 @@
         btnMic.classList.add('listening');
         btnMic.textContent = '🔴';
         vibrarConfirmacion();
-        mostrarToast("🎙️ Escuchando... Di los productos (ej: Leche, Pan, Huevos)");
+        mostrarToast("🎙️ Di varios productos: ‘leche, pan, huevos’ o ‘leche y pan y huevos’");
       };
 
       objetoReconocimientoVoz.onresult = function(event) {
+        let totalProcesados = 0;
+        const textosReconocidos = [];
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          if (event.results[i].isFinal) {
-            let transcripcion = event.results[i][0].transcript.trim();
+          if (!event.results[i].isFinal) continue;
+          const transcripcion = event.results[i][0].transcript.trim();
+          if (!transcripcion) continue;
+          textosReconocidos.push(transcripcion);
+          const productos = extraerProductosDesdeDictado(transcripcion);
+          if (productos.length) totalProcesados += agregarLoteDesdeVoz(productos);
+        }
 
-            transcripcion = transcripcion.toLowerCase()
-              .replace(/^(agrega|anota|pon|añade|comprar|agregar|necesito|también|luego)\s+/gi, '')
-              .trim();
+        input.value = '';
+        document.getElementById('itemQty').value = '1';
+        document.getElementById('itemPrice').value = '';
 
-            const productosSeparados = transcripcion.split(/,|\s+y\s+|\s+con\s+|\s+también\s+|\s+luego\s+/gi);
-
-            productosSeparados.forEach(prod => {
-              const limpio = prod.trim();
-              if (limpio.length > 1) {
-                input.value = limpio;
-                buscarPrecioEnMemoriaPorTexto(limpio);
-                if (document.activeElement) document.activeElement.blur();
-                
-                agregarProducto();
-              }
-            });
-
-            input.value = "";
-          }
+        if (totalProcesados > 0) {
+          feedbackProductoAgregado(totalProcesados > 1);
+          mostrarToast(`🎙️ ${totalProcesados} producto${totalProcesados === 1 ? '' : 's'} agregado${totalProcesados === 1 ? '' : 's'} por voz`);
+        } else if (textosReconocidos.length) {
+          mostrarToast('⚠️ No pude separar productos. Prueba diciendo: “leche, pan, huevos”.');
         }
       };
 
@@ -3949,6 +4051,7 @@
       cerrarModalRecetas();
       verSeccion('lista-activa');
       mostrarToast(`${receta.icono} ${receta.nombre}: ${agregados} ingrediente${agregados===1?'':'s'} agregado${agregados===1?'':'s'}${repetidos ? ` · ${repetidos} ya estaba${repetidos===1?'':'n'} en la lista` : ''}`);
+      if (agregados + repetidos > 0) feedbackProductoAgregado((agregados + repetidos) > 1);
     }
 
     function generarCodigoUnico() {
@@ -3991,6 +4094,43 @@
         if ("vibrate" in navigator) {
           window.navigator.vibrate(40);
         }
+      } catch (e) {}
+    }
+
+    function feedbackProductoAgregado(esLote = false) {
+      try {
+        if ("vibrate" in navigator) {
+          window.navigator.vibrate(esLote ? [35, 28, 55] : [28, 22, 42]);
+        }
+      } catch (e) {}
+
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const gain = ctx.createGain();
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const now = ctx.currentTime;
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.055, now + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+        osc1.type = 'sine';
+        osc2.type = 'sine';
+        osc1.frequency.setValueAtTime(660, now);
+        osc2.frequency.setValueAtTime(esLote ? 990 : 880, now + 0.07);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start(now);
+        osc1.stop(now + 0.11);
+        osc2.start(now + 0.075);
+        osc2.stop(now + 0.21);
+        setTimeout(() => { try { ctx.close(); } catch (e) {} }, 350);
       } catch (e) {}
     }
 
@@ -4811,6 +4951,7 @@
           });
           registrarUsoProducto(texto, 1);
           mostrarToast(`➕ "${texto}" agregado a la lista`);
+          feedbackProductoAgregado(false);
           registrarEventoGA('product_added', { quantity: cantidadAAgregar, has_price: precio > 0 });
         }
 
@@ -4841,6 +4982,7 @@
         renderizarProductos();
 
         mostrarToast(`💡 Se sumó +${cantidadAAgregar} a "${productoExistente.texto}" (Total: ${productoExistente.cantidad})`);
+        feedbackProductoAgregado(false);
 
         document.getElementById('itemInput').value = "";
         document.getElementById('itemQty').value = "1";
