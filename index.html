@@ -1531,7 +1531,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.4 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.7 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1750,7 +1750,85 @@
       margin-top: 0;
     }
 
-  </style>
+  
+
+    /* V5.5.7 - MICROANIMACIONES DE INTERFAZ */
+    .ui-section-enter {
+      animation: uiSectionEnter .24s cubic-bezier(.2,.8,.2,1) both;
+    }
+    @keyframes uiSectionEnter {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .ui-stagger-in {
+      opacity: 0;
+      animation: uiItemEnter .20s cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: var(--ui-delay, 0ms);
+    }
+    @keyframes uiItemEnter {
+      from { opacity: 0; transform: translateY(5px) scale(.992); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .nav-btn {
+      transition: color .18s ease, background-color .18s ease, transform .16s ease, box-shadow .18s ease;
+    }
+    .nav-btn.active {
+      animation: uiTabActivate .20s cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes uiTabActivate {
+      0% { transform: scale(.97); }
+      100% { transform: scale(1); }
+    }
+
+    button, .list-card, .recent-list-widget, .recipe-item-card, .smart-list-card {
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active, .list-card:active, .recent-list-widget:active, .recipe-item-card:active, .smart-mini-btn:active {
+      transform: scale(.975);
+    }
+
+    .sidebar-menu.active .btn-sidebar-tool {
+      animation: uiSidebarItem .22s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .sidebar-menu.active .btn-sidebar-tool:nth-of-type(1) { animation-delay: 35ms; }
+    .sidebar-menu.active .btn-sidebar-tool:nth-of-type(2) { animation-delay: 55ms; }
+    .sidebar-menu.active .btn-sidebar-tool:nth-of-type(3) { animation-delay: 75ms; }
+    .sidebar-menu.active .btn-sidebar-tool:nth-of-type(4) { animation-delay: 95ms; }
+    .sidebar-menu.active .btn-sidebar-tool:nth-of-type(5) { animation-delay: 115ms; }
+    .sidebar-menu.active .btn-sidebar-tool:nth-of-type(6) { animation-delay: 135ms; }
+    @keyframes uiSidebarItem {
+      from { opacity: 0; transform: translateX(8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .progress-fill {
+      transition: width .38s cubic-bezier(.2,.8,.2,1), background-color .25s ease;
+    }
+    .budget-val, .budget-status-message, .badge-users-online, .net-badge {
+      transition: color .22s ease, background-color .22s ease, border-color .22s ease, transform .18s ease;
+    }
+
+    .toast.show {
+      animation: uiToastPop .22s cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes uiToastPop {
+      from { opacity: 0; transform: translateX(-50%) translateY(12px) scale(.97); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ui-section-enter, .ui-stagger-in, .nav-btn.active,
+      .sidebar-menu.active .btn-sidebar-tool, .toast.show {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      button:active, .list-card:active, .recent-list-widget:active,
+      .recipe-item-card:active, .smart-mini-btn:active { transform: none !important; }
+    }
+</style>
 </head>
 <body>
 
@@ -1843,7 +1921,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.4</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.7</span>
         </div>
       </div>
 
@@ -1881,7 +1959,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.4</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.7</span>
         </div>
       </div>
 
@@ -2412,6 +2490,9 @@
     let chartGastosInstance = null;
     let limitePresupuestoActual = 0;
     let objetoReconocimientoVoz = null;
+    let dictadoVozDebeContinuar = false;
+    let dictadoVozEsMovil = false;
+    let timerReinicioDictadoVoz = null;
     let reconocimientoVozIA = null;
     let productoPendienteDuplicado = null;
     let escanerProcesando = false;
@@ -2425,6 +2506,7 @@
     let estadisticasAnualesLocal = { version: 1, inicioRegistro: null, anios: {} };
     const tokensCompraSesion = new Map();
     let compraCompletadaRegistrada = new Set();
+    const estadoSonidoPresupuesto = new Map();
     let colaSyncPendiente = {};
 
     // ANALÍTICA DE USO ANÓNIMA (GA4): solo eventos funcionales. No envía nombres de productos/listas, precios ni fotos.
@@ -3370,6 +3452,7 @@
       try{localStorage.setItem('historialCompras_v1',JSON.stringify(historialCompras));}catch(e){}
       registrarCompraCompletadaEnEstadisticas(lista, total);
       registrarEventoGA('purchase_completed', { item_count: lista.items.length });
+      setTimeout(reproducirSonidoCompraCompletada, 320);
     }
     function abrirHistorialCompras(){
       registrarEventoGA('purchase_history_opened');
@@ -3388,7 +3471,7 @@
     const pasosTutorialData = [
       {icon:'👋',title:'¡Bienvenid@ a Mis Listas!',desc:'Tu lista de compras está pensada para ser rápida y simple tanto al planificar como al recorrer el supermercado.',tip:'Puedes volver a este tutorial cuando quieras desde ☰ Ajustes y Ayuda.'},
       {icon:'🔑',title:'Crea, comparte o únete',desc:'Crea una lista o entra con el código de otra persona. Si comparten la misma lista, verás cuántas personas están usándola en vivo.',tip:'Los cambios normales se sincronizan producto por producto para reducir choques entre usuarios.'},
-      {icon:'🎤',title:'Agrega productos como prefieras',desc:'Puedes escribir, dictar varios productos de una sola vez o escanear códigos de barras. Para dictar, di por ejemplo: “leche, pan, huevos” o “leche y pan y huevos”.',tip:'La app separará los productos y los agregará individualmente; los habituales siguen apareciendo primero al escribir.'},
+      {icon:'🎤',title:'Agrega productos como prefieras',desc:'Puedes escribir, dictar varios productos de una sola vez o escanear códigos de barras. En celular, el micrófono queda escuchando aunque hagas pequeñas pausas: di “leche, pan, huevos” y toca 🔴 cuando termines.',tip:'También entiende frases como “leche y pan y huevos”; la app los separa y agrega individualmente.'},
       {icon:'⭐',title:'Tus productos habituales',desc:'En el menú encontrarás ⭐ Productos Habituales para volver a cargar rápidamente lo que compras seguido.',tip:'La frecuencia se aprende localmente en este dispositivo.'},
       {icon:'🧠',title:'Memoria inteligente de precios',desc:'La app recuerda precios anteriores. Si completa un precio desde memoria, lo marca como estimado hasta que tú lo confirmes o modifiques.',tip:'Cuando escribes el precio real en el supermercado, pasa a considerarse confirmado.'},
       {icon:'💰',title:'Presupuesto y gastos',desc:'Define un tope, revisa cuánto llevas gastado y cuánto te queda. El cálculo puede incluir precios estimados cuando todavía faltan precios reales.',tip:'El aviso te dirá claramente cuánto te queda o cuánto vas sobre el tope.'},
@@ -3418,33 +3501,102 @@
       return limpio.charAt(0).toUpperCase() + limpio.slice(1);
     }
 
-    function extraerProductosDesdeDictado(transcripcion) {
-      let texto = String(transcripcion || '').trim();
+    function normalizarTextoComparacion(texto) {
+      return String(texto || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9ñ\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function obtenerNombresConocidosParaDictado() {
+      const nombres = new Map();
+      const agregar = (nombre) => {
+        const visible = String(nombre || '').trim();
+        const key = normalizarTextoComparacion(visible);
+        if (key.length > 1 && !nombres.has(key)) nombres.set(key, visible);
+      };
+
+      document.querySelectorAll('#sugerenciasGenericasChilenas option').forEach(o => agregar(o.value));
+      obtenerFrecuentes(60).forEach(f => agregar(f.nombre));
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      (lista?.items || []).forEach(i => agregar(i.texto));
+      Object.values(memoriaNombresCodigos || {}).forEach(agregar);
+      return nombres;
+    }
+
+    function segmentarDictadoPorProductosConocidos(textoOriginal) {
+      const texto = normalizarTextoComparacion(textoOriginal);
       if (!texto) return [];
 
-      texto = texto
+      const conocidos = obtenerNombresConocidosParaDictado();
+      const candidatos = [...conocidos.entries()]
+        .sort((a,b) => b[0].length - a[0].length);
+      const ocupados = [];
+      const encontrados = [];
+
+      candidatos.forEach(([key, visible]) => {
+        const re = new RegExp(`(?:^|\\s)${key.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}(?=\\s|$)`, 'g');
+        let m;
+        while ((m = re.exec(texto)) !== null) {
+          const inicio = m.index + (m[0].startsWith(' ') ? 1 : 0);
+          const fin = inicio + key.length;
+          if (ocupados.some(r => inicio < r.fin && fin > r.inicio)) continue;
+          ocupados.push({inicio, fin});
+          encontrados.push({inicio, nombre: visible, cantidad: 1});
+        }
+      });
+
+      encontrados.sort((a,b) => a.inicio - b.inicio);
+      return encontrados.length >= 2
+        ? encontrados.map(({nombre,cantidad}) => ({nombre: normalizarNombreDictado(nombre), cantidad}))
+        : [];
+    }
+
+    function numeroPalabraACantidad(palabra) {
+      const mapa = { un:1, una:1, uno:1, dos:2, tres:3, cuatro:4, cinco:5, seis:6, siete:7, ocho:8, nueve:9, diez:10 };
+      return mapa[normalizarTextoComparacion(palabra)] || 0;
+    }
+
+    function extraerProductosDesdeDictado(transcripcion) {
+      let textoOriginal = String(transcripcion || '').trim();
+      if (!textoOriginal) return [];
+
+      let texto = textoOriginal
         .replace(/\b(coma|punto y coma)\b/gi, ',')
-        .replace(/\b(y después|y despues|después|despues|luego|además|ademas|también|tambien)\b/gi, ',')
-        .replace(/\s+\by\b\s+/gi, ',')
+        .replace(/\b(y después|y despues|después|despues|luego|además|ademas|también|tambien|siguiente|otro producto|más|mas)\b/gi, ',')
+        .replace(/\s+\b(y|con)\b\s+/gi, ',')
         .replace(/\s*[;|/]\s*/g, ',')
         .replace(/^[\s,]*(agrega|anota|pon|añade|anade|comprar|agregar|necesito|quiero|me falta|faltan)\s+/i, '')
         .replace(/\s*,\s*/g, ',')
         .trim();
 
-      return texto.split(',')
-        .map(parte => parte.trim())
-        .filter(parte => parte.length > 1)
-        .map(parte => {
-          let cantidad = 1;
-          let nombre = parte;
-          const match = parte.match(/^(\d{1,2})\s*(?:x|unidades?\s+de\s+)?\s*(.+)$/i);
+      let partes = texto.split(',').map(x => x.trim()).filter(x => x.length > 1);
+
+      // En móviles el motor a veces devuelve "leche pan huevos" sin comas ni "y".
+      // Si no hubo separadores, intentamos reconocer productos conocidos sin romper nombres compuestos.
+      if (partes.length === 1) {
+        const conocidos = segmentarDictadoPorProductosConocidos(textoOriginal);
+        if (conocidos.length >= 2) return conocidos;
+      }
+
+      return partes.map(parte => {
+        let cantidad = 1;
+        let nombre = parte;
+        let match = parte.match(/^(\d{1,2})\s*(?:x|unidades?\s+de\s+)?\s*(.+)$/i);
+        if (match) {
+          cantidad = Math.max(1, Math.min(99, parseInt(match[1], 10) || 1));
+          nombre = match[2];
+        } else {
+          match = parte.match(/^(un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez)\s+(.+)$/i);
           if (match) {
-            cantidad = Math.max(1, Math.min(99, parseInt(match[1], 10) || 1));
+            cantidad = numeroPalabraACantidad(match[1]) || 1;
             nombre = match[2];
           }
-          return { nombre: normalizarNombreDictado(nombre), cantidad };
-        })
-        .filter(p => p.nombre.length > 1);
+        }
+        return { nombre: normalizarNombreDictado(nombre), cantidad };
+      }).filter(p => p.nombre.length > 1);
     }
 
     function agregarLoteDesdeVoz(productos) {
@@ -3493,6 +3645,117 @@
       return productos.length;
     }
 
+    function detenerDictadoVoz(mostrarMensaje = true) {
+      dictadoVozDebeContinuar = false;
+      esEscuchandoVoz = false;
+      if (timerReinicioDictadoVoz) {
+        clearTimeout(timerReinicioDictadoVoz);
+        timerReinicioDictadoVoz = null;
+      }
+      if (objetoReconocimientoVoz) {
+        try { objetoReconocimientoVoz.stop(); } catch(e){}
+      }
+      const btnMic = document.getElementById('btnMic');
+      if (btnMic) {
+        btnMic.classList.remove('listening');
+        btnMic.textContent = '🎤';
+      }
+      if (mostrarMensaje) mostrarToast('🎙️ Dictado finalizado');
+    }
+
+    function iniciarCicloReconocimientoVoz() {
+      if (!dictadoVozDebeContinuar) return;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+
+      objetoReconocimientoVoz = new SpeechRecognition();
+      objetoReconocimientoVoz.lang = 'es-CL';
+      // En móvil los resultados parciales ayudan a que el motor conserve frases largas.
+      objetoReconocimientoVoz.interimResults = dictadoVozEsMovil;
+      objetoReconocimientoVoz.maxAlternatives = 1;
+      objetoReconocimientoVoz.continuous = !dictadoVozEsMovil;
+
+      objetoReconocimientoVoz.onstart = function() {
+        esEscuchandoVoz = true;
+        const btnMic = document.getElementById('btnMic');
+        if (btnMic) {
+          btnMic.classList.add('listening');
+          btnMic.textContent = '🔴';
+        }
+      };
+
+      objetoReconocimientoVoz.onresult = function(event) {
+        let totalProcesados = 0;
+        let huboFinal = false;
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (!event.results[i].isFinal) continue;
+          const transcripcion = String(event.results[i][0].transcript || '').trim();
+          if (!transcripcion) continue;
+          huboFinal = true;
+          const productos = extraerProductosDesdeDictado(transcripcion);
+          if (productos.length) totalProcesados += agregarLoteDesdeVoz(productos);
+        }
+
+        if (huboFinal) {
+          const input = document.getElementById('itemInput');
+          if (input) input.value = '';
+          const qty = document.getElementById('itemQty');
+          if (qty) qty.value = '1';
+          const price = document.getElementById('itemPrice');
+          if (price) price.value = '';
+
+          if (totalProcesados > 0) {
+            feedbackProductoAgregado(totalProcesados > 1);
+            mostrarToast(`🎙️ ${totalProcesados} producto${totalProcesados === 1 ? '' : 's'} agregado${totalProcesados === 1 ? '' : 's'}. ${dictadoVozEsMovil ? 'Puedes seguir dictando.' : ''}`.trim());
+          } else {
+            mostrarToast('⚠️ No pude separar los productos. Di: “leche, pan, huevos” o “leche y pan y huevos”.');
+          }
+        }
+      };
+
+      objetoReconocimientoVoz.onerror = function(event) {
+        const error = event.error;
+        if (error === 'not-allowed' || error === 'service-not-allowed') {
+          dictadoVozDebeContinuar = false;
+          detenerDictadoVoz(false);
+          mostrarToast('⚠️ Permiso de micrófono denegado en tu navegador');
+          return;
+        }
+        if (error !== 'no-speech' && error !== 'aborted') {
+          mostrarToast('⚠️ Error en micrófono: ' + error);
+        }
+      };
+
+      objetoReconocimientoVoz.onend = function() {
+        esEscuchandoVoz = false;
+        // En celular SpeechRecognition suele finalizar después de cada frase. Lo reiniciamos
+        // mientras el usuario mantenga la sesión activa, para permitir varios productos/pausas.
+        if (dictadoVozDebeContinuar && dictadoVozEsMovil) {
+          timerReinicioDictadoVoz = setTimeout(() => {
+            if (dictadoVozDebeContinuar) iniciarCicloReconocimientoVoz();
+          }, 220);
+        } else if (!dictadoVozDebeContinuar) {
+          const btnMic = document.getElementById('btnMic');
+          if (btnMic) {
+            btnMic.classList.remove('listening');
+            btnMic.textContent = '🎤';
+          }
+        }
+      };
+
+      try {
+        objetoReconocimientoVoz.start();
+      } catch(err) {
+        if (dictadoVozDebeContinuar && dictadoVozEsMovil) {
+          timerReinicioDictadoVoz = setTimeout(() => iniciarCicloReconocimientoVoz(), 350);
+        } else {
+          dictadoVozDebeContinuar = false;
+          detenerDictadoVoz(false);
+          mostrarToast('⚠️ No se pudo iniciar el dictado por voz');
+        }
+      }
+    }
+
     function activarDictadoVoz() {
       registrarEventoGA('voice_dictation_used');
       if (!idListaActiva) {
@@ -3501,93 +3764,23 @@
       }
 
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
       if (!SpeechRecognition) {
-        mostrarToast("⚠️ Tu navegador no soporta dictado por voz");
+        mostrarToast('⚠️ Tu navegador no soporta dictado por voz');
         return;
       }
 
-      const btnMic = document.getElementById('btnMic');
-      const input = document.getElementById('itemInput');
-
-      if (esEscuchandoVoz) {
-        esEscuchandoVoz = false;
-        if (objetoReconocimientoVoz) {
-          try { objetoReconocimientoVoz.stop(); } catch(e){}
-        }
-        btnMic.classList.remove('listening');
-        btnMic.textContent = '🎤';
-        mostrarToast("🎙️ Dictado detenido");
+      if (dictadoVozDebeContinuar || esEscuchandoVoz) {
+        detenerDictadoVoz(true);
         return;
       }
 
-      objetoReconocimientoVoz = new SpeechRecognition();
-      objetoReconocimientoVoz.lang = 'es-CL';
-      objetoReconocimientoVoz.interimResults = false;
-      objetoReconocimientoVoz.maxAlternatives = 1;
-
-      const esMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      objetoReconocimientoVoz.continuous = !esMovil;
-
-      objetoReconocimientoVoz.onstart = function() {
-        esEscuchandoVoz = true;
-        btnMic.classList.add('listening');
-        btnMic.textContent = '🔴';
-        vibrarConfirmacion();
-        mostrarToast("🎙️ Di varios productos: ‘leche, pan, huevos’ o ‘leche y pan y huevos’");
-      };
-
-      objetoReconocimientoVoz.onresult = function(event) {
-        let totalProcesados = 0;
-        const textosReconocidos = [];
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          if (!event.results[i].isFinal) continue;
-          const transcripcion = event.results[i][0].transcript.trim();
-          if (!transcripcion) continue;
-          textosReconocidos.push(transcripcion);
-          const productos = extraerProductosDesdeDictado(transcripcion);
-          if (productos.length) totalProcesados += agregarLoteDesdeVoz(productos);
-        }
-
-        input.value = '';
-        document.getElementById('itemQty').value = '1';
-        document.getElementById('itemPrice').value = '';
-
-        if (totalProcesados > 0) {
-          feedbackProductoAgregado(totalProcesados > 1);
-          mostrarToast(`🎙️ ${totalProcesados} producto${totalProcesados === 1 ? '' : 's'} agregado${totalProcesados === 1 ? '' : 's'} por voz`);
-        } else if (textosReconocidos.length) {
-          mostrarToast('⚠️ No pude separar productos. Prueba diciendo: “leche, pan, huevos”.');
-        }
-      };
-
-      objetoReconocimientoVoz.onend = function() {
-        esEscuchandoVoz = false;
-        btnMic.classList.remove('listening');
-        btnMic.textContent = '🎤';
-      };
-
-      objetoReconocimientoVoz.onerror = function(event) {
-        esEscuchandoVoz = false;
-        btnMic.classList.remove('listening');
-        btnMic.textContent = '🎤';
-
-        if (event.error === 'not-allowed') {
-          mostrarToast("⚠️ Permiso de micrófono denegado en tu navegador");
-        } else if (event.error !== 'no-speech') {
-          mostrarToast("⚠️ Error en micrófono: " + event.error);
-        }
-      };
-
-      try {
-        objetoReconocimientoVoz.start();
-      } catch(err) {
-        console.error("Error iniciando dictado:", err);
-        esEscuchandoVoz = false;
-        btnMic.classList.remove('listening');
-        btnMic.textContent = '🎤';
-      }
+      dictadoVozEsMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      dictadoVozDebeContinuar = true;
+      vibrarConfirmacion();
+      mostrarToast(dictadoVozEsMovil
+        ? '🎙️ Dictado continuo: di “leche, pan, huevos”. Puedes hacer pausas; toca 🔴 para terminar.'
+        : '🎙️ Di varios productos: “leche, pan, huevos” o “leche y pan y huevos”.');
+      iniciarCicloReconocimientoVoz();
     }
 
     function abrirEscanerBarras() {
@@ -4134,6 +4327,86 @@
       } catch (e) {}
     }
 
+    function feedbackProductoComprado() {
+      try {
+        if ('vibrate' in navigator) navigator.vibrate([24, 18, 58]);
+      } catch (e) {}
+
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const gain = ctx.createGain();
+        const now = ctx.currentTime;
+        const notas = [523.25, 659.25, 783.99];
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.06, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+        gain.connect(ctx.destination);
+
+        notas.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.065);
+          osc.connect(gain);
+          osc.start(now + idx * 0.065);
+          osc.stop(now + idx * 0.065 + 0.11);
+        });
+        setTimeout(() => { try { ctx.close(); } catch(e){} }, 420);
+      } catch (e) {}
+    }
+
+
+    function reproducirSonidoAlertaPresupuesto(tipo = 'cerca') {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const gain = ctx.createGain();
+        const now = ctx.currentTime;
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(tipo === 'excedido' ? 0.07 : 0.045, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.34);
+        gain.connect(ctx.destination);
+        const notas = tipo === 'excedido' ? [440, 330] : [620, 760];
+        notas.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          osc.type = tipo === 'excedido' ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.11);
+          osc.connect(gain);
+          osc.start(now + idx * 0.11);
+          osc.stop(now + idx * 0.11 + 0.12);
+        });
+        if ('vibrate' in navigator) navigator.vibrate(tipo === 'excedido' ? [50, 45, 90] : [35, 30, 45]);
+        setTimeout(() => { try { ctx.close(); } catch(e){} }, 500);
+      } catch (e) {}
+    }
+
+    function reproducirSonidoCompraCompletada() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const gain = ctx.createGain();
+        const now = ctx.currentTime;
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.065, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+        gain.connect(ctx.destination);
+        [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.075);
+          osc.connect(gain);
+          osc.start(now + idx * 0.075);
+          osc.stop(now + idx * 0.075 + 0.15);
+        });
+        if ('vibrate' in navigator) navigator.vibrate([35, 25, 50, 25, 90]);
+        setTimeout(() => { try { ctx.close(); } catch(e){} }, 650);
+      } catch (e) {}
+    }
+
     function mostrarToast(mensaje, conUndo = false, callbackUndo = null) {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toastMsg');
@@ -4290,6 +4563,24 @@
       });
     }
 
+    function animarEntradaSeccion(elemento) {
+      if (!elemento || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      elemento.classList.remove('ui-section-enter');
+      void elemento.offsetWidth;
+      elemento.classList.add('ui-section-enter');
+      setTimeout(() => elemento.classList.remove('ui-section-enter'), 280);
+    }
+
+    function prepararAnimacionEscalonada(elemento, indice = 0) {
+      if (!elemento || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      elemento.classList.add('ui-stagger-in');
+      elemento.style.setProperty('--ui-delay', `${Math.min(indice, 10) * 24}ms`);
+      setTimeout(() => {
+        elemento.classList.remove('ui-stagger-in');
+        elemento.style.removeProperty('--ui-delay');
+      }, 520);
+    }
+
     // NAVEGACIÓN INSTANTÁNEA ENTRE SECCIONES (SIN BUGS DE TRANSICIONES)
     function verSeccion(seccion) {
       vibrarConfirmacion();
@@ -4323,16 +4614,19 @@
       if (seccion === 'portada') {
         secPortada.style.display = 'block';
         barraNavegacion.style.display = 'none';
+        animarEntradaSeccion(secPortada);
       } else if (seccion === 'inicio') {
         secInicio.style.display = 'block';
         barraNavegacion.style.display = 'flex';
         navInicio.classList.add('active');
         renderizarInicio();
+        animarEntradaSeccion(secInicio);
       } else if (seccion === 'mis-listas') {
         secMisListas.style.display = 'block';
         barraNavegacion.style.display = 'flex';
         navMisListas.classList.add('active');
         renderizarListas();
+        animarEntradaSeccion(secMisListas);
       } else {
         if (coleccionListas.length === 0) {
           mostrarToast("⚠️ Primero debes crear una lista de compras");
@@ -4349,6 +4643,7 @@
         navListaActiva.classList.add('active');
         escucharSincronizacionFirebase(idListaActiva);
         renderizarProductos();
+        animarEntradaSeccion(secListaActiva);
       }
     }
 
@@ -4883,7 +5178,7 @@
         contenedor.innerHTML = '<p class="empty-msg">No tienes listas creadas. ¡Crea una arriba o únete con un código!</p>';
         return;
       }
-      coleccionListas.forEach(lista => {
+      coleccionListas.forEach((lista, indiceLista) => {
         const pendientes = (lista.items || []).filter(i => !i.comprado).length;
         const div = document.createElement('div');
         div.className = 'list-card';
@@ -4900,6 +5195,7 @@
           </div>
         `;
         contenedor.appendChild(div);
+        prepararAnimacionEscalonada(div, indiceLista);
       });
     }
 
@@ -5036,12 +5332,12 @@
     }
 
     function cambiarEstadoProducto(prodId) {
-      vibrarConfirmacion();
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista?.items) return;
       const prod = lista.items.find(i => i.id === prodId); if(!prod) return;
       const estadoAnterior = !!prod.comprado;
       const nuevoEstado = !estadoAnterior;
+      if (nuevoEstado) feedbackProductoComprado(); else vibrarConfirmacion();
       const tokenKey = `${lista.id}:${prod.id}`;
       let tokenEstadistica = null;
       const finalizar = () => {
@@ -5219,6 +5515,24 @@
           budgetMsg.textContent = diferencia >= 0 ? `💰 Te quedan ${formatoCLP.format(diferencia)} de tu tope` : `⚠️ Vas ${formatoCLP.format(Math.abs(diferencia))} sobre tu tope${productosEstimados ? ' según la estimación actual' : ''}`;
         } else { budgetMsg.style.display='none'; budgetMsg.textContent=''; }
       }
+      if (limitePresupuesto > 0) {
+        const ratioPresupuesto = limitePresupuesto > 0 ? referenciaLimite / limitePresupuesto : 0;
+        const estadoAnterior = estadoSonidoPresupuesto.get(String(lista.id)) || 'normal';
+        let estadoNuevo = 'normal';
+        if (ratioPresupuesto > 1) estadoNuevo = 'excedido';
+        else if (ratioPresupuesto >= 0.9) estadoNuevo = 'cerca';
+        else if (ratioPresupuesto < 0.85) estadoNuevo = 'normal';
+        else estadoNuevo = estadoAnterior;
+
+        if (estadoNuevo !== estadoAnterior) {
+          if (estadoNuevo === 'cerca') reproducirSonidoAlertaPresupuesto('cerca');
+          if (estadoNuevo === 'excedido') reproducirSonidoAlertaPresupuesto('excedido');
+          estadoSonidoPresupuesto.set(String(lista.id), estadoNuevo);
+        }
+      } else {
+        estadoSonidoPresupuesto.delete(String(lista.id));
+      }
+
       if (limitePresupuesto > 0 && referenciaLimite > limitePresupuesto) {
         panelProgreso.classList.add('exceeded');
         fillProgreso.classList.add('exceeded');
@@ -5310,10 +5624,11 @@
             </div>
           `;
           contenedor.appendChild(header);
+          prepararAnimacionEscalonada(header, index);
 
           const ul = document.createElement('ul');
 
-          itemsDeCat.forEach(item => {
+          itemsDeCat.forEach((item, indiceItem) => {
             const li = document.createElement('li');
             li.dataset.itemId = String(item.id);
             const subtotal = item.cantidad * (item.precio || 0);
@@ -5367,6 +5682,7 @@
               </div>
             `;
             ul.appendChild(li);
+            prepararAnimacionEscalonada(li, indiceItem + 1);
           });
 
           contenedor.appendChild(ul);
