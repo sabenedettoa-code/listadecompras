@@ -27,6 +27,7 @@
 
   <!-- FIREBASE COMPAT SDKS -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <meta name="mobile-web-app-capable" content="yes">
@@ -1531,7 +1532,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.7 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.8 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1921,7 +1922,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.7</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.8</span>
         </div>
       </div>
 
@@ -1959,7 +1960,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.7</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.8</span>
         </div>
       </div>
 
@@ -2461,7 +2462,51 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.database();
+    let usuarioFirebase = null;
+    let errorAutenticacionFirebase = null;
+
+    const firebaseAuthReady = (async () => {
+      try {
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        if (auth.currentUser) {
+          usuarioFirebase = auth.currentUser;
+          return usuarioFirebase;
+        }
+        const credencial = await auth.signInAnonymously();
+        usuarioFirebase = credencial.user;
+        return usuarioFirebase;
+      } catch (error) {
+        errorAutenticacionFirebase = error;
+        console.error('No fue posible iniciar la autenticación anónima de Firebase:', error);
+        return null;
+      }
+    })();
+
+    async function obtenerUsuarioFirebase() {
+      const user = usuarioFirebase || await firebaseAuthReady;
+      if (!user) throw (errorAutenticacionFirebase || new Error('Firebase Authentication no disponible'));
+      return user;
+    }
+
+    async function asegurarMembresiaLista(listaId) {
+      if (!listaId) throw new Error('Lista inválida');
+      const user = await obtenerUsuarioFirebase();
+      await db.ref(`listas/${listaId}/miembros/${user.uid}`).set(true);
+      return user;
+    }
+
+    async function migrarMembresiasLocales() {
+      if (!navigator.onLine || !coleccionListas.length) return;
+      try {
+        await obtenerUsuarioFirebase();
+        const ids = [...new Set(coleccionListas.map(l => String(l?.id || '')).filter(Boolean))];
+        await Promise.allSettled(ids.map(id => asegurarMembresiaLista(id)));
+      } catch (e) {
+        console.warn('La migración de membresías se completará cuando haya conexión/autenticación.', e);
+      }
+    }
 
     let coleccionListas = [];
     let idListaActiva = null;
@@ -4831,9 +4876,15 @@
     async function vaciarColaSincronizacion() {
       if(!navigator.onLine) return;
       cargarColaSincronizacion();
+      try { await obtenerUsuarioFirebase(); } catch(e) { return; }
       const ops = Object.entries(colaSyncPendiente).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
+      const membresiasAseguradas = new Set();
       for(const [key,op] of ops) {
         try {
+          if (!membresiasAseguradas.has(String(op.listaId))) {
+            await asegurarMembresiaLista(op.listaId);
+            membresiasAseguradas.add(String(op.listaId));
+          }
           if(op.tipo==='set-item') await db.ref(`listas/${op.listaId}/items/${firebaseItemKey(op.itemId)}`).set(op.data);
           else if(op.tipo==='delete-item') await db.ref(`listas/${op.listaId}/items/${firebaseItemKey(op.itemId)}`).remove();
           else if(op.tipo==='meta') await db.ref(`listas/${op.listaId}`).update(op.data||{});
@@ -4863,23 +4914,34 @@
       return [];
     }
 
-    function sincronizarProductoFirebase(item) {
+    async function sincronizarProductoFirebase(item) {
       if (!idListaActiva || !item) return;
       if (!navigator.onLine) { encolarSync('set-item', idListaActiva, item.id, item); return; }
-      return db.ref(`listas/${idListaActiva}/items/${firebaseItemKey(item.id)}`).set(item).catch(() => encolarSync('set-item', idListaActiva, item.id, item));
+      const listaId = idListaActiva;
+      try {
+        await asegurarMembresiaLista(listaId);
+        return await db.ref(`listas/${listaId}/items/${firebaseItemKey(item.id)}`).set(item);
+      } catch(e) { encolarSync('set-item', listaId, item.id, item); }
     }
 
-    function eliminarProductoFirebase(itemId) {
+    async function eliminarProductoFirebase(itemId) {
       if (!idListaActiva || itemId === undefined || itemId === null) return;
       if (!navigator.onLine) { encolarSync('delete-item', idListaActiva, itemId); return; }
-      return db.ref(`listas/${idListaActiva}/items/${firebaseItemKey(itemId)}`).remove().catch(() => encolarSync('delete-item', idListaActiva, itemId));
+      const listaId = idListaActiva;
+      try {
+        await asegurarMembresiaLista(listaId);
+        return await db.ref(`listas/${listaId}/items/${firebaseItemKey(itemId)}`).remove();
+      } catch(e) { encolarSync('delete-item', listaId, itemId); }
     }
 
-    function sincronizarMetaListaFirebase(lista) {
+    async function sincronizarMetaListaFirebase(lista) {
       if (!lista || !lista.id) return;
       const meta={nombre:lista.nombre,presupuesto:obtenerPresupuestoLista(lista)};
       if(!navigator.onLine){encolarSync('meta',lista.id,null,meta);return;}
-      return db.ref('listas/' + lista.id).update(meta).catch(()=>encolarSync('meta',lista.id,null,meta));
+      try {
+        await asegurarMembresiaLista(lista.id);
+        return await db.ref('listas/' + lista.id).update(meta);
+      } catch(e) { encolarSync('meta',lista.id,null,meta); }
     }
 
     function limpiarPresenciaLista() {
@@ -4901,8 +4963,9 @@
       });
     }
 
-    function activarPresenciaLista(listaId) {
+    async function activarPresenciaLista(listaId) {
       if (!listaId || !navigator.onLine) return;
+      try { await asegurarMembresiaLista(listaId); } catch(e) { return; }
       if (String(listaIdSuscrito) === String(listaId) && presenceRef && myPresenceRef) return;
 
       limpiarPresenciaLista();
@@ -4934,9 +4997,13 @@
       });
     }
 
-    function escucharSincronizacionFirebase(listaId) {
+    async function escucharSincronizacionFirebase(listaId) {
       if (!listaId) return;
       if (dbListenerRef) dbListenerRef.off();
+      try { await asegurarMembresiaLista(listaId); } catch(e) {
+        mostrarToast("⚠️ No se pudo autenticar la sincronización");
+        return;
+      }
 
       activarPresenciaLista(listaId);
       dbListenerRef = db.ref('listas/' + listaId);
@@ -4961,7 +5028,7 @@
 
     // Sincronización completa: se reserva para acciones masivas (recetas, IA, reutilizar, etc.).
     // Las ediciones normales usan sincronización por producto para evitar que dos usuarios se pisen.
-    function sincronizarConFirebase() {
+    async function sincronizarConFirebase() {
       if (!idListaActiva) return;
       const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (!lista || !lista.id) return;
@@ -4970,7 +5037,13 @@
         (lista.items||[]).forEach(i=>encolarSync('set-item',lista.id,i.id,i));
         return;
       }
-      db.ref('listas/' + lista.id).update({nombre:lista.nombre,presupuesto:obtenerPresupuestoLista(lista),items:itemsAObjetoFirebase(lista.items || [])});
+      try {
+        await asegurarMembresiaLista(lista.id);
+        await db.ref('listas/' + lista.id).update({nombre:lista.nombre,presupuesto:obtenerPresupuestoLista(lista),items:itemsAObjetoFirebase(lista.items || [])});
+      } catch(e) {
+        encolarSync('meta', lista.id, null, {nombre:lista.nombre,presupuesto:obtenerPresupuestoLista(lista)});
+        (lista.items||[]).forEach(i=>encolarSync('set-item',lista.id,i.id,i));
+      }
     }
 
     window.addEventListener('beforeunload', () => {
@@ -4988,6 +5061,7 @@
       mostrarToast("☁️ Guardando en la nube para sincronizar...");
 
       try {
+        await asegurarMembresiaLista(lista.id);
         await db.ref('listas/' + lista.id + '/nombre').set(lista.nombre);
         await db.ref('listas/' + lista.id + '/items').set(itemsAObjetoFirebase(lista.items || []));
         await db.ref('listas/' + lista.id + '/presupuesto').set(obtenerPresupuestoLista(lista));
@@ -5025,7 +5099,7 @@
       }
     }
 
-    function unirsePorCodigo() {
+    async function unirsePorCodigo() {
       vibrarConfirmacion();
       const input = document.getElementById('codigoUnirseInput');
       const codigo = input.value.trim().toUpperCase();
@@ -5037,57 +5111,77 @@
 
       mostrarToast("🔍 Buscando lista...");
 
-      db.ref('listas/' + codigo).once('value').then((snapshot) => {
-        const datos = snapshot.val();
-        if (datos) {
-          let local = coleccionListas.find(l => String(l.id) === String(codigo));
-          if (!local) {
-            coleccionListas.push({ id: codigo, nombre: datos.nombre, items: itemsDesdeFirebase(datos.items), presupuesto: Number(datos.presupuesto) || 0, ui:{filter:'pendientes',focus:false} });
-          } else {
-            local.nombre = datos.nombre;
-            local.items = itemsDesdeFirebase(datos.items);
-            local.presupuesto = Number(datos.presupuesto) || 0;
-          }
-          guardarStorage();
-          input.value = '';
-          abrirLista(codigo);
-          mostrarToast(`🎉 ¡Conectado a "${datos.nombre}"!`);
-        } else {
+      try {
+        await obtenerUsuarioFirebase();
+        // Solo el nombre es consultable antes de ser miembro. El contenido permanece protegido.
+        const nombreSnapshot = await db.ref(`listas/${codigo}/nombre`).once('value');
+        if (!nombreSnapshot.exists()) {
           mostrarToast("❌ Código no encontrado o no existe");
+          return;
         }
-      }).catch(() => {
-        mostrarToast("⚠️ Error al buscar el código");
-      });
+        await asegurarMembresiaLista(codigo);
+        const snapshot = await db.ref('listas/' + codigo).once('value');
+        const datos = snapshot.val();
+        if (!datos) throw new Error('Lista no disponible');
+
+        let local = coleccionListas.find(l => String(l.id) === String(codigo));
+        if (!local) {
+          coleccionListas.push({ id: codigo, nombre: datos.nombre, items: itemsDesdeFirebase(datos.items), presupuesto: Number(datos.presupuesto) || 0, ui:{filter:'pendientes',focus:false} });
+        } else {
+          local.nombre = datos.nombre;
+          local.items = itemsDesdeFirebase(datos.items);
+          local.presupuesto = Number(datos.presupuesto) || 0;
+        }
+        guardarStorage();
+        input.value = '';
+        abrirLista(codigo);
+        mostrarToast(`🎉 ¡Conectado a "${datos.nombre}"!`);
+        registrarEventoGA('list_joined');
+      } catch (e) {
+        console.error('Error al unirse a la lista:', e);
+        mostrarToast("⚠️ No se pudo acceder a esa lista");
+      }
     }
 
-    function procesarListaRecibidaPorURL() {
+    async function procesarListaRecibidaPorURL() {
       const urlParams = new URLSearchParams(window.location.search);
-      const listaIdURL = urlParams.get('id');
+      const listaIdURL = (urlParams.get('id') || '').trim().toUpperCase();
 
       if (listaIdURL) {
         idListaActiva = listaIdURL;
-        db.ref('listas/' + listaIdURL).once('value').then((snapshot) => {
+        try {
+          await obtenerUsuarioFirebase();
+          const nombreSnapshot = await db.ref(`listas/${listaIdURL}/nombre`).once('value');
+          if (!nombreSnapshot.exists()) {
+            mostrarToast('❌ El enlace de la lista ya no es válido');
+            return;
+          }
+          await asegurarMembresiaLista(listaIdURL);
+          const snapshot = await db.ref('listas/' + listaIdURL).once('value');
           const datos = snapshot.val();
           if (datos) {
             let local = coleccionListas.find(l => String(l.id) === String(listaIdURL));
             if (!local) {
-              coleccionListas.push({ id: listaIdURL, nombre: datos.nombre, items: datos.items || [], presupuesto: Number(datos.presupuesto) || 0 });
+              coleccionListas.push({ id: listaIdURL, nombre: datos.nombre, items: itemsDesdeFirebase(datos.items), presupuesto: Number(datos.presupuesto) || 0, ui:{filter:'pendientes',focus:false} });
             } else {
               local.nombre = datos.nombre;
-              local.items = datos.items || [];
+              local.items = itemsDesdeFirebase(datos.items);
               local.presupuesto = Number(datos.presupuesto) || 0;
             }
             guardarStorage();
             window.history.replaceState({}, document.title, window.location.pathname);
             abrirLista(listaIdURL);
             mostrarToast(`🎉 ¡Lista "${datos.nombre}" conectada en vivo!`);
-          registrarEventoGA('list_joined');
+            registrarEventoGA('list_joined');
           }
-        });
+        } catch(e) {
+          console.error('Error al abrir lista compartida:', e);
+          mostrarToast('⚠️ No se pudo abrir la lista compartida');
+        }
       }
     }
 
-    function crearNuevaLista() {
+    async function crearNuevaLista() {
       vibrarConfirmacion();
       const input = document.getElementById('nombreNuevaLista');
       const nombre = input.value.trim();
@@ -5099,6 +5193,9 @@
       guardarStorage();
       input.value = "";
       abrirLista(nuevaLista.id);
+      if (navigator.onLine) {
+        try { await asegurarMembresiaLista(nuevaLista.id); } catch(e) {}
+      }
       sincronizarConFirebase();
       mostrarToast(`✨ Lista creada (Código: ${nuevoCodigo})`);
       registrarEventoGA('list_created');
@@ -5730,14 +5827,16 @@
       return String(str ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       cargarTamanoLetra();
       cargarStorage();
       cargarOrdenCategorias();
       cargarMemoriaPrecios();
       cargarInteligenciaLocal();
       cargarColaSincronizacion();
-      procesarListaRecibidaPorURL();
+      await firebaseAuthReady;
+      await migrarMembresiasLocales();
+      await procesarListaRecibidaPorURL();
       actualizarEstadoRed();
 
       if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
