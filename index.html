@@ -1532,7 +1532,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.8 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.9 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1922,7 +1922,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.8</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.9</span>
         </div>
       </div>
 
@@ -1960,7 +1960,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.8</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.9</span>
         </div>
       </div>
 
@@ -2492,20 +2492,17 @@
 
     async function asegurarMembresiaLista(listaId) {
       if (!listaId) throw new Error('Lista inválida');
-      const user = await obtenerUsuarioFirebase();
-      await db.ref(`listas/${listaId}/miembros/${user.uid}`).set(true);
-      return user;
+      // v5.5.9: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
+      // Solo aseguramos que exista una sesión anónima válida antes de tocar Realtime Database.
+      return await obtenerUsuarioFirebase();
     }
 
     async function migrarMembresiasLocales() {
-      if (!navigator.onLine || !coleccionListas.length) return;
-      try {
-        await obtenerUsuarioFirebase();
-        const ids = [...new Set(coleccionListas.map(l => String(l?.id || '')).filter(Boolean))];
-        await Promise.allSettled(ids.map(id => asegurarMembresiaLista(id)));
-      } catch (e) {
-        console.warn('La migración de membresías se completará cuando haya conexión/autenticación.', e);
-      }
+      // Conservada por compatibilidad con llamadas antiguas.
+      // Ya no escribe en /miembros; solo verifica que Authentication esté disponible.
+      if (!navigator.onLine) return;
+      try { await obtenerUsuarioFirebase(); }
+      catch (e) { console.warn('Firebase Authentication aún no está disponible.', e); }
     }
 
     let coleccionListas = [];
@@ -5001,7 +4998,9 @@
       if (!listaId) return;
       if (dbListenerRef) dbListenerRef.off();
       try { await asegurarMembresiaLista(listaId); } catch(e) {
-        mostrarToast("⚠️ No se pudo autenticar la sincronización");
+        console.error('Error al preparar la sincronización Firebase:', e);
+        const codigo = e && e.code ? String(e.code) : '';
+        mostrarToast(codigo ? `⚠️ Firebase: ${codigo}` : "⚠️ No se pudo iniciar la sincronización");
         return;
       }
 
