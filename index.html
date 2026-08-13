@@ -1532,7 +1532,7 @@
 
   
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.9 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.5.10 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1922,7 +1922,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.9</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.10</span>
         </div>
       </div>
 
@@ -1960,7 +1960,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.9</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.5.10</span>
         </div>
       </div>
 
@@ -2453,8 +2453,9 @@
   <script>
     // CONFIGURACIÓN DE FIREBASE
     const firebaseConfig = {
-      apiKey: "AIzaSyAAA0FMRmg69mhIBiHrpCoXvhXa8qBRFa0",
+      apiKey: "AIzaSyAAa0FMRmg69mhIBiHrpCoXvhXa8qBRFa0",
       authDomain: "lista-de-compras-8e59d.firebaseapp.com",
+      databaseURL: "https://lista-de-compras-8e59d-default-rtdb.firebaseio.com",
       projectId: "lista-de-compras-8e59d",
       storageBucket: "lista-de-compras-8e59d.firebasestorage.app",
       messagingSenderId: "708116875550",
@@ -2492,7 +2493,7 @@
 
     async function asegurarMembresiaLista(listaId) {
       if (!listaId) throw new Error('Lista inválida');
-      // v5.5.9: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
+      // v5.5.10: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
       // Solo aseguramos que exista una sesión anónima válida antes de tocar Realtime Database.
       return await obtenerUsuarioFirebase();
     }
