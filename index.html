@@ -152,6 +152,34 @@
     .app-title { font-size: 1.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
 
     .header-right-controls { display: flex; align-items: center; gap: 8px; }
+    .btn-header-account {
+      border: 1px solid color-mix(in srgb, var(--primary) 38%, var(--border));
+      background: color-mix(in srgb, var(--card-bg) 94%, var(--primary) 6%);
+      color: var(--text);
+      min-height: 38px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 850;
+      cursor: pointer;
+      white-space: nowrap;
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .btn-header-account:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(15,23,42,.09); }
+    .btn-header-account img { width: 23px; height: 23px; border-radius: 50%; object-fit: cover; flex: none; }
+    @media (max-width: 560px) {
+      .header-right-controls { gap: 5px; }
+      .btn-header-account { min-height: 36px; padding: 6px 9px; max-width: 116px; font-size: .72rem; }
+      .net-badge { display:none !important; }
+    }
 
     .net-badge {
       font-size: 0.72rem;
@@ -1533,13 +1561,13 @@
   
 
 
-    /* CUENTA OPCIONAL - v5.6.1 */
+    /* CUENTA OPCIONAL - v5.6.4 */
     .account-status-card {width:100%;border:1px solid var(--border);border-radius:16px;padding:12px 13px;background:color-mix(in srgb,var(--card-bg) 94%,var(--primary) 6%);display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;color:var(--text);font:inherit;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
     .account-status-card:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--primary) 55%,var(--border));box-shadow:0 8px 22px rgba(15,23,42,.08)}
     .account-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;background:#eef2ff;font-size:1.25rem;overflow:hidden}.account-avatar img{width:100%;height:100%;object-fit:cover}.account-status-copy{min-width:0;flex:1}.account-status-copy strong{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.account-status-copy small{display:block;color:var(--text-muted);font-size:.73rem;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.account-chevron{color:var(--text-muted);font-weight:900}
     .auth-card{max-width:460px!important;text-align:left}.auth-hero{text-align:center;margin-bottom:14px}.auth-hero .auth-icon{width:64px;height:64px;margin:0 auto 10px;border-radius:20px;display:grid;place-items:center;font-size:2rem;background:linear-gradient(135deg,#eef2ff,#ecfeff);border:1px solid #dbeafe}.auth-hero h3{margin:0 0 6px;font-size:1.25rem}.auth-hero p{margin:0;color:var(--text-muted);line-height:1.45;font-size:.9rem}.auth-benefits{margin:14px 0;display:grid;gap:8px}.auth-benefit{display:flex;gap:9px;align-items:flex-start;padding:10px 11px;border-radius:13px;background:color-mix(in srgb,var(--primary) 7%,var(--card-bg));font-size:.84rem;line-height:1.35}.auth-provider-btn{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);font-weight:850;font-size:.94rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:9px;transition:transform .16s ease,box-shadow .16s ease}.auth-provider-btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,23,42,.09)}.auth-provider-btn.google{background:#fff;color:#172033}.auth-provider-btn.apple{background:#111827;color:#fff;border-color:#111827}.auth-provider-logo{width:22px;height:22px;display:grid;place-items:center;font-size:1.15rem;font-weight:900}.auth-guest-btn{width:100%;margin-top:10px;border:none;background:transparent;color:var(--text-muted);font-weight:800;padding:10px;cursor:pointer}.auth-profile-box{border:1px solid var(--border);border-radius:16px;padding:14px;margin:12px 0;background:color-mix(in srgb,var(--primary) 5%,var(--card-bg))}.auth-profile-row{display:flex;gap:12px;align-items:center}.auth-profile-avatar{width:52px;height:52px;border-radius:50%;background:#eef2ff;display:grid;place-items:center;overflow:hidden;font-size:1.5rem;flex:none}.auth-profile-avatar img{width:100%;height:100%;object-fit:cover}.auth-profile-text{min-width:0}.auth-profile-text strong,.auth-profile-text small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.auth-profile-text small{color:var(--text-muted);margin-top:3px}.auth-cloud-badge{display:inline-flex;margin-top:10px;padding:6px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:.75rem;font-weight:900}.auth-error{display:none;margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff1f2;color:#9f1239;font-size:.8rem;line-height:1.4}.auth-error.show{display:block}@media(max-width:520px){.auth-card{padding:21px 17px 18px!important}.auth-provider-btn{min-height:52px;font-size:.96rem}}
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.6.1 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.6.4 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -1850,6 +1878,7 @@
       <div class="header-right-controls">
         <span id="badgeUsuariosVivo" class="badge-users-online" style="display: none;">👥 1 en vivo</span>
         <span id="netStatusBadge" class="net-badge online">🟢 Online</span>
+        <button id="btnHeaderCuenta" class="btn-header-account" type="button" onclick="abrirModalCuenta()" aria-label="Iniciar sesión o administrar cuenta">👤 <span id="btnHeaderCuentaTexto">Iniciar sesión</span></button>
         <button class="btn-menu-burger" onclick="toggleSidebar()" aria-label="Abrir menú" title="Abrir menú">☰</button>
       </div>
     </div>
@@ -1936,7 +1965,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.6.1</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.6.4</span>
         </div>
       </div>
 
@@ -1947,7 +1976,7 @@
             <h1 class="home-app-name">Mis Listas de Compras</h1>
           </div>
 
-          <h2>👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
+          <h2 id="saludoInicio">👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
           <p>Tu asistente inteligente para el supermercado. Elige una opción para comenzar:</p>
           
           <div class="home-actions">
@@ -1974,7 +2003,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.6.1</span>
+          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.6.4</span>
         </div>
       </div>
 
@@ -1990,9 +2019,6 @@
         </div>
 
         <div class="action-bar">
-          <button class="btn-sec" onclick="exportarBackup()">💾 Respaldar</button>
-          <button class="btn-sec" onclick="document.getElementById('importFileInput').click()">📂 Cargar</button>
-          <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importarBackup(event)">
         </div>
 
         <div id="contenedorListas"></div>
@@ -2337,7 +2363,7 @@
   <div id="cuentaOverlay" class="tutorial-overlay" role="dialog" aria-modal="true" aria-labelledby="cuentaTitulo">
     <div class="tutorial-card auth-card">
       <div id="cuentaInvitadoPanel">
-        <div class="auth-hero"><div class="auth-icon">☁️</div><h3 id="cuentaTitulo">Guarda tus listas</h3><p>Puedes seguir usando la app sin registrarte. Iniciar sesión es opcional y te permite recuperar tus listas en otros dispositivos.</p></div>
+        <div class="auth-hero"><div class="auth-icon">👋</div><h3 id="cuentaTitulo">Bienvenido a Mis Listas</h3><p>Puedes seguir usando la app sin registrarte. Iniciar sesión es opcional y te permite recuperar tus listas en otros dispositivos.</p></div>
         <div class="auth-benefits">
           <div class="auth-benefit"><span>✅</span><span><strong>Recupera tus listas</strong> al cambiar de teléfono o usar otro dispositivo.</span></div>
           <div class="auth-benefit"><span>🔄</span><span><strong>Mantén tus códigos asociados</strong> a tu cuenta para volver a encontrarlos fácilmente.</span></div>
@@ -2345,7 +2371,7 @@
         </div>
         <button class="auth-provider-btn google" type="button" onclick="iniciarSesionProveedor('google')"><span class="auth-provider-logo">G</span>Continuar con Google</button>
         <button class="auth-provider-btn apple" type="button" onclick="iniciarSesionProveedor('apple')"><span class="auth-provider-logo">●</span>Continuar con Apple</button>
-        <button class="auth-guest-btn" type="button" onclick="cerrarModalCuenta()">Seguir como invitado</button>
+        <button class="auth-guest-btn" type="button" onclick="continuarComoInvitado()">Seguir como invitado</button>
         <div id="authCuentaError" class="auth-error" role="alert"></div>
       </div>
       <div id="cuentaRegistradaPanel" style="display:none;">
@@ -2532,7 +2558,7 @@
 
     async function asegurarMembresiaLista(listaId) {
       if (!listaId) throw new Error('Lista inválida');
-      // v5.6.1: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
+      // v5.6.4: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
       // Solo aseguramos que exista una sesión anónima válida antes de tocar Realtime Database.
       return await obtenerUsuarioFirebase();
     }
@@ -2546,19 +2572,96 @@
     }
 
 
+    let cuentaEsAccesoInicial = false;
     function esCuentaRegistrada(user = auth.currentUser) { return Boolean(user && !user.isAnonymous); }
     function nombreProveedorCuenta(user = auth.currentUser) { if(!user||!Array.isArray(user.providerData))return ''; const ids=user.providerData.map(p=>p&&p.providerId).filter(Boolean); if(ids.includes('google.com'))return 'Google'; if(ids.includes('apple.com'))return 'Apple'; return ids.length?'Cuenta':''; }
+    function nombreCompletoUsuario(user = auth.currentUser) {
+      if (!esCuentaRegistrada(user)) return '';
+      const directo = String(user?.displayName || '').trim();
+      if (directo) return directo;
+      const datosProveedor = Array.isArray(user?.providerData) ? user.providerData : [];
+      const proveedorConNombre = datosProveedor.find(p => p && String(p.displayName || '').trim());
+      if (proveedorConNombre) return String(proveedorConNombre.displayName).trim();
+      return '';
+    }
+    function primerNombreUsuario(user = auth.currentUser) {
+      const nombre = nombreCompletoUsuario(user);
+      if (nombre) return nombre.split(/\s+/)[0];
+      return '';
+    }
+    async function completarPerfilDesdeProveedor(resultado) {
+      const user = resultado?.user || auth.currentUser;
+      if (!user || user.isAnonymous) return user;
+      if (String(user.displayName || '').trim()) return user;
+      const perfil = resultado?.additionalUserInfo?.profile || {};
+      const nombreProveedor = String(perfil.name || perfil.given_name || '').trim();
+      const fotoProveedor = String(perfil.picture || '').trim();
+      if (nombreProveedor) {
+        try {
+          await user.updateProfile({ displayName: nombreProveedor, photoURL: user.photoURL || fotoProveedor || null });
+          await user.reload();
+          usuarioFirebase = auth.currentUser;
+          return auth.currentUser;
+        } catch (e) {
+          console.warn('No se pudo guardar el nombre del proveedor en Firebase:', e);
+        }
+      }
+      return user;
+    }
+    function actualizarSaludoInicio(user = auth.currentUser) {
+      const el = document.getElementById('saludoInicio');
+      if (!el) return;
+      const nombre = primerNombreUsuario(user);
+      el.textContent = nombre ? `👋 ¡Hola, ${nombre}! ¿Qué compras haremos hoy?` : '👋 ¡Hola! ¿Qué compras haremos hoy?';
+    }
     function mostrarErrorCuenta(mensaje, registrada=false){const el=document.getElementById(registrada?'authCuentaErrorRegistrada':'authCuentaError');if(!el)return;el.textContent=mensaje||'';el.classList.toggle('show',Boolean(mensaje));}
-    function actualizarUIcuenta(user=auth.currentUser){const registrado=esCuentaRegistrada(user);const title=document.getElementById('accountStatusTitle');const subtitle=document.getElementById('accountStatusSubtitle');const avatar=document.getElementById('accountStatusAvatar');const pInv=document.getElementById('cuentaInvitadoPanel');const pReg=document.getElementById('cuentaRegistradaPanel');if(title)title.textContent=registrado?(user.displayName||user.email||'Mi cuenta'):'Invitado';if(subtitle)subtitle.textContent=registrado?`Conectado con ${nombreProveedorCuenta(user)}`:'Guarda tus listas en tu cuenta';if(avatar)avatar.innerHTML=registrado&&user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="">`:(registrado?'✅':'👤');if(pInv)pInv.style.display=registrado?'none':'block';if(pReg)pReg.style.display=registrado?'block':'none';if(registrado){const a=document.getElementById('authProfileAvatar'),n=document.getElementById('authProfileName'),e=document.getElementById('authProfileEmail');if(a)a.innerHTML=user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="">`:'👤';if(n)n.textContent=user.displayName||'Mi cuenta';if(e)e.textContent=user.email||`Cuenta de ${nombreProveedorCuenta(user)}`;}}
-    function abrirModalCuenta(){if(document.getElementById('sidebarMenu')?.classList.contains('active'))toggleSidebar();mostrarErrorCuenta('');mostrarErrorCuenta('',true);actualizarUIcuenta();document.getElementById('cuentaOverlay')?.classList.add('active');}
-    function cerrarModalCuenta(){document.getElementById('cuentaOverlay')?.classList.remove('active');}
+    function actualizarUIcuenta(user=auth.currentUser){
+      const registrado=esCuentaRegistrada(user);
+      const title=document.getElementById('accountStatusTitle'),subtitle=document.getElementById('accountStatusSubtitle'),avatar=document.getElementById('accountStatusAvatar');
+      const pInv=document.getElementById('cuentaInvitadoPanel'),pReg=document.getElementById('cuentaRegistradaPanel');
+      const btnHeader=document.getElementById('btnHeaderCuenta'),btnHeaderTexto=document.getElementById('btnHeaderCuentaTexto');
+      if(title)title.textContent=registrado?(nombreCompletoUsuario(user)||'Mi cuenta'):'Invitado';
+      if(subtitle)subtitle.textContent=registrado?`Conectado con ${nombreProveedorCuenta(user)}`:'Guarda tus listas en tu cuenta';
+      if(avatar)avatar.innerHTML=registrado&&user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="">`:(registrado?'✅':'👤');
+      if(btnHeaderTexto) btnHeaderTexto.textContent = registrado ? (primerNombreUsuario(user)||'Mi cuenta') : 'Iniciar sesión';
+      if(btnHeader){
+        const foto = registrado && user.photoURL ? `<img src="${escapeHtml(user.photoURL)}" alt="">` : (registrado?'✅':'👤');
+        btnHeader.innerHTML = `${foto}<span id="btnHeaderCuentaTexto">${escapeHtml(registrado ? (primerNombreUsuario(user)||'Mi cuenta') : 'Iniciar sesión')}</span>`;
+        btnHeader.setAttribute('aria-label', registrado ? 'Administrar mi cuenta' : 'Iniciar sesión');
+      }
+      if(pInv)pInv.style.display=registrado?'none':'block';if(pReg)pReg.style.display=registrado?'block':'none';
+      if(registrado){const a=document.getElementById('authProfileAvatar'),n=document.getElementById('authProfileName'),e=document.getElementById('authProfileEmail');if(a)a.innerHTML=user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="">`:'👤';if(n)n.textContent=nombreCompletoUsuario(user)||'Mi cuenta';if(e)e.textContent=user.email||`Cuenta de ${nombreProveedorCuenta(user)}`;}
+      actualizarSaludoInicio(user);
+    }
+    function abrirModalCuenta(esInicial=false){
+      if(document.getElementById('sidebarMenu')?.classList.contains('active'))toggleSidebar();
+      cuentaEsAccesoInicial = Boolean(esInicial);
+      mostrarErrorCuenta('');mostrarErrorCuenta('',true);actualizarUIcuenta();
+      document.getElementById('cuentaOverlay')?.classList.add('active');
+    }
+    function cerrarModalCuenta(forzar=false){
+      if(cuentaEsAccesoInicial && !forzar) return;
+      document.getElementById('cuentaOverlay')?.classList.remove('active');
+      cuentaEsAccesoInicial = false;
+    }
+    function resolverAccesoInicial(){
+      localStorage.setItem('accesoInicialResuelto_v1','true');
+      cuentaEsAccesoInicial = false;
+    }
+    function continuarComoInvitado(){
+      resolverAccesoInicial();
+      cerrarModalCuenta(true);
+      actualizarUIcuenta(auth.currentUser);
+      registrarEventoGA('continue_as_guest');
+      mostrarToast('👤 Continuas como invitado');
+    }
     function crearProveedorAuth(tipo){if(tipo==='google'){const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});return p;}if(tipo==='apple'){const p=new firebase.auth.OAuthProvider('apple.com');p.addScope('email');p.addScope('name');p.setCustomParameters({locale:'es_ES'});return p;}throw new Error('Proveedor no disponible');}
     async function registrarListaEnCuenta(listaId,nombreLista){const user=auth.currentUser;if(!esCuentaRegistrada(user)||!navigator.onLine||!listaId)return;try{await db.ref(`usuarios/${user.uid}/listas/${String(listaId)}`).set({nombre:String(nombreLista||'Mi Lista').slice(0,100),agregadoEn:firebase.database.ServerValue.TIMESTAMP});}catch(e){console.warn('No se pudo asociar la lista a la cuenta:',e);}}
     async function registrarTodasListasLocalesEnCuenta(){const user=auth.currentUser;if(!esCuentaRegistrada(user)||!navigator.onLine)return;await Promise.allSettled((coleccionListas||[]).filter(l=>l&&l.id).map(l=>registrarListaEnCuenta(l.id,l.nombre)));}
     async function recuperarListasDeCuenta(){const user=auth.currentUser;if(!esCuentaRegistrada(user)||!navigator.onLine)return 0;try{const indiceSnap=await db.ref(`usuarios/${user.uid}/listas`).once('value');const indice=indiceSnap.val()||{};let agregadas=0;for(const codigo of Object.keys(indice)){if(coleccionListas.some(l=>String(l.id)===String(codigo)))continue;try{const snap=await db.ref(`listas/${codigo}`).once('value');const datos=snap.val();if(!datos)continue;coleccionListas.push({id:codigo,nombre:datos.nombre||indice[codigo]?.nombre||'Mi Lista',items:itemsDesdeFirebase(datos.items),presupuesto:Number(datos.presupuesto)||0,ui:{filter:'pendientes',focus:false}});agregadas++;}catch(e){console.warn('No se pudo recuperar la lista',codigo,e);}}if(agregadas){guardarStorage();if(typeof renderizarListas==='function')renderizarListas();mostrarToast(`☁️ ${agregadas} lista${agregadas===1?' recuperada':'s recuperadas'} de tu cuenta`);}return agregadas;}catch(e){console.warn('No se pudieron recuperar las listas de la cuenta:',e);return 0;}}
-    async function finalizarInicioSesionCuenta(){usuarioFirebase=auth.currentUser;actualizarUIcuenta(usuarioFirebase);if(!esCuentaRegistrada(usuarioFirebase))return;await registrarTodasListasLocalesEnCuenta();await recuperarListasDeCuenta();registrarEventoGA('account_signed_in',{provider:nombreProveedorCuenta(usuarioFirebase).toLowerCase()||'provider'});mostrarToast('✅ Cuenta conectada · tus listas quedan asociadas');cerrarModalCuenta();}
-    async function iniciarSesionProveedor(tipo){mostrarErrorCuenta('');let user;try{user=await obtenerUsuarioFirebase();}catch(e){mostrarErrorCuenta('No pudimos preparar el acceso. Revisa tu conexión e inténtalo otra vez.');return;}const provider=crearProveedorAuth(tipo);try{let resultado;if(user.isAnonymous)resultado=await user.linkWithPopup(provider);else resultado=await auth.signInWithPopup(provider);usuarioFirebase=resultado.user;await finalizarInicioSesionCuenta();}catch(error){console.error(`Error al iniciar con ${tipo}:`,error);const code=String(error?.code||'');if((code==='auth/credential-already-in-use'||code==='auth/account-exists-with-different-credential')&&error.credential){try{const resultado=await auth.signInWithCredential(error.credential);usuarioFirebase=resultado.user;await finalizarInicioSesionCuenta();return;}catch(e2){console.error('No se pudo recuperar la cuenta existente:',e2);}}if(code==='auth/operation-not-allowed'){mostrarErrorCuenta(tipo==='apple'?'Apple todavía no está configurado en Firebase. Puedes usar Google o seguir como invitado.':'Google todavía no está habilitado en Firebase Authentication.');}else if(code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request'){mostrarErrorCuenta('Acceso cancelado. Puedes intentarlo nuevamente cuando quieras.');}else if(code==='auth/popup-blocked'){mostrarErrorCuenta('El navegador bloqueó la ventana de acceso. Permite ventanas emergentes para este sitio e inténtalo otra vez.');}else{mostrarErrorCuenta(`No pudimos iniciar sesión${code?` (${code.replace('auth/','')})`:''}.`);}}}
-    async function cerrarSesionCuenta(){mostrarErrorCuenta('',true);const r=await abrirDialogoApp({icon:'👤',title:'¿Cerrar sesión?',message:'Tus listas seguirán en este dispositivo. La app continuará en modo invitado.',confirmText:'Cerrar sesión',cancelText:'Cancelar'});if(!r.confirmed)return;try{await auth.signOut();const cred=await auth.signInAnonymously();usuarioFirebase=cred.user;actualizarUIcuenta(usuarioFirebase);registrarEventoGA('account_signed_out');mostrarToast('👤 Ahora estás usando la app como invitado');cerrarModalCuenta();}catch(e){console.error('Error al cerrar sesión:',e);mostrarErrorCuenta('No pudimos cambiar a modo invitado.',true);}}
+    async function finalizarInicioSesionCuenta(){usuarioFirebase=auth.currentUser;actualizarUIcuenta(usuarioFirebase);if(!esCuentaRegistrada(usuarioFirebase))return;resolverAccesoInicial();await registrarTodasListasLocalesEnCuenta();await recuperarListasDeCuenta();registrarEventoGA('account_signed_in',{provider:nombreProveedorCuenta(usuarioFirebase).toLowerCase()||'provider'});mostrarToast('✅ Cuenta conectada · tus listas quedan asociadas');cerrarModalCuenta(true);}
+    async function iniciarSesionProveedor(tipo){mostrarErrorCuenta('');let user;try{user=await obtenerUsuarioFirebase();}catch(e){mostrarErrorCuenta('No pudimos preparar el acceso. Revisa tu conexión e inténtalo otra vez.');return;}const provider=crearProveedorAuth(tipo);try{let resultado;if(user.isAnonymous)resultado=await user.linkWithPopup(provider);else resultado=await auth.signInWithPopup(provider);usuarioFirebase=resultado.user;await completarPerfilDesdeProveedor(resultado);usuarioFirebase=auth.currentUser||resultado.user;await finalizarInicioSesionCuenta();}catch(error){console.error(`Error al iniciar con ${tipo}:`,error);const code=String(error?.code||'');if((code==='auth/credential-already-in-use'||code==='auth/account-exists-with-different-credential')&&error.credential){try{const resultado=await auth.signInWithCredential(error.credential);usuarioFirebase=resultado.user;await completarPerfilDesdeProveedor(resultado);usuarioFirebase=auth.currentUser||resultado.user;await finalizarInicioSesionCuenta();return;}catch(e2){console.error('No se pudo recuperar la cuenta existente:',e2);}}if(code==='auth/operation-not-allowed'){mostrarErrorCuenta(tipo==='apple'?'Apple todavía no está configurado en Firebase. Puedes usar Google o seguir como invitado.':'Google todavía no está habilitado en Firebase Authentication.');}else if(code==='auth/popup-closed-by-user'||code==='auth/cancelled-popup-request'){mostrarErrorCuenta('Acceso cancelado. Puedes intentarlo nuevamente cuando quieras.');}else if(code==='auth/popup-blocked'){mostrarErrorCuenta('El navegador bloqueó la ventana de acceso. Permite ventanas emergentes para este sitio e inténtalo otra vez.');}else{mostrarErrorCuenta(`No pudimos iniciar sesión${code?` (${code.replace('auth/','')})`:''}.`);}}}
+    async function cerrarSesionCuenta(){mostrarErrorCuenta('',true);const r=await abrirDialogoApp({icon:'👤',title:'¿Cerrar sesión?',message:'Tus listas seguirán en este dispositivo. La app continuará en modo invitado.',confirmText:'Cerrar sesión',cancelText:'Cancelar'});if(!r.confirmed)return;try{await auth.signOut();const cred=await auth.signInAnonymously();usuarioFirebase=cred.user;actualizarUIcuenta(usuarioFirebase);registrarEventoGA('account_signed_out');mostrarToast('👤 Ahora estás usando la app como invitado');cerrarModalCuenta(true);}catch(e){console.error('Error al cerrar sesión:',e);mostrarErrorCuenta('No pudimos cambiar a modo invitado.',true);}}
     auth.onAuthStateChanged(user=>{if(user)usuarioFirebase=user;actualizarUIcuenta(user);});
 
     let coleccionListas = [];
@@ -4680,7 +4783,13 @@
     }
 
     // NAVEGACIÓN INSTANTÁNEA ENTRE SECCIONES (SIN BUGS DE TRANSICIONES)
+    // Guardamos la sección visible para no volver a animar toda Lista Actual
+    // cada vez que Firebase o una edición local obliga a renderizar productos.
+    let seccionActualUI = null;
+
     function verSeccion(seccion) {
+      const cambioRealDeSeccion = seccionActualUI !== seccion;
+      seccionActualUI = seccion;
       vibrarConfirmacion();
       const secPortada = document.getElementById('secPortada');
       const secInicio = document.getElementById('secInicio');
@@ -4740,8 +4849,8 @@
         barraNavegacion.style.display = 'flex';
         navListaActiva.classList.add('active');
         escucharSincronizacionFirebase(idListaActiva);
-        renderizarProductos();
-        animarEntradaSeccion(secListaActiva);
+        renderizarProductos(cambioRealDeSeccion);
+        if (cambioRealDeSeccion) animarEntradaSeccion(secListaActiva);
       }
     }
 
@@ -5733,7 +5842,7 @@
       mostrarToast(`🧠 ${completados} precio${completados === 1 ? '' : 's'} completado${completados === 1 ? '' : 's'} desde tu memoria`);
     }
 
-    function renderizarProductos() {
+    function renderizarProductos(animarEntrada = false) {
       const contenedor = document.getElementById('contenedorProductosCategorizados');
       const titulo = document.getElementById('tituloListaActiva');
       const badgeCod = document.getElementById('badgeCodigoLista');
@@ -5779,7 +5888,7 @@
             </div>
           `;
           contenedor.appendChild(header);
-          prepararAnimacionEscalonada(header, index);
+          if (animarEntrada) prepararAnimacionEscalonada(header, index);
 
           const ul = document.createElement('ul');
 
@@ -5837,7 +5946,7 @@
               </div>
             `;
             ul.appendChild(li);
-            prepararAnimacionEscalonada(li, indiceItem + 1);
+            if (animarEntrada) prepararAnimacionEscalonada(li, indiceItem + 1);
           });
 
           contenedor.appendChild(ul);
@@ -5903,14 +6012,15 @@
         if (btnInstalar) btnInstalar.style.display = 'none';
       }
 
-      const portadaVista = localStorage.getItem('portadaVista_v1');
-      if (!portadaVista) {
-        verSeccion('portada');
-      } else {
-        verSeccion('inicio');
-      }
+      actualizarUIcuenta(auth.currentUser);
+      verSeccion('inicio');
 
-      comprobarTutorialPrimeraVez();
+      const accesoInicialResuelto = localStorage.getItem('accesoInicialResuelto_v1');
+      if (!accesoInicialResuelto) {
+        // En el primer uso se muestra solo la elección de acceso.
+        // El tutorial queda disponible después desde Ajustes y Ayuda.
+        setTimeout(() => abrirModalCuenta(true), 120);
+      }
     });
 
     function cerrarModalActivoSeguro() {
