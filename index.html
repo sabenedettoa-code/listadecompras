@@ -1900,6 +1900,13 @@
       visibility: visible;
       pointer-events: auto;
     }
+
+    /* Un enlace compartido activa el loader desde el primer render, antes de Firebase. */
+    html.shared-link-boot #sharedListLoadingOverlay {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
     .shared-list-loading-card {
       width: min(92vw, 390px);
       background: var(--card-bg);
@@ -1950,8 +1957,28 @@
       .shared-list-loading-spinner { animation-duration: 1.6s; }
     }
 </style>
+  <script>
+    // Detecta un enlace compartido en el primer instante posible del arranque.
+    (function(){
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if ((params.get('id') || '').trim()) {
+          document.documentElement.classList.add('shared-link-boot');
+          window.__sharedListBootStartedAt = Date.now();
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
+  <div id="sharedListLoadingOverlay" class="shared-list-loading-overlay" role="status" aria-live="polite" aria-busy="true" aria-label="Cargando lista compartida">
+    <div class="shared-list-loading-card">
+      <div class="shared-list-loading-icon" aria-hidden="true"><div class="shared-list-loading-spinner"></div></div>
+      <h3>Cargando lista compartida…</h3>
+      <p>Estamos conectando la lista y sincronizando sus productos.</p>
+    </div>
+  </div>
+
 
   <div class="container" id="appContainer">
     
@@ -2242,13 +2269,6 @@
 
 
 
-  <div id="sharedListLoadingOverlay" class="shared-list-loading-overlay" role="status" aria-live="polite" aria-busy="true" aria-label="Cargando lista compartida">
-    <div class="shared-list-loading-card">
-      <div class="shared-list-loading-icon" aria-hidden="true"><div class="shared-list-loading-spinner"></div></div>
-      <h3>Cargando lista compartida…</h3>
-      <p>Estamos conectando la lista y sincronizando sus productos.</p>
-    </div>
-  </div>
 
   <div id="appDialogOverlay" class="tutorial-overlay" role="dialog" aria-modal="true">
     <div class="tutorial-card app-dialog-card">
@@ -5422,22 +5442,26 @@
       }
     }
 
-    let sharedListLoadingOpenedAt = 0;
+    let sharedListLoadingOpenedAt = Number(window.__sharedListBootStartedAt) || 0;
     function mostrarCargaListaCompartida() {
       const overlay = document.getElementById('sharedListLoadingOverlay');
       if (!overlay) return;
-      sharedListLoadingOpenedAt = Date.now();
+      if (!sharedListLoadingOpenedAt) sharedListLoadingOpenedAt = Date.now();
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
     async function ocultarCargaListaCompartida() {
       const overlay = document.getElementById('sharedListLoadingOverlay');
       if (!overlay) return;
-      const elapsed = Date.now() - sharedListLoadingOpenedAt;
-      const wait = Math.max(0, 500 - elapsed);
+      const startedAt = sharedListLoadingOpenedAt || Number(window.__sharedListBootStartedAt) || Date.now();
+      const elapsed = Date.now() - startedAt;
+      const wait = Math.max(0, 450 - elapsed);
       if (wait) await new Promise(resolve => setTimeout(resolve, wait));
+      document.documentElement.classList.remove('shared-link-boot');
       overlay.classList.remove('active');
       document.body.style.overflow = '';
+      sharedListLoadingOpenedAt = 0;
+      window.__sharedListBootStartedAt = 0;
     }
 
     function obtenerCodigoListaDesdeURL() {
@@ -6177,10 +6201,12 @@
       const hayListaEnlace = Boolean(obtenerCodigoListaDesdeURL());
 
       if (!accesoInicialResuelto) {
-        // Usuario nuevo: primero elige Google/Facebook/Invitado. El enlace se conserva
-        // y se abre automáticamente justo después de resolver el acceso.
+        // Si llegó por un enlace, el loader ya apareció desde el primer render.
+        // Antes de pedir el método de acceso lo retiramos; al resolverlo se vuelve
+        // a mostrar mientras Firebase abre realmente la lista compartida.
         verSeccion('inicio');
-        setTimeout(() => abrirModalCuenta(true), 120);
+        if (hayListaEnlace) await ocultarCargaListaCompartida();
+        setTimeout(() => abrirModalCuenta(true), 40);
       } else if (hayListaEnlace) {
         const abierta = await procesarListaRecibidaPorURL();
         if (!abierta) verSeccion('inicio');
