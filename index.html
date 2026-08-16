@@ -1318,9 +1318,35 @@
 
     .focus-mode-active .add-product-card,
     .focus-mode-active .sub-tabs,
-    .focus-mode-active .search-box-container,
     .focus-mode-active .header-top {
       display: none !important;
+    }
+
+    .focus-mode-active .search-box-container {
+      display: flex !important;
+      position: sticky;
+      top: 8px;
+      z-index: 40;
+      max-width: 680px;
+      margin: 8px auto 14px;
+      padding: 8px;
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+
+    .focus-mode-active .input-search-product {
+      min-height: 46px;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .focus-mode-active .btn-clear-search {
+      min-width: 46px;
+      min-height: 46px;
     }
 
     .focus-mode-active .action-bar .btn-sec:not(#btnToggleFocus) {
@@ -3015,14 +3041,17 @@
       localStorage.setItem('modoFocus_v1', modoFocusActivo ? '1' : '0');
       const appContainer = document.getElementById('appContainer');
       const btn = document.getElementById('btnToggleFocus');
+      const buscadorFocus = document.getElementById('searchInput');
 
       if (modoFocusActivo) {
+        if (buscadorFocus) buscadorFocus.placeholder = '🔍 Buscar producto en Focus...';
         appContainer.classList.add('focus-mode-active');
         btn.textContent = '🎯 Salir Focus';
         mostrarToast("🎯 Modo Focus activado");
         registrarEventoGA('focus_toggled', { enabled: true });
       } else {
         appContainer.classList.remove('focus-mode-active');
+        if (buscadorFocus) buscadorFocus.placeholder = '🔍 Buscar en esta lista...';
         btn.textContent = '🎯 Modo Focus';
         mostrarToast("🎯 Modo normal");
         registrarEventoGA('focus_toggled', { enabled: false });
@@ -5583,6 +5612,8 @@
       document.getElementById('subTabComprados')?.classList.toggle('active', filtroProductos === 'comprados');
       const app=document.getElementById('appContainer'), btn=document.getElementById('btnToggleFocus');
       app?.classList.toggle('focus-mode-active', modoFocusActivo); if(btn) btn.textContent = modoFocusActivo ? '🎯 Salir Focus' : '🎯 Modo Focus';
+      const buscadorFocus = document.getElementById('searchInput');
+      if (buscadorFocus) buscadorFocus.placeholder = modoFocusActivo ? '🔍 Buscar producto en Focus...' : '🔍 Buscar en esta lista...';
     }
 
     async function eliminarLista(e, id) {
