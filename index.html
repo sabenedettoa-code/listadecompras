@@ -1349,6 +1349,112 @@
       min-height: 46px;
     }
 
+    .focus-status-filter {
+      display: none;
+      width: 100%;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .focus-mode-active .focus-status-filter {
+      display: grid;
+    }
+
+    .focus-status-btn {
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--tab-bg);
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 7px 8px;
+      transition: transform .16s ease, background-color .16s ease, color .16s ease, border-color .16s ease;
+    }
+
+    .focus-status-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .focus-status-btn:active { transform: scale(.97); }
+
+    .focus-mode-active .search-box-container {
+      flex-wrap: wrap;
+    }
+
+    .btn-focus-scanner {
+      display: none;
+      min-width: 46px;
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .focus-mode-active .btn-focus-scanner {
+      display: inline-flex;
+    }
+
+    .focus-scan-product {
+      display: grid;
+      gap: 12px;
+      margin: 14px 0 4px;
+    }
+
+    .focus-scan-product label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .focus-scan-product input {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--input-bg, var(--card-bg));
+      color: var(--text);
+      padding: 10px 12px;
+      font: inherit;
+      font-weight: 700;
+      box-sizing: border-box;
+    }
+
+    .focus-scan-product .focus-scan-row {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 10px;
+    }
+
+    .focus-scan-found-name {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--tab-bg);
+      border: 1px solid var(--border);
+      font-size: 1.02rem;
+      font-weight: 900;
+      color: var(--text);
+      text-align: center;
+    }
+
+    @media (max-width: 420px) {
+      .focus-scan-product .focus-scan-row { grid-template-columns: 1fr; }
+    }
+
     .focus-mode-active .action-bar .btn-sec:not(#btnToggleFocus) {
       display: none !important;
     }
@@ -2260,7 +2366,13 @@
         </div>
 
         <div class="search-box-container" style="display: flex; gap: 6px;">
+          <div id="focusStatusFilter" class="focus-status-filter" aria-label="Qué productos mostrar en Modo Focus">
+            <button id="focusFilterPendientes" class="focus-status-btn active" onclick="cambiarFiltroFocus('pendientes')">Por comprar</button>
+            <button id="focusFilterComprados" class="focus-status-btn" onclick="cambiarFiltroFocus('comprados')">Comprados</button>
+            <button id="focusFilterTodos" class="focus-status-btn" onclick="cambiarFiltroFocus('todos')">Todos</button>
+          </div>
           <input type="text" id="searchInput" class="input-search-product" placeholder="🔍 Buscar en esta lista..." oninput="filtrarProductosPorBusqueda()">
+          <button id="btnFocusScanner" class="btn-focus-scanner" onclick="abrirEscanerBarras(true)" title="Escanear producto en Focus" aria-label="Escanear código de barras en Modo Focus">▣</button>
           <button id="btnClearSearch" class="btn-clear-search" onclick="limpiarBusqueda()">✕</button>
         </div>
 
@@ -2611,6 +2723,32 @@
       <div id="reader"></div>
 
       <button class="btn-tut prev" onclick="cerrarEscanerBarras(true)" style="width: 100%;">Cancelar Escaneo</button>
+    </div>
+  </div>
+
+  <div id="focusScanProductOverlay" class="tutorial-overlay" role="dialog" aria-modal="true" aria-labelledby="focusScanProductTitle">
+    <div class="tutorial-card" style="max-width:440px;">
+      <div class="tutorial-icon">▣</div>
+      <h3 id="focusScanProductTitle">Producto escaneado</h3>
+      <p id="focusScanProductHelp" style="font-size:0.88rem; text-align:center;">Confirma los datos antes de agregarlo a la lista.</p>
+      <div id="focusScanKnownName" class="focus-scan-found-name" style="display:none;"></div>
+      <div class="focus-scan-product">
+        <label id="focusScanNameWrap">Nombre del producto
+          <input type="text" id="focusScanName" placeholder="Ej: Atún en lata" autocomplete="off">
+        </label>
+        <div class="focus-scan-row">
+          <label>Cantidad
+            <input type="number" id="focusScanQty" value="1" min="1" max="99" inputmode="numeric">
+          </label>
+          <label>Precio unitario (CLP)
+            <input type="number" id="focusScanPrice" placeholder="Ej: 1590" min="0" step="1" inputmode="numeric">
+          </label>
+        </div>
+      </div>
+      <div class="tutorial-actions">
+        <button class="btn-tut prev" onclick="cerrarConfirmacionEscanerFocus()">Cancelar</button>
+        <button class="btn-tut next" onclick="confirmarProductoEscaneadoFocus()">➕ Agregar</button>
+      </div>
     </div>
   </div>
 
@@ -3830,7 +3968,7 @@
       {icon:'🧠',title:'Memoria inteligente de precios',desc:'La app recuerda precios anteriores. Si completa un precio desde memoria, lo marca como estimado hasta que tú lo confirmes o modifiques.',tip:'Cuando escribes el precio real en el supermercado, pasa a considerarse confirmado.'},
       {icon:'💰',title:'Presupuesto y gastos',desc:'Define un tope, revisa cuánto llevas gastado y cuánto te queda. El cálculo puede incluir precios estimados cuando todavía faltan precios reales.',tip:'El aviso te dirá claramente cuánto te queda o cuánto vas sobre el tope.'},
       {icon:'🤖',title:'ListAI con revisión',desc:'Pídele menús, compras, lectura de boletas o listas desde una foto. Primero revisas la propuesta y luego decides qué agregar.',tip:'Si ListAI falla, tu texto y tu foto se conservan para que puedas reintentar.'},
-      {icon:'🎯',title:'Modo Focus',desc:'En el supermercado, Focus prioriza nombre, cantidad, precio editable y botón ✓ para comprar sin distracciones.',tip:'Editar o borrar quedan fuera de Focus, pero el precio sigue disponible.'},
+      {icon:'🎯',title:'Modo Focus',desc:'En el supermercado, Focus prioriza nombre, cantidad, precio editable, buscador y escáner de código de barras para comprar sin distracciones.',tip:'Puedes alternar Por comprar / Comprados / Todos. Al escanear, la app avisa si detecta un producto con nombre parecido para ayudarte a evitar duplicados.'},
       {icon:'📶',title:'También funciona sin señal',desc:'Si pierdes Internet, tus cambios siguen guardándose en este dispositivo. Al recuperar conexión, la app vuelve a sincronizar.',tip:'Verás una franja informativa mientras estés sin conexión.'},
       {icon:'📅',title:'Historial de compras',desc:'Al completar todos los productos de una lista, guardamos un resumen local. Luego puedes repetir esa compra desde el menú.',tip:'Ideal para compras mensuales o rutinas que se repiten.'},
       {icon:'👓',title:'Accesibilidad y comodidad',desc:'Puedes agrandar la letra, mantener la pantalla encendida y usar controles grandes. La app también respeta la preferencia de reducir animaciones.',tip:'Todo está pensado para seguir siendo legible y cómodo en el celular.'}
@@ -4137,7 +4275,153 @@
       iniciarCicloReconocimientoVoz();
     }
 
-    function abrirEscanerBarras() {
+    let escanerDesdeFocus = false;
+    let productoEscaneadoFocus = null;
+
+    function abrirConfirmacionEscanerFocus({ barcode, nombre = '', precio = 0, encontrado = false }) {
+      productoEscaneadoFocus = { barcode: String(barcode || ''), nombre: String(nombre || '').trim(), encontrado: !!encontrado };
+      const overlay = document.getElementById('focusScanProductOverlay');
+      const known = document.getElementById('focusScanKnownName');
+      const nameWrap = document.getElementById('focusScanNameWrap');
+      const nameInput = document.getElementById('focusScanName');
+      const qtyInput = document.getElementById('focusScanQty');
+      const priceInput = document.getElementById('focusScanPrice');
+      const help = document.getElementById('focusScanProductHelp');
+      if (!overlay || !known || !nameWrap || !nameInput || !qtyInput || !priceInput) return;
+
+      qtyInput.value = '1';
+      priceInput.value = precio > 0 ? String(Math.round(precio)) : '';
+
+      if (encontrado && nombre) {
+        known.textContent = nombre;
+        known.style.display = 'block';
+        nameWrap.style.display = 'none';
+        nameInput.value = nombre;
+        if (help) help.textContent = 'Elige la cantidad y agrega el precio si corresponde.';
+      } else {
+        known.style.display = 'none';
+        nameWrap.style.display = 'grid';
+        nameInput.value = '';
+        if (help) help.textContent = 'No encontramos este código. Escribe el nombre, cantidad y precio para guardarlo.';
+      }
+
+      overlay.classList.add('active');
+      setTimeout(() => {
+        if (!encontrado) nameInput.focus();
+        else qtyInput.focus();
+      }, 80);
+    }
+
+    function cerrarConfirmacionEscanerFocus() {
+      document.getElementById('focusScanProductOverlay')?.classList.remove('active');
+      productoEscaneadoFocus = null;
+    }
+
+    function normalizarNombreParaSimilitud(texto = '') {
+      return String(texto || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/\b\d+(?:[.,]\d+)?\s*(?:ml|cc|l|lt|lts|litro|litros|g|gr|grs|kg|kilo|kilos|un|und|unds|unidad|unidades)\b/g, ' ')
+        .replace(/\b(?:pack|formato|bolsa|caja|botella|bot|lata|tarro|frasco)\b/g, ' ')
+        .replace(/[^a-z0-9ñ]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function calcularSimilitudNombres(a, b) {
+      const na = normalizarNombreParaSimilitud(a);
+      const nb = normalizarNombreParaSimilitud(b);
+      if (!na || !nb) return 0;
+      if (na === nb) return 1;
+
+      const ta = [...new Set(na.split(' ').filter(x => x.length > 1))];
+      const tb = [...new Set(nb.split(' ').filter(x => x.length > 1))];
+      const comunes = ta.filter(x => tb.includes(x)).length;
+      const minTokens = Math.min(ta.length, tb.length) || 1;
+      const maxTokens = Math.max(ta.length, tb.length) || 1;
+      const cobertura = comunes / minTokens;
+      const jaccard = comunes / (ta.length + tb.length - comunes || 1);
+
+      if ((na.includes(nb) || nb.includes(na)) && Math.min(na.length, nb.length) >= 4) {
+        return Math.max(0.9, cobertura);
+      }
+
+      // Exige al menos una coincidencia fuerte y penaliza nombres genéricos distintos.
+      if (comunes === 0) return 0;
+      if (minTokens === 1 && maxTokens > 2) return cobertura >= 1 ? 0.78 : 0;
+      return (cobertura * 0.72) + (jaccard * 0.28);
+    }
+
+    function buscarProductoSimilarEnLista(nombre) {
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (!lista?.items?.length) return null;
+      const normalizado = normalizarNombreParaSimilitud(nombre);
+      let mejor = null;
+      let mejorPuntaje = 0;
+
+      for (const item of lista.items) {
+        const itemNormalizado = normalizarNombreParaSimilitud(item.texto);
+        if (!itemNormalizado) continue;
+        // Solo omitimos duplicados textualmente idénticos: esos ya los gestiona el diálogo de sumar unidades.
+        // Si coinciden después de quitar formato/peso (p. ej. “Leche entera 1 L” vs “Leche entera”), sí avisamos.
+        if (String(item.texto).toLowerCase().trim() === String(nombre).toLowerCase().trim()) continue;
+        const puntaje = calcularSimilitudNombres(nombre, item.texto);
+        if (puntaje > mejorPuntaje) {
+          mejorPuntaje = puntaje;
+          mejor = item;
+        }
+      }
+      return mejorPuntaje >= 0.78 ? { item: mejor, score: mejorPuntaje } : null;
+    }
+
+    async function confirmarProductoEscaneadoFocus() {
+      if (!productoEscaneadoFocus) return;
+      const nombre = (document.getElementById('focusScanName')?.value || productoEscaneadoFocus.nombre || '').trim();
+      const cantidad = Math.max(1, Math.min(99, parseInt(document.getElementById('focusScanQty')?.value || '1', 10) || 1));
+      const precio = Math.max(0, Math.round(parseFloat(document.getElementById('focusScanPrice')?.value || '0') || 0));
+
+      if (!nombre) {
+        mostrarToast('⚠️ Escribe el nombre del producto');
+        document.getElementById('focusScanName')?.focus();
+        return;
+      }
+
+      const similar = buscarProductoSimilarEnLista(nombre);
+      if (similar?.item) {
+        const estado = similar.item.comprado ? 'ya está marcado como comprado' : 'está pendiente';
+        const respSimilar = await abrirDialogoApp({
+          icon: '🔎',
+          title: 'Producto parecido en tu lista',
+          message: `Escaneaste <strong>${escapeHtml(nombre)}</strong>, pero ya tienes <strong>${escapeHtml(similar.item.texto)}</strong> (${estado}). ¿Quieres agregar el producto escaneado de todas maneras?`,
+          helperText: 'Esto ayuda a evitar duplicados cuando la base de datos usa un nombre ligeramente distinto.',
+          confirmText: 'Agregar igualmente',
+          cancelText: 'No agregar'
+        });
+        if (!respSimilar.confirmed) {
+          cerrarConfirmacionEscanerFocus();
+          mostrarToast(`↩️ No se agregó “${nombre}”`);
+          return;
+        }
+      }
+
+      guardarNombreCodigoEnMemoria(productoEscaneadoFocus.barcode, nombre);
+      if (precio > 0) {
+        guardarPrecioEnMemoria(nombre, precio);
+        guardarPrecioEnMemoria(productoEscaneadoFocus.barcode, precio);
+      }
+
+      document.getElementById('itemInput').value = nombre;
+      document.getElementById('itemQty').value = String(cantidad);
+      document.getElementById('itemPrice').value = precio > 0 ? String(precio) : '';
+
+      document.getElementById('focusScanProductOverlay')?.classList.remove('active');
+      productoEscaneadoFocus = null;
+      agregarProducto();
+      limpiarBusqueda();
+    }
+
+    function abrirEscanerBarras(desdeFocus = false) {
+      escanerDesdeFocus = !!desdeFocus;
       registrarEventoGA('scanner_opened');
       vibrarConfirmacion();
 
@@ -4170,6 +4454,11 @@
           if (nombreGuardado) {
             mostrarFeedbackEscaner(true, nombreGuardado);
             registrarEventoGA('scanner_product_found', { source: 'memory' });
+            if (escanerDesdeFocus) {
+              cerrarEscanerBarras(false);
+              setTimeout(() => abrirConfirmacionEscanerFocus({ barcode, nombre: nombreGuardado, precio: precioGuardado, encontrado: true }), 180);
+              return;
+            }
             document.getElementById('itemInput').value = nombreGuardado;
             if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
             
@@ -4192,8 +4481,13 @@
               if (nombreEncontrado) {
                 mostrarFeedbackEscaner(true, nombreEncontrado);
                 registrarEventoGA('scanner_product_found', { source: 'database' });
-                document.getElementById('itemInput').value = nombreEncontrado;
                 guardarNombreCodigoEnMemoria(barcode, nombreEncontrado);
+                if (escanerDesdeFocus) {
+                  cerrarEscanerBarras(false);
+                  setTimeout(() => abrirConfirmacionEscanerFocus({ barcode, nombre: nombreEncontrado, precio: precioGuardado, encontrado: true }), 180);
+                  return;
+                }
+                document.getElementById('itemInput').value = nombreEncontrado;
                 if (precioGuardado) document.getElementById('itemPrice').value = precioGuardado;
                 
                 if (document.activeElement) document.activeElement.blur();
@@ -4208,6 +4502,10 @@
             mostrarFeedbackEscaner(false, "Código No Detectado");
             registrarEventoGA('scanner_product_not_found');
             cerrarEscanerBarras(false);
+            if (escanerDesdeFocus) {
+              setTimeout(() => abrirConfirmacionEscanerFocus({ barcode, nombre: '', precio: precioGuardado, encontrado: false }), 180);
+              return;
+            }
             setTimeout(async () => {
               const resp = await abrirDialogoApp({
                 icon: '📦',
@@ -4240,6 +4538,7 @@
     }
 
     function cerrarEscanerBarras(porCancelacion = false) {
+      if (porCancelacion) escanerDesdeFocus = false;
       if (porCancelacion) {
         mostrarFeedbackEscaner(false, "Escaneo Cancelado");
       }
@@ -4994,8 +5293,9 @@
           return;
         }
 
-        if (!idListaActiva) {
-          idListaActiva = coleccionListas[0].id;
+        if (!idListaActiva || !coleccionListas.some(lista => String(lista.id) === String(idListaActiva))) {
+          const ultimaVisitada = obtenerUltimaListaVisitada();
+          idListaActiva = ultimaVisitada ? ultimaVisitada.id : coleccionListas[0].id;
         }
 
         secListaActiva.style.display = 'block';
@@ -5007,12 +5307,32 @@
       }
     }
 
+    function obtenerUltimaListaVisitada() {
+      if (!coleccionListas.length) return null;
+
+      const idGuardado = localStorage.getItem('ultimaListaActiva_v1');
+      if (idGuardado) {
+        const encontrada = coleccionListas.find(lista => String(lista.id) === String(idGuardado));
+        if (encontrada) return encontrada;
+      }
+
+      // Si la lista guardada ya no existe, usamos una alternativa válida y
+      // actualizamos el registro para evitar que Inicio apunte a una lista obsoleta.
+      const alternativa = coleccionListas[0] || null;
+      if (alternativa) {
+        localStorage.setItem('ultimaListaActiva_v1', String(alternativa.id));
+      } else {
+        localStorage.removeItem('ultimaListaActiva_v1');
+      }
+      return alternativa;
+    }
+
     function renderizarInicio() {
       const widget = document.getElementById('widgetUltimaLista');
       widget.innerHTML = "";
 
-      if (coleccionListas.length > 0) {
-        const ultima = coleccionListas[coleccionListas.length - 1];
+      const ultima = obtenerUltimaListaVisitada();
+      if (ultima) {
         const pendientes = (ultima.items || []).filter(i => !i.comprado).length;
 
         widget.innerHTML = `
@@ -5601,15 +5921,23 @@
 
     function abrirLista(id) {
       vibrarConfirmacion();
-      idListaActiva = id;
       const lista = coleccionListas.find(l => String(l.id) === String(id));
+      if (!lista) {
+        localStorage.removeItem('ultimaListaActiva_v1');
+        mostrarToast('⚠️ Esa lista ya no está disponible');
+        renderizarInicio();
+        return;
+      }
+      idListaActiva = lista.id;
       aplicarOrdenCategoriasLista(lista);
       filtroProductos = lista?.ui?.filter || 'pendientes';
       modoFocusActivo = !!lista?.ui?.focus;
       localStorage.setItem('ultimaListaActiva_v1', String(id));
       verSeccion('lista-activa');
+      if (!['pendientes','comprados','todos'].includes(filtroProductos)) filtroProductos = 'pendientes';
       document.getElementById('subTabPendientes')?.classList.toggle('active', filtroProductos === 'pendientes');
       document.getElementById('subTabComprados')?.classList.toggle('active', filtroProductos === 'comprados');
+      actualizarBotonesFiltroFocus();
       const app=document.getElementById('appContainer'), btn=document.getElementById('btnToggleFocus');
       app?.classList.toggle('focus-mode-active', modoFocusActivo); if(btn) btn.textContent = modoFocusActivo ? '🎯 Salir Focus' : '🎯 Modo Focus';
       const buscadorFocus = document.getElementById('searchInput');
@@ -5909,14 +6237,45 @@
       }
     }
 
+    function actualizarBotonesFiltroFocus() {
+      const mapa = {
+        pendientes: 'focusFilterPendientes',
+        comprados: 'focusFilterComprados',
+        todos: 'focusFilterTodos'
+      };
+      Object.entries(mapa).forEach(([valor, id]) => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.toggle('active', filtroProductos === valor);
+      });
+
+      const lista = coleccionListas.find(l => String(l.id) === String(idListaActiva));
+      if (lista?.items) {
+        const pendientes = lista.items.filter(i => !i.comprado).length;
+        const comprados = lista.items.filter(i => i.comprado).length;
+        const p = document.getElementById('focusFilterPendientes');
+        const c = document.getElementById('focusFilterComprados');
+        const t = document.getElementById('focusFilterTodos');
+        if (p) p.textContent = `Por comprar (${pendientes})`;
+        if (c) c.textContent = `Comprados (${comprados})`;
+        if (t) t.textContent = `Todos (${pendientes + comprados})`;
+      }
+    }
+
+    function cambiarFiltroFocus(filtro) {
+      if (!['pendientes','comprados','todos'].includes(filtro)) return;
+      cambiarFiltro(filtro);
+      actualizarBotonesFiltroFocus();
+    }
+
     function cambiarFiltro(filtro) {
       vibrarConfirmacion();
       filtroProductos = filtro;
       const listaEstado = coleccionListas.find(l => String(l.id) === String(idListaActiva));
       if (listaEstado) { listaEstado.ui = { ...(listaEstado.ui||{}), filter: filtro }; guardarStorage(); }
       localStorage.setItem('filtroProductos_v1', filtro);
-      document.getElementById('subTabPendientes').classList.toggle('active', filtro === 'pendientes');
-      document.getElementById('subTabComprados').classList.toggle('active', filtro === 'comprados');
+      document.getElementById('subTabPendientes')?.classList.toggle('active', filtro === 'pendientes');
+      document.getElementById('subTabComprados')?.classList.toggle('active', filtro === 'comprados');
+      actualizarBotonesFiltroFocus();
       renderizarProductos();
     }
 
@@ -6071,10 +6430,11 @@
       titulo.textContent = lista.nombre;
       badgeCod.textContent = `CÓDIGO: ${lista.id}`;
       actualizarPresupuestoYProgreso(lista);
+      if (modoFocusActivo) actualizarBotonesFiltroFocus();
 
       const items = lista.items || [];
       const filtrados = items.filter(item => {
-        const cumpleEstado = filtroProductos === 'pendientes' ? !item.comprado : item.comprado;
+        const cumpleEstado = filtroProductos === 'todos' ? true : (filtroProductos === 'pendientes' ? !item.comprado : item.comprado);
         const cumpleBusqueda = !textoBusquedaActual || item.texto.toLowerCase().includes(textoBusquedaActual);
         return cumpleEstado && cumpleBusqueda;
       });
@@ -6083,7 +6443,8 @@
         if (textoBusquedaActual) {
           contenedor.innerHTML = `<p class="empty-msg">No se encontraron productos para "${escapeHtml(textoBusquedaActual)}"</p>`;
         } else {
-          contenedor.innerHTML = `<p class="empty-msg">${filtroProductos === 'pendientes' ? '¡Todo comprado!' : 'No hay productos comprados.'}</p>`;
+          const msgVacio = filtroProductos === 'pendientes' ? '¡Todo comprado!' : (filtroProductos === 'comprados' ? 'No hay productos comprados.' : 'Esta lista todavía no tiene productos.');
+          contenedor.innerHTML = `<p class="empty-msg">${msgVacio}</p>`;
         }
         return;
       }
@@ -6213,6 +6574,10 @@
     document.addEventListener('DOMContentLoaded', async () => {
       cargarTamanoLetra();
       cargarStorage();
+      const ultimaGuardada = localStorage.getItem('ultimaListaActiva_v1');
+      if (ultimaGuardada && coleccionListas.some(lista => String(lista.id) === String(ultimaGuardada))) {
+        idListaActiva = ultimaGuardada;
+      }
       cargarOrdenCategorias();
       cargarMemoriaPrecios();
       cargarInteligenciaLocal();
@@ -6265,6 +6630,7 @@
         case 'noListOverlay': cerrarModalSinLista(); break;
         case 'recetasOverlay': cerrarModalRecetas(); break;
         case 'scannerOverlay': cerrarEscanerBarras(true); break;
+        case 'focusScanProductOverlay': cerrarConfirmacionEscanerFocus(); break;
         case 'graficoOverlay': cerrarModalGrafico(); break;
         case 'presupuestoOverlay': cerrarModalPresupuesto(); break;
         default: activo.classList.remove('active');
