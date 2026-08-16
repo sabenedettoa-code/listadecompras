@@ -46,9 +46,9 @@
   <meta property="og:url" content="https://listadecompras.website">
   
   <!-- ÍCONOS Y FAVICON OPTIMIZADOS PARA GOOGLE -->
-  <link rel="icon" href="/icon-512.png" sizes="192x192" type="image/png">
-  <link rel="shortcut icon" href="/icon-512.png">
-  <link rel="apple-touch-icon" href="/icon-512.png">
+  <link rel="icon" href="https://www.listadecompras.website/icon-512.png" sizes="192x192" type="image/png">
+  <link rel="shortcut icon" href="https://www.listadecompras.website/icon-512.png">
+  <link rel="apple-touch-icon" href="https://www.listadecompras.website/icon-512.png">
 
   <style>
     :root {
@@ -147,6 +147,9 @@
       z-index: 10;
     }
 
+    .app-credits a, .app-credits > span { align-items:center; justify-content:center; gap:5px; }
+    .app-credits a { display:inline-flex; }
+    .app-credits > span { display:inline-flex; }
     .app-title-box { display: flex; align-items: center; gap: 8px; }
     .header-logo-img { width: 28px; height: 28px; border-radius: 6px; object-fit: cover; }
     .app-title { font-size: 1.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
@@ -189,6 +192,8 @@
       background: var(--tab-bg);
       border: 1px solid var(--border);
     }
+    .net-badge { display:inline-flex; align-items:center; gap:5px; }
+    .net-badge::before { content:""; width:7px; height:7px; border-radius:50%; background:currentColor; flex:none; }
     .net-badge.online { color: var(--success); }
     .net-badge.offline { color: var(--danger); }
 
@@ -420,6 +425,8 @@
       box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
     }
 
+    .recent-list-widget h4 { display:flex; align-items:center; gap:7px; }
+
     .recent-list-widget {
       background-color: var(--card-bg);
       border: 1px solid var(--primary);
@@ -528,6 +535,17 @@
       align-items: center;
       justify-content: center;
       min-width: 44px;
+    }
+
+    .btn-mic svg, .btn-scanner svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
     }
 
     .btn-mic.listening {
@@ -832,6 +850,27 @@
     }
 
 
+    .ui-icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+      pointer-events: none;
+    }
+    .ui-icon-sm { width: 15px; height: 15px; }
+    .ui-icon-lg { width: 21px; height: 21px; }
+    .btn-menu-burger, .btn-close-menu { display:inline-flex; align-items:center; justify-content:center; }
+    .btn-menu-burger .ui-icon, .btn-close-menu .ui-icon { width:20px; height:20px; }
+    .badge-users-online { display:inline-flex; align-items:center; gap:4px; }
+    .offline-banner { align-items:center; gap:7px; }
+    .compact-field > label { display:flex; align-items:center; gap:7px; }
+
+    .list-info h4 { display:flex; align-items:center; gap:7px; }
+    .list-info h4 .ui-icon { color:var(--primary); }
     .icon-share-classic {
       width: 19px;
       height: 19px;
@@ -1383,28 +1422,206 @@
 
     .focus-status-btn:active { transform: scale(.97); }
 
+    .focus-search-field {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .focus-search-icon {
+      display: none;
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+
     .focus-mode-active .search-box-container {
-      flex-wrap: wrap;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: nowrap;
+      padding: 8px;
+      border-radius: 16px;
+    }
+
+    .focus-mode-active .focus-status-filter {
+      grid-column: 1 / -1;
+      margin-bottom: 0;
+      padding: 3px;
+      gap: 3px;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--tab-bg) 82%, var(--card-bg));
+      border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+    }
+
+    .focus-mode-active .focus-status-btn {
+      min-height: 38px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      font-size: 0.78rem;
+      padding: 6px 5px;
+      box-shadow: none;
+    }
+
+    .focus-mode-active .focus-status-btn.active {
+      background: var(--card-bg);
+      color: var(--primary);
+      border-color: transparent;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.10);
+    }
+
+    .focus-mode-active .focus-search-field {
+      grid-column: 1;
+      display: flex;
+      align-items: center;
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card-bg);
+      overflow: hidden;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+
+    .focus-mode-active .focus-search-field:focus-within {
+      border-color: color-mix(in srgb, var(--primary) 68%, var(--border));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent);
+    }
+
+    .focus-mode-active .focus-search-icon {
+      display: block;
+      flex: 0 0 auto;
+      margin-left: 13px;
+      color: var(--muted);
+    }
+
+    .focus-mode-active .input-search-product {
+      grid-column: auto;
+      min-width: 0;
+      min-height: 44px;
+      padding: 8px 6px 8px 9px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      font-size: 0.96rem;
+      font-weight: 700;
+    }
+
+    .focus-mode-active .input-search-product:focus {
+      outline: none;
+    }
+
+    .focus-mode-active .btn-clear-search {
+      position: static;
+      top: auto;
+      right: auto;
+      transform: none;
+      min-width: 38px;
+      min-height: 38px;
+      margin-right: 3px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      font-size: 1rem;
     }
 
     .btn-focus-scanner {
       display: none;
-      min-width: 46px;
       min-height: 46px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      border: 1px solid color-mix(in srgb, var(--primary) 76%, var(--border));
+      border-radius: 12px;
       background: var(--primary);
       color: white;
       align-items: center;
       justify-content: center;
+      gap: 7px;
       cursor: pointer;
-      font-size: 1.1rem;
+      font: inherit;
+      font-size: 0.88rem;
       font-weight: 900;
+      padding: 0 14px;
       flex: 0 0 auto;
+      box-shadow: 0 5px 14px color-mix(in srgb, var(--primary) 24%, transparent);
+      transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+    }
+
+    .btn-focus-scanner:active {
+      transform: scale(.97);
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 22%, transparent);
+    }
+
+    .focus-scan-icon {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
     }
 
     .focus-mode-active .btn-focus-scanner {
       display: inline-flex;
+    }
+
+    @media (max-width: 560px) {
+      .focus-mode-active .search-box-container {
+        grid-template-columns: minmax(0, 1fr) 48px;
+        gap: 7px;
+        padding: 7px;
+        border-radius: 15px;
+      }
+
+      .focus-mode-active .focus-status-filter {
+        gap: 2px;
+        padding: 3px;
+      }
+
+      .focus-mode-active .focus-status-btn {
+        min-height: 38px;
+        font-size: 0.76rem;
+        line-height: 1.05;
+        padding: 6px 3px;
+      }
+
+      .focus-mode-active .btn-focus-scanner {
+        width: 48px;
+        min-width: 48px;
+        padding: 0;
+        border-radius: 12px;
+      }
+
+      .focus-mode-active .btn-focus-scanner span {
+        display: none;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .focus-mode-active .focus-status-btn {
+        font-size: 0.72rem;
+        letter-spacing: -0.01em;
+      }
+
+      .focus-mode-active .focus-search-icon {
+        margin-left: 10px;
+      }
+
+      .focus-mode-active .input-search-product {
+        font-size: 0.9rem;
+        padding-left: 7px;
+      }
     }
 
     .focus-scan-product {
@@ -1705,13 +1922,13 @@
   
 
 
-    /* CUENTA OPCIONAL - v5.6.9 */
+    /* CUENTA OPCIONAL - v5.8.0 */
     .account-status-card {width:100%;border:1px solid var(--border);border-radius:16px;padding:12px 13px;background:color-mix(in srgb,var(--card-bg) 94%,var(--primary) 6%);display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;color:var(--text);font:inherit;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
     .account-status-card:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--primary) 55%,var(--border));box-shadow:0 8px 22px rgba(15,23,42,.08)}
     .account-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;background:#eef2ff;font-size:1.25rem;overflow:hidden}.account-avatar img{width:100%;height:100%;object-fit:cover}.account-status-copy{min-width:0;flex:1}.account-status-copy strong{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.account-status-copy small{display:block;color:var(--text-muted);font-size:.73rem;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.account-chevron{color:var(--text-muted);font-weight:900}
     .auth-card{max-width:460px!important;text-align:left}.auth-hero{text-align:center;margin-bottom:14px}.auth-hero .auth-icon{width:64px;height:64px;margin:0 auto 10px;border-radius:20px;display:grid;place-items:center;font-size:2rem;background:linear-gradient(135deg,#eef2ff,#ecfeff);border:1px solid #dbeafe}.auth-hero h3{margin:0 0 6px;font-size:1.25rem}.auth-hero p{margin:0;color:var(--text-muted);line-height:1.45;font-size:.9rem}.auth-benefits{margin:14px 0;display:grid;gap:8px}.auth-benefit{display:flex;gap:9px;align-items:flex-start;padding:10px 11px;border-radius:13px;background:color-mix(in srgb,var(--primary) 7%,var(--card-bg));font-size:.84rem;line-height:1.35}.auth-provider-btn{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);font-weight:850;font-size:.94rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:9px;transition:transform .16s ease,box-shadow .16s ease}.auth-provider-btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,23,42,.09)}.auth-provider-btn.google{background:#fff;color:#172033}.auth-provider-btn.facebook{background:#1877F2;color:#fff;border-color:#1877F2}.auth-provider-logo{width:22px;height:22px;display:grid;place-items:center;font-size:1.15rem;font-weight:900}.auth-guest-btn{width:100%;margin-top:10px;border:none;background:transparent;color:var(--text-muted);font-weight:800;padding:10px;cursor:pointer}.auth-profile-box{border:1px solid var(--border);border-radius:16px;padding:14px;margin:12px 0;background:color-mix(in srgb,var(--primary) 5%,var(--card-bg))}.auth-profile-row{display:flex;gap:12px;align-items:center}.auth-profile-avatar{width:52px;height:52px;border-radius:50%;background:#eef2ff;display:grid;place-items:center;overflow:hidden;font-size:1.5rem;flex:none}.auth-profile-avatar img{width:100%;height:100%;object-fit:cover}.auth-profile-text{min-width:0}.auth-profile-text strong,.auth-profile-text small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.auth-profile-text small{color:var(--text-muted);margin-top:3px}.auth-cloud-badge{display:inline-flex;margin-top:10px;padding:6px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:.75rem;font-weight:900}.auth-error{display:none;margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff1f2;color:#9f1239;font-size:.8rem;line-height:1.4}.auth-error.show{display:block}@media(max-width:520px){.auth-card{padding:21px 17px 18px!important}.auth-provider-btn{min-height:52px;font-size:.96rem}}
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.6.9 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.8.0 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -2116,40 +2333,40 @@
     
     <div class="header-top">
       <div class="app-title-box">
-        <img src="/icon-512.png" alt="Logo Mis Listas" class="header-logo-img">
+        <img src="https://www.listadecompras.website/icon-512.png" alt="Logo Mis Listas" class="header-logo-img">
         <h1 class="app-title">Mis Listas</h1>
       </div>
       <div class="header-right-controls">
-        <span id="badgeUsuariosVivo" class="badge-users-online" style="display: none;">👥 1 en vivo</span>
-        <span id="netStatusBadge" class="net-badge online">🟢 Online</span>
-        <button id="btnHeaderCuenta" class="btn-header-account" type="button" onclick="abrirModalCuenta()" aria-label="Iniciar sesión o administrar cuenta">👤 <span id="btnHeaderCuentaTexto">Iniciar sesión</span></button>
-        <button class="btn-menu-burger" onclick="toggleSidebar()" aria-label="Abrir menú" title="Abrir menú">☰</button>
+        <span id="badgeUsuariosVivo" class="badge-users-online" style="display: none;"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>1 en vivo</span></span>
+        <span id="netStatusBadge" class="net-badge online">Online</span>
+        <button id="btnHeaderCuenta" class="btn-header-account" type="button" onclick="abrirModalCuenta()" aria-label="Iniciar sesión o administrar cuenta"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg><span id="btnHeaderCuentaTexto">Iniciar sesión</span></button>
+        <button class="btn-menu-burger" onclick="toggleSidebar()" aria-label="Abrir menú" title="Abrir menú"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
       </div>
     </div>
-    <div id="offlineBanner" class="offline-banner" role="status" aria-live="polite">📶 Sin conexión · tus cambios se guardan en este dispositivo y se sincronizarán al volver Internet.</div>
+    <div id="offlineBanner" class="offline-banner" role="status" aria-live="polite"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.82a15 15 0 0 1 4.17-2.65"></path><path d="M10.66 5c3.53-.44 7.22.68 9.34 3.82"></path><path d="M5 12.86a10 10 0 0 1 3.1-1.68"></path><path d="M13.52 11.15A10 10 0 0 1 19 14.86"></path><path d="M8.5 17a5 5 0 0 1 3.5-1.5c.74 0 1.45.16 2.1.44"></path><path d="M12 20h.01"></path><path d="M3 3l18 18"></path></svg><span>Sin conexión · tus cambios se guardan en este dispositivo y se sincronizarán al volver Internet.</span></div>
 
     <div id="sidebarMenu" class="sidebar-menu">
       <div class="sidebar-header">
         <h3>Ajustes y Ayuda</h3>
-        <button class="btn-close-menu" onclick="toggleSidebar()" aria-label="Cerrar menú" title="Cerrar menú">✕</button>
+        <button class="btn-close-menu" onclick="toggleSidebar()" aria-label="Cerrar menú" title="Cerrar menú"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
       </div>
 
       <div class="sidebar-section-title">Cuenta</div>
       <button id="accountStatusCard" class="account-status-card" type="button" onclick="abrirModalCuenta()" aria-label="Abrir opciones de cuenta">
-        <span id="accountStatusAvatar" class="account-avatar">👤</span>
+        <span id="accountStatusAvatar" class="account-avatar"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span>
         <span class="account-status-copy"><strong id="accountStatusTitle">Invitado</strong><small id="accountStatusSubtitle">Guarda tus listas en tu cuenta</small></span>
         <span class="account-chevron">›</span>
       </button>
 
       <div class="sidebar-section-title">Mis compras</div>
-      <button class="btn-sidebar-tool" onclick="abrirFrecuentes(); toggleSidebar();">⭐ Productos Habituales</button>
-      <button class="btn-sidebar-tool" onclick="abrirHistorialCompras(); toggleSidebar();">📅 Historial de Compras</button>
-      <button class="btn-sidebar-tool" onclick="abrirMemoriaPrecios(); toggleSidebar();">🧠 Memoria de Precios</button>
+      <button class="btn-sidebar-tool" onclick="abrirFrecuentes(); toggleSidebar();"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.47 6.03.88-4.36 4.25 1.03 6.01L12 16.77l-5.4 2.84 1.03-6.01L3.27 9.35l6.03-.88L12 3z"></path></svg><span>Productos Habituales</span></button>
+      <button class="btn-sidebar-tool" onclick="abrirHistorialCompras(); toggleSidebar();"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>Historial de Compras</span></button>
+      <button class="btn-sidebar-tool" onclick="abrirMemoriaPrecios(); toggleSidebar();"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.59 13.41 11 3.83V3H4v7h.83l9.58 9.59a2 2 0 0 0 2.83 0l3.35-3.35a2 2 0 0 0 0-2.83z"></path><circle cx="7.5" cy="6.5" r="1"></circle></svg><span>Memoria de Precios</span></button>
 
       <div class="sidebar-section-title">Preferencias</div>
-      <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();">💡 Mantener Pantalla Encendida</button>
+      <button id="btnWakeLock" class="btn-sidebar-tool" onclick="togglePantallaEncendida(); toggleSidebar();"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M8.5 14.5A6 6 0 1 1 15.5 14.5c-.9.7-1.5 1.5-1.5 2.5h-4c0-1-.6-1.8-1.5-2.5z"></path></svg><span>Mantener Pantalla Encendida</span></button>
       <div class="compact-field" style="margin-top: 2px;">
-        <label style="font-size: 0.85rem; font-weight: 700;">🔤 Tamaño de letra</label>
+        <label style="font-size: 0.85rem; font-weight: 700;"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h16v3M9 20h6M12 4v16"></path></svg><span>Tamaño de letra</span></label>
         <div style="display:flex; gap:6px; margin-left:auto;">
           <button class="btn-qty" onclick="cambiarTamanoLetra(-0.15)" aria-label="Disminuir tamaño de letra" style="border:1px solid var(--border); border-radius:6px; width:32px; height:32px;">A-</button>
           <button class="btn-qty" onclick="cambiarTamanoLetra(0.15)" aria-label="Aumentar tamaño de letra" style="border:1px solid var(--border); border-radius:6px; width:32px; height:32px;">A+</button>
@@ -2157,25 +2374,25 @@
       </div>
 
       <div class="sidebar-section-title">Ayuda</div>
-      <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();">❓ Ver Ayuda y Tutorial</button>
-      <button class="btn-sidebar-tool" onclick="abrirModalAcercaDe(); toggleSidebar();">ℹ️ Acerca de esta App</button>
+      <button class="btn-sidebar-tool" onclick="abrirTutorial(); toggleSidebar();"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9a2.5 2.5 0 1 1 4.7 1.2c-.7 1.1-2.2 1.3-2.2 2.8"></path><path d="M12 17h.01"></path></svg><span>Ver Ayuda y Tutorial</span></button>
+      <button class="btn-sidebar-tool" onclick="abrirModalAcercaDe(); toggleSidebar();"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6"></path><path d="M12 7h.01"></path></svg><span>Acerca de esta App</span></button>
     </div>
 
     <button id="btnInstalarPWA" class="btn-sidebar-tool" onclick="instalarAplicacionPWA()" style="display:none; background:#10b981; color:white; margin:10px auto 0 auto; width: calc(100% - 24px); max-width: 576px; justify-content:center; align-items:center; text-align:center;">
-      📲 Instalar Aplicación en la pantalla
+      <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg><span>Instalar Aplicación en la pantalla</span>
     </button>
 
     <div class="nav-tabs" id="barraNavegacion">
-      <button class="nav-btn active" id="navInicio" onclick="verSeccion('inicio')">🏠 Inicio</button>
-      <button class="nav-btn" id="navMisListas" onclick="verSeccion('mis-listas')">📋 Mis Listas</button>
-      <button class="nav-btn" id="navListaActiva" onclick="verSeccion('lista-activa')">🛒 Lista Actual</button>
+      <button class="nav-btn active" id="navInicio" onclick="verSeccion('inicio')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg><span>Inicio</span></button>
+      <button class="nav-btn" id="navMisListas" onclick="verSeccion('mis-listas')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span>Mis Listas</span></button>
+      <button class="nav-btn" id="navListaActiva" onclick="verSeccion('lista-activa')"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M3 4h2l2.7 11.4a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 8H6"></path></svg><span>Lista Actual</span></button>
     </div>
 
     <div class="main-content" id="mainContentArea">
       
       <div id="secPortada" style="display: none;">
         <div class="welcome-hero">
-          <img src="/icon-512.png" alt="Mis Listas de Compras" class="welcome-logo-img">
+          <img src="https://www.listadecompras.website/icon-512.png" alt="Mis Listas de Compras" class="welcome-logo-img">
           <h2 class="welcome-title">Mis Listas de Compras</h2>
           <div class="welcome-domain">listadecompras.website</div>
           
@@ -2185,56 +2402,56 @@
 
           <div class="welcome-features-list">
             <div class="feature-item">
-              <span>🎤</span> <span>Dicta tus productos hablando</span>
+              <span><svg class="ui-icon ui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path><path d="M8 22h8"></path></svg></span> <span>Dicta tus productos hablando</span>
             </div>
             <div class="feature-item">
-              <span>📸</span> <span>Escáner e historial inteligente de productos</span>
+              <span><svg class="ui-icon ui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V5a1 1 0 0 1 1-1h2"></path><path d="M17 4h2a1 1 0 0 1 1 1v2"></path><path d="M20 17v2a1 1 0 0 1-1 1h-2"></path><path d="M7 20H5a1 1 0 0 1-1-1v-2"></path><path d="M8 8v8M11 8v8M14 8v8M17 8v8"></path></svg></span> <span>Escáner e historial inteligente de productos</span>
             </div>
             <div class="feature-item">
-              <span>🍳</span> <span>Carga recetas chilenas automáticas</span>
+              <span><svg class="ui-icon ui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v7M3 3v4a3 3 0 0 0 6 0V3M6 10v11"></path><path d="M15 3v18"></path><path d="M15 3c4 2 4 8 0 10"></path></svg></span> <span>Carga recetas chilenas automáticas</span>
             </div>
             <div class="feature-item">
-              <span>👓</span> <span>Letra grande y legible</span>
+              <span><svg class="ui-icon ui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V4h16v3M9 20h6M12 4v16"></path></svg></span> <span>Letra grande y legible</span>
             </div>
             <div class="feature-item">
-              <span>📶</span> <span>Tus listas funcionan incluso sin Internet</span>
+              <span><svg class="ui-icon ui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.82a15 15 0 0 1 4.17-2.65"></path><path d="M10.66 5c3.53-.44 7.22.68 9.34 3.82"></path><path d="M5 12.86a10 10 0 0 1 3.1-1.68"></path><path d="M13.52 11.15A10 10 0 0 1 19 14.86"></path><path d="M8.5 17a5 5 0 0 1 3.5-1.5"></path></svg></span> <span>Tus listas funcionan incluso sin Internet</span>
             </div>
           </div>
 
           <button class="btn-start-large" onclick="ingresarAppDesdePortada()">
-            🚀 Entrar a Mis Listas ➔
+            <span>Entrar a Mis Listas</span><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
           </button>
         </div>
 
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
-          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.6.9</span>
+          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span>Política de Privacidad</span></a><br>
+          <span style="font-size: 0.7rem; opacity: 0.7;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>Última actualización: Agosto de 2026 · v5.8.0</span></span>
         </div>
       </div>
 
       <div id="secInicio">
         <div class="home-card">
           <div class="home-logo-box">
-            <img src="/icon-512.png" alt="Logo Mis Listas de Compras" class="home-app-logo">
+            <img src="https://www.listadecompras.website/icon-512.png" alt="Logo Mis Listas de Compras" class="home-app-logo">
             <h1 class="home-app-name">Mis Listas de Compras</h1>
           </div>
 
-          <h2 id="saludoInicio">👋 ¡Hola! ¿Qué compras haremos hoy?</h2>
+          <h2 id="saludoInicio">¡Hola! ¿Qué compras haremos hoy?</h2>
           <p>Tu asistente inteligente para el supermercado. Elige una opción para comenzar:</p>
           
           <div class="home-actions">
             <button class="btn-home-action" onclick="verSeccion('mis-listas')">
-              ➕ Crear o Ver mis Listas
+              <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg><span>Crear o Ver mis Listas</span>
             </button>
             <button class="btn-home-action ai-btn" onclick="abrirModalIA()">
-              ✨ Generar Lista con ListAI
+              <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.2 3.3L16.5 7.5l-3.3 1.2L12 12l-1.2-3.3-3.3-1.2 3.3-1.2L12 3z"></path><path d="m19 13 .8 2.2L22 16l-2.2.8L19 19l-.8-2.2L16 16l2.2-.8L19 13z"></path><path d="m5 14 .7 1.8 1.8.7-1.8.7L5 19l-.7-1.8-1.8-.7 1.8-.7L5 14z"></path></svg><span>Generar Lista con ListAI</span>
             </button>
             <button class="btn-home-action sec" onclick="abrirModalRecetas()">
-              🍳 Cargar Recetas Chilenas
+              <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v7M3 3v4a3 3 0 0 0 6 0V3M6 10v11"></path><path d="M15 3v18"></path><path d="M15 3c4 2 4 8 0 10"></path></svg><span>Cargar Recetas Chilenas</span>
             </button>
             <button class="btn-home-action sec" onclick="abrirTutorial()">
-              ❓ Ver Tutorial de Uso
+              <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9a2.5 2.5 0 1 1 4.7 1.2c-.7 1.1-2.2 1.3-2.2 2.8"></path><path d="M12 17h.01"></path></svg><span>Ver Tutorial de Uso</span>
             </button>
           </div>
 
@@ -2246,14 +2463,14 @@
 
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
-          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">🔒 Política de Privacidad</a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;">🗓️ Última actualización: Agosto de 2026 · v5.6.9</span>
+          <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span>Política de Privacidad</span></a><br>
+          <span style="font-size: 0.7rem; opacity: 0.7;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>Última actualización: Agosto de 2026 · v5.8.0</span></span>
         </div>
       </div>
 
       <div id="secMisListas" style="display: none;">
         <div class="input-container" style="display: flex; gap: 6px; margin-bottom: 10px;">
-          <input type="text" id="codigoUnirseInput" class="input-product-large" placeholder="🔑 Ingresar código de lista (ej: A8K9P2)..." style="flex:1; text-transform: uppercase;">
+          <input type="text" id="codigoUnirseInput" class="input-product-large" placeholder="Ingresar código de lista (ej: A8K9P2)..." style="flex:1; text-transform: uppercase;">
           <button class="btn-main-add" onclick="unirsePorCodigo()" style="flex: initial; min-width: 90px; background-color: #25d366;">Unirse</button>
         </div>
 
@@ -2275,7 +2492,7 @@
             <h3 id="tituloListaActiva" style="margin: 0;">Lista</h3>
             <div style="display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; margin-top:2px;">
               <span id="badgeCodigoLista" class="badge-code">CÓDIGO: ------</span>
-              <span id="badgeUsuariosLista" class="badge-users-online" style="display:none;">👥 1 en vivo</span>
+              <span id="badgeUsuariosLista" class="badge-users-online" style="display:none;"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>1 en vivo</span></span>
             </div>
           </div>
           <button class="btn-share" onclick="compartirListaActiva()"><svg class="icon-share-classic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"></path><path d="M8 8l4-4 4 4"></path><path d="M5 11v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"></path></svg><span>Compartir</span></button>
@@ -2294,8 +2511,8 @@
         <div class="add-product-card">
           <div class="add-row-1">
             <input type="text" id="itemInput" class="input-product-large" list="sugerenciasGenericasChilenas" placeholder="Escribe o dicta varios productos..." onchange="buscarPrecioEnMemoriaPorTexto(this.value)">
-            <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz de corrido" aria-label="Dictar productos por voz">🎤</button>
-            <button class="btn-scanner" onclick="abrirEscanerBarras()" title="Escanear código de barras" aria-label="Escanear código de barras">📸</button>
+            <button id="btnMic" class="btn-mic" onclick="activarDictadoVoz()" title="Dictar por voz de corrido" aria-label="Dictar productos por voz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path><path d="M8 22h8"></path></svg></button>
+            <button class="btn-scanner" onclick="abrirEscanerBarras()" title="Escanear código de barras" aria-label="Escanear código de barras"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V5a1 1 0 0 1 1-1h2"></path><path d="M17 4h2a1 1 0 0 1 1 1v2"></path><path d="M20 17v2a1 1 0 0 1-1 1h-2"></path><path d="M7 20H5a1 1 0 0 1-1-1v-2"></path><path d="M8 8v8"></path><path d="M11 8v8"></path><path d="M14 8v8"></path><path d="M17 8v8"></path></svg></button>
           </div>
           
           <div class="add-row-2">
@@ -2309,7 +2526,7 @@
               <input type="number" id="itemPrice" class="input-clean price-clean" placeholder="CLP" min="0" step="1">
             </div>
 
-            <button class="btn-main-add" onclick="agregarProducto()">➕ Agregar</button>
+            <button class="btn-main-add" onclick="agregarProducto()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg><span>Agregar</span></button>
           </div>
 
           <datalist id="sugerenciasGenericasChilenas">
@@ -2352,12 +2569,12 @@
         </div>
 
         <div class="action-bar">
-          <button id="btnToggleFocus" class="btn-sec" onclick="toggleModoFocus()">🎯 Modo Focus</button>
-          <button class="btn-sec" onclick="completarPreciosDesdeMemoria()">🧠 Completar precios</button>
-          <button class="btn-sec" onclick="fijarLimitePresupuesto()">🚨 Tope</button>
-          <button class="btn-sec" onclick="abrirModalGrafico()">📊 Gastos</button>
-          <button class="btn-sec" onclick="desmarcarTodos()">🔄 Reutilizar</button>
-          <button class="btn-sec" onclick="limpiarProductosComprados()">🧹 Limpiar</button>
+          <button id="btnToggleFocus" class="btn-sec" onclick="toggleModoFocus()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.5"></circle></svg><span>Modo Focus</span></button>
+          <button class="btn-sec" onclick="completarPreciosDesdeMemoria()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M12 7v5l3 2"></path></svg><span>Completar precios</span></button>
+          <button class="btn-sec" onclick="fijarLimitePresupuesto()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3z"></path><path d="M12 9v5"></path><path d="M12 17h.01"></path></svg><span>Tope</span></button>
+          <button class="btn-sec" onclick="abrirModalGrafico()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg><span>Gastos</span></button>
+          <button class="btn-sec" onclick="desmarcarTodos()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7h-5V2"></path><path d="M20 7a8 8 0 1 0 1 7"></path></svg><span>Reutilizar</span></button>
+          <button class="btn-sec" onclick="limpiarProductosComprados()"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 10v7M14 10v7"></path></svg><span>Limpiar</span></button>
         </div>
 
         <div class="sub-tabs">
@@ -2371,9 +2588,15 @@
             <button id="focusFilterComprados" class="focus-status-btn" onclick="cambiarFiltroFocus('comprados')">Comprados</button>
             <button id="focusFilterTodos" class="focus-status-btn" onclick="cambiarFiltroFocus('todos')">Todos</button>
           </div>
-          <input type="text" id="searchInput" class="input-search-product" placeholder="🔍 Buscar en esta lista..." oninput="filtrarProductosPorBusqueda()">
-          <button id="btnFocusScanner" class="btn-focus-scanner" onclick="abrirEscanerBarras(true)" title="Escanear producto en Focus" aria-label="Escanear código de barras en Modo Focus">▣</button>
-          <button id="btnClearSearch" class="btn-clear-search" onclick="limpiarBusqueda()">✕</button>
+          <div class="focus-search-field">
+            <svg class="focus-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.7-3.7"></path></svg>
+            <input type="text" id="searchInput" class="input-search-product" placeholder="Buscar producto..." oninput="filtrarProductosPorBusqueda()">
+            <button id="btnClearSearch" class="btn-clear-search" onclick="limpiarBusqueda()" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button>
+          </div>
+          <button id="btnFocusScanner" class="btn-focus-scanner" onclick="abrirEscanerBarras(true)" title="Escanear producto en Focus" aria-label="Escanear código de barras en Modo Focus">
+            <svg class="focus-scan-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V5a1 1 0 0 1 1-1h2"></path><path d="M17 4h2a1 1 0 0 1 1 1v2"></path><path d="M20 17v2a1 1 0 0 1-1 1h-2"></path><path d="M7 20H5a1 1 0 0 1-1-1v-2"></path><path d="M8 8v8"></path><path d="M11 8v8"></path><path d="M14 8v8"></path><path d="M17 8v8"></path></svg>
+            <span>Escanear</span>
+          </button>
         </div>
 
         <div id="contenedorProductosCategorizados"></div>
@@ -2573,7 +2796,7 @@
       <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
         🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
         👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 5.5 (Agosto 2026)
+        📌 <strong>Versión Actual:</strong> 5.8.0 (Agosto 2026)
       </div>
 
       <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
@@ -2629,7 +2852,7 @@
       </div>
       <div id="cuentaRegistradaPanel" style="display:none;">
         <div class="auth-hero"><div class="auth-icon">✅</div><h3>Tu cuenta está guardada</h3><p>Las listas asociadas a esta cuenta pueden recuperarse al iniciar sesión en otro dispositivo.</p></div>
-        <div class="auth-profile-box"><div class="auth-profile-row"><div id="authProfileAvatar" class="auth-profile-avatar">👤</div><div class="auth-profile-text"><strong id="authProfileName">Cuenta</strong><small id="authProfileEmail"></small></div></div><span class="auth-cloud-badge">☁️ Listas vinculadas a tu cuenta</span></div>
+        <div class="auth-profile-box"><div class="auth-profile-row"><div id="authProfileAvatar" class="auth-profile-avatar"><svg class="ui-icon ui-icon-lg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></div><div class="auth-profile-text"><strong id="authProfileName">Cuenta</strong><small id="authProfileEmail"></small></div></div><span class="auth-cloud-badge">☁️ Listas vinculadas a tu cuenta</span></div>
         <button class="btn-tut next" style="width:100%;" type="button" onclick="cerrarModalCuenta()">Listo</button>
         <button class="auth-guest-btn" type="button" onclick="cerrarSesionCuenta()">Cerrar sesión y seguir como invitado</button>
         <div id="authCuentaErrorRegistrada" class="auth-error" role="alert"></div>
@@ -2837,7 +3060,7 @@
 
     async function asegurarMembresiaLista(listaId) {
       if (!listaId) throw new Error('Lista inválida');
-      // v5.6.9: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
+      // v5.8.0: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
       // Solo aseguramos que exista una sesión anónima válida antes de tocar Realtime Database.
       return await obtenerUsuarioFirebase();
     }
@@ -2891,7 +3114,7 @@
       const el = document.getElementById('saludoInicio');
       if (!el) return;
       const nombre = primerNombreUsuario(user);
-      el.textContent = nombre ? `👋 ¡Hola, ${nombre}! ¿Qué compras haremos hoy?` : '👋 ¡Hola! ¿Qué compras haremos hoy?';
+      el.textContent = nombre ? `¡Hola, ${nombre}! ¿Qué compras haremos hoy?` : '¡Hola! ¿Qué compras haremos hoy?';
     }
     function mostrarErrorCuenta(mensaje, registrada=false){const el=document.getElementById(registrada?'authCuentaErrorRegistrada':'authCuentaError');if(!el)return;el.textContent=mensaje||'';el.classList.toggle('show',Boolean(mensaje));}
     function actualizarUIcuenta(user=auth.currentUser){
@@ -2901,15 +3124,15 @@
       const btnHeader=document.getElementById('btnHeaderCuenta'),btnHeaderTexto=document.getElementById('btnHeaderCuentaTexto');
       if(title)title.textContent=registrado?(nombreCompletoUsuario(user)||'Mi cuenta'):'Invitado';
       if(subtitle)subtitle.textContent=registrado?`Conectado con ${nombreProveedorCuenta(user)}`:'Guarda tus listas en tu cuenta';
-      if(avatar)avatar.innerHTML=registrado&&user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="">`:(registrado?'✅':'👤');
+      if(avatar)avatar.innerHTML=registrado&&user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="">`:iconoUI('user','ui-icon ui-icon-lg');
       if(btnHeaderTexto) btnHeaderTexto.textContent = registrado ? (primerNombreUsuario(user)||'Mi cuenta') : 'Iniciar sesión';
       if(btnHeader){
-        const foto = registrado && user.photoURL ? `<img src="${escapeHtml(user.photoURL)}" alt="">` : (registrado?'✅':'👤');
+        const foto = registrado && user.photoURL ? `<img src="${escapeHtml(user.photoURL)}" alt="">` : iconoUI('user','ui-icon ui-icon-lg');
         btnHeader.innerHTML = `${foto}<span id="btnHeaderCuentaTexto">${escapeHtml(registrado ? (primerNombreUsuario(user)||'Mi cuenta') : 'Iniciar sesión')}</span>`;
         btnHeader.setAttribute('aria-label', registrado ? 'Administrar mi cuenta' : 'Iniciar sesión');
       }
       if(pInv)pInv.style.display=registrado?'none':'block';if(pReg)pReg.style.display=registrado?'block':'none';
-      if(registrado){const a=document.getElementById('authProfileAvatar'),n=document.getElementById('authProfileName'),e=document.getElementById('authProfileEmail');if(a)a.innerHTML=user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="">`:'👤';if(n)n.textContent=nombreCompletoUsuario(user)||'Mi cuenta';if(e)e.textContent=user.email||`Cuenta de ${nombreProveedorCuenta(user)}`;}
+      if(registrado){const a=document.getElementById('authProfileAvatar'),n=document.getElementById('authProfileName'),e=document.getElementById('authProfileEmail');if(a)a.innerHTML=user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="">`:iconoUI('user','ui-icon ui-icon-lg');if(n)n.textContent=nombreCompletoUsuario(user)||'Mi cuenta';if(e)e.textContent=user.email||`Cuenta de ${nombreProveedorCuenta(user)}`;}
       actualizarSaludoInicio(user);
     }
     function abrirModalCuenta(esInicial=false){
@@ -3157,13 +3380,13 @@
       const badge = document.getElementById('netStatusBadge');
       const banner = document.getElementById('offlineBanner');
       if (navigator.onLine) {
-        badge.textContent = '🟢 Online';
+        badge.textContent = 'Online';
         badge.className = 'net-badge online';
         banner?.classList.remove('show');
         if (actualizarEstadoRed.ultimoEstado === false) registrarEventoGA('network_online');
         actualizarEstadoRed.ultimoEstado = true;
       } else {
-        badge.textContent = '🟠 Sin conexión';
+        badge.textContent = 'Sin conexión';
         badge.className = 'net-badge offline';
         banner?.classList.add('show');
         if (actualizarEstadoRed.ultimoEstado !== false) registrarEventoGA('network_offline');
@@ -3182,15 +3405,15 @@
       const buscadorFocus = document.getElementById('searchInput');
 
       if (modoFocusActivo) {
-        if (buscadorFocus) buscadorFocus.placeholder = '🔍 Buscar producto en Focus...';
+        if (buscadorFocus) buscadorFocus.placeholder = 'Buscar producto en Focus...';
         appContainer.classList.add('focus-mode-active');
-        btn.textContent = '🎯 Salir Focus';
+        btn.innerHTML = `${iconoUI('target')}<span>Salir Focus</span>`;
         mostrarToast("🎯 Modo Focus activado");
         registrarEventoGA('focus_toggled', { enabled: true });
       } else {
         appContainer.classList.remove('focus-mode-active');
-        if (buscadorFocus) buscadorFocus.placeholder = '🔍 Buscar en esta lista...';
-        btn.textContent = '🎯 Modo Focus';
+        if (buscadorFocus) buscadorFocus.placeholder = 'Buscar en esta lista...';
+        btn.innerHTML = `${iconoUI('target')}<span>Modo Focus</span>`;
         mostrarToast("🎯 Modo normal");
         registrarEventoGA('focus_toggled', { enabled: false });
       }
@@ -4137,6 +4360,19 @@
       return productos.length;
     }
 
+    function iconoMicrofonoClasico() {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path><path d="M8 22h8"></path></svg>';
+    }
+
+    function actualizarIconoMicPrincipal(escuchando = false) {
+      const btnMic = document.getElementById('btnMic');
+      if (!btnMic) return;
+      btnMic.innerHTML = iconoMicrofonoClasico();
+      btnMic.classList.toggle('listening', !!escuchando);
+      btnMic.setAttribute('aria-label', escuchando ? 'Detener dictado por voz' : 'Dictar productos por voz');
+      btnMic.title = escuchando ? 'Detener dictado por voz' : 'Dictar por voz de corrido';
+    }
+
     function detenerDictadoVoz(mostrarMensaje = true) {
       dictadoVozDebeContinuar = false;
       esEscuchandoVoz = false;
@@ -4147,11 +4383,7 @@
       if (objetoReconocimientoVoz) {
         try { objetoReconocimientoVoz.stop(); } catch(e){}
       }
-      const btnMic = document.getElementById('btnMic');
-      if (btnMic) {
-        btnMic.classList.remove('listening');
-        btnMic.textContent = '🎤';
-      }
+      actualizarIconoMicPrincipal(false);
       if (mostrarMensaje) mostrarToast('🎙️ Dictado finalizado');
     }
 
@@ -4169,11 +4401,7 @@
 
       objetoReconocimientoVoz.onstart = function() {
         esEscuchandoVoz = true;
-        const btnMic = document.getElementById('btnMic');
-        if (btnMic) {
-          btnMic.classList.add('listening');
-          btnMic.textContent = '🔴';
-        }
+        actualizarIconoMicPrincipal(true);
       };
 
       objetoReconocimientoVoz.onresult = function(event) {
@@ -4227,11 +4455,7 @@
             if (dictadoVozDebeContinuar) iniciarCicloReconocimientoVoz();
           }, 220);
         } else if (!dictadoVozDebeContinuar) {
-          const btnMic = document.getElementById('btnMic');
-          if (btnMic) {
-            btnMic.classList.remove('listening');
-            btnMic.textContent = '🎤';
-          }
+          actualizarIconoMicPrincipal(false);
         }
       };
 
@@ -4274,6 +4498,8 @@
         : '🎙️ Di varios productos: “leche, pan, huevos” o “leche y pan y huevos”.');
       iniciarCicloReconocimientoVoz();
     }
+
+    actualizarIconoMicPrincipal(false);
 
     let escanerDesdeFocus = false;
     let productoEscaneadoFocus = null;
@@ -5131,13 +5357,13 @@
           if (!wakeLockSentinel) {
             wakeLockSentinel = await navigator.wakeLock.request('screen');
             btn.classList.add('active-mode');
-            btn.textContent = '💡 Encendida (ON)';
+            btn.innerHTML = `${iconoUI('bulb')}<span>Encendida (ON)</span>`;
             mostrarToast("💡 Pantalla fijada: No se apagará mientras compras");
           } else {
             await wakeLockSentinel.release();
             wakeLockSentinel = null;
             btn.classList.remove('active-mode');
-            btn.textContent = '💡 Encendida';
+            btn.innerHTML = `${iconoUI('bulb')}<span>Mantener Pantalla Encendida</span>`;
             mostrarToast("💡 Pantalla devuelta a modo normal");
           }
         } catch (err) {
@@ -5327,6 +5553,20 @@
       return alternativa;
     }
 
+    function iconoUI(nombre, clase = 'ui-icon') {
+      const paths = {
+        user: '<circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path>',
+        users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>',
+        target: '<circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.5"></circle>',
+        edit: '<path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4L16.5 3.5z"></path>',
+        trash: '<path d="M3 6h18M8 6V4h8v2M19 6l-1 15H6L5 6M10 10v7M14 10v7"></path>',
+        list: '<rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path>',
+        bulb: '<path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M8.5 14.5A6 6 0 1 1 15.5 14.5c-.9.7-1.5 1.5-1.5 2.5h-4c0-1-.6-1.8-1.5-2.5z"></path>',
+        pin: '<path d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11z"></path><circle cx="12" cy="10" r="2"></circle>'
+      };
+      return `<svg class="${clase}" viewBox="0 0 24 24" aria-hidden="true">${paths[nombre] || ''}</svg>`;
+    }
+
     function renderizarInicio() {
       const widget = document.getElementById('widgetUltimaLista');
       widget.innerHTML = "";
@@ -5337,7 +5577,7 @@
 
         widget.innerHTML = `
           <div class="recent-list-widget" onclick="abrirLista('${ultima.id}')">
-            <h4>📌 Continuar con tu última lista</h4>
+            <h4>${iconoUI('list')}<span>Continuar con tu última lista</span></h4>
             <div style="font-weight: 800; font-size: 1.1rem; color: var(--text);">${escapeHtml(ultima.nombre)}</div>
             <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
               ${pendientes} productos pendientes de ${(ultima.items || []).length} en total. ➔
@@ -5620,7 +5860,7 @@
           const badge = document.getElementById(id);
           if (!badge) return;
           if (cantidad > 0) {
-            badge.textContent = `👥 ${cantidad} en vivo`;
+            badge.innerHTML = `${iconoUI('users','ui-icon ui-icon-sm')}<span>${cantidad} en vivo</span>`;
             badge.style.display = 'inline-flex';
             badge.classList.add('active-live');
             badge.title = `${cantidad} persona${cantidad === 1 ? '' : 's'} usando esta misma lista ahora`;
@@ -5939,9 +6179,9 @@
       document.getElementById('subTabComprados')?.classList.toggle('active', filtroProductos === 'comprados');
       actualizarBotonesFiltroFocus();
       const app=document.getElementById('appContainer'), btn=document.getElementById('btnToggleFocus');
-      app?.classList.toggle('focus-mode-active', modoFocusActivo); if(btn) btn.textContent = modoFocusActivo ? '🎯 Salir Focus' : '🎯 Modo Focus';
+      app?.classList.toggle('focus-mode-active', modoFocusActivo); if(btn) btn.innerHTML = `${iconoUI('target')}<span>${modoFocusActivo ? 'Salir Focus' : 'Modo Focus'}</span>`;
       const buscadorFocus = document.getElementById('searchInput');
-      if (buscadorFocus) buscadorFocus.placeholder = modoFocusActivo ? '🔍 Buscar producto en Focus...' : '🔍 Buscar en esta lista...';
+      if (buscadorFocus) buscadorFocus.placeholder = modoFocusActivo ? 'Buscar producto en Focus...' : 'Buscar en esta lista...';
     }
 
     async function eliminarLista(e, id) {
@@ -5992,14 +6232,14 @@
         div.onclick = () => abrirLista(lista.id);
         div.innerHTML = `
           <div class="list-info">
-            <h4>📌 ${escapeHtml(lista.nombre)}</h4>
+            <h4>${iconoUI('list')}<span>${escapeHtml(lista.nombre)}</span></h4>
             <p>${pendientes} pendientes de ${(lista.items || []).length} productos</p>
             <span class="badge-code">CÓDIGO: ${lista.id}</span>
           </div>
           <div class="card-actions">
             <button class="btn-action-icon" onclick="compartirListaDesdeTarjeta(event, '${lista.id}')" title="Compartir lista" aria-label="Compartir ${escapeHtml(lista.nombre)}"><svg class="icon-share-classic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"></path><path d="M8 8l4-4 4 4"></path><path d="M5 11v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"></path></svg></button>
-            <button class="btn-action-icon" onclick="editarNombreLista(event, '${lista.id}')" title="Editar nombre">✏️</button>
-            <button class="btn-action-icon" onclick="eliminarLista(event, '${lista.id}')" title="Eliminar lista">🗑️</button>
+            <button class="btn-action-icon" onclick="editarNombreLista(event, '${lista.id}')" title="Editar nombre" aria-label="Editar nombre">${iconoUI('edit')}</button>
+            <button class="btn-action-icon" onclick="eliminarLista(event, '${lista.id}')" title="Eliminar lista" aria-label="Eliminar lista">${iconoUI('trash')}</button>
           </div>
         `;
         contenedor.appendChild(div);
@@ -6284,7 +6524,7 @@
       const btnClear = document.getElementById('btnClearSearch');
       textoBusquedaActual = searchInput.value.toLowerCase().trim();
 
-      btnClear.style.display = textoBusquedaActual ? 'block' : 'none';
+      btnClear.style.display = textoBusquedaActual ? 'inline-flex' : 'none';
       renderizarProductos();
     }
 
@@ -6514,7 +6754,7 @@
                     <button class="btn-qty" onclick="cambiarCantidadProducto(${item.id}, 1)" aria-label="Sumar una unidad a ${escapeHtml(item.texto)}">+</button>
                   </div>
 
-                  <button class="btn-action-icon" onclick="editarProducto(${item.id})" title="Editar producto">✏️</button>
+                  <button class="btn-action-icon" onclick="editarProducto(${item.id})" title="Editar producto" aria-label="Editar producto">${iconoUI('edit')}</button>
 
                   ${botonAccionPrincipal}
 
