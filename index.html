@@ -1922,13 +1922,13 @@
   
 
 
-    /* CUENTA OPCIONAL - v5.8.0 */
+    /* CUENTA OPCIONAL - v5.8.1 */
     .account-status-card {width:100%;border:1px solid var(--border);border-radius:16px;padding:12px 13px;background:color-mix(in srgb,var(--card-bg) 94%,var(--primary) 6%);display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;color:var(--text);font:inherit;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;}
     .account-status-card:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--primary) 55%,var(--border));box-shadow:0 8px 22px rgba(15,23,42,.08)}
     .account-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;background:#eef2ff;font-size:1.25rem;overflow:hidden}.account-avatar img{width:100%;height:100%;object-fit:cover}.account-status-copy{min-width:0;flex:1}.account-status-copy strong{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.account-status-copy small{display:block;color:var(--text-muted);font-size:.73rem;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.account-chevron{color:var(--text-muted);font-weight:900}
     .auth-card{max-width:460px!important;text-align:left}.auth-hero{text-align:center;margin-bottom:14px}.auth-hero .auth-icon{width:64px;height:64px;margin:0 auto 10px;border-radius:20px;display:grid;place-items:center;font-size:2rem;background:linear-gradient(135deg,#eef2ff,#ecfeff);border:1px solid #dbeafe}.auth-hero h3{margin:0 0 6px;font-size:1.25rem}.auth-hero p{margin:0;color:var(--text-muted);line-height:1.45;font-size:.9rem}.auth-benefits{margin:14px 0;display:grid;gap:8px}.auth-benefit{display:flex;gap:9px;align-items:flex-start;padding:10px 11px;border-radius:13px;background:color-mix(in srgb,var(--primary) 7%,var(--card-bg));font-size:.84rem;line-height:1.35}.auth-provider-btn{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);font-weight:850;font-size:.94rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:9px;transition:transform .16s ease,box-shadow .16s ease}.auth-provider-btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,23,42,.09)}.auth-provider-btn.google{background:#fff;color:#172033}.auth-provider-btn.facebook{background:#1877F2;color:#fff;border-color:#1877F2}.auth-provider-logo{width:22px;height:22px;display:grid;place-items:center;font-size:1.15rem;font-weight:900}.auth-guest-btn{width:100%;margin-top:10px;border:none;background:transparent;color:var(--text-muted);font-weight:800;padding:10px;cursor:pointer}.auth-profile-box{border:1px solid var(--border);border-radius:16px;padding:14px;margin:12px 0;background:color-mix(in srgb,var(--primary) 5%,var(--card-bg))}.auth-profile-row{display:flex;gap:12px;align-items:center}.auth-profile-avatar{width:52px;height:52px;border-radius:50%;background:#eef2ff;display:grid;place-items:center;overflow:hidden;font-size:1.5rem;flex:none}.auth-profile-avatar img{width:100%;height:100%;object-fit:cover}.auth-profile-text{min-width:0}.auth-profile-text strong,.auth-profile-text small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.auth-profile-text small{color:var(--text-muted);margin-top:3px}.auth-cloud-badge{display:inline-flex;margin-top:10px;padding:6px 9px;border-radius:999px;background:#dcfce7;color:#166534;font-size:.75rem;font-weight:900}.auth-error{display:none;margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff1f2;color:#9f1239;font-size:.8rem;line-height:1.4}.auth-error.show{display:block}@media(max-width:520px){.auth-card{padding:21px 17px 18px!important}.auth-provider-btn{min-height:52px;font-size:.96rem}}
 
-    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.8.0 */
+    /* SISTEMA UNIFICADO DE VENTANAS FLOTANTES - v5.8.1 */
     .tutorial-overlay {
       background: rgba(15, 23, 42, 0.68);
       -webkit-backdrop-filter: blur(8px) saturate(1.08);
@@ -2311,7 +2311,8 @@
     (function(){
       try {
         const params = new URLSearchParams(window.location.search);
-        if ((params.get('id') || '').trim()) {
+        const sharedId = (params.get('id') || '').trim().toUpperCase();
+        if (/^[A-Z0-9]{6}$/.test(sharedId)) {
           document.documentElement.classList.add('shared-link-boot');
           window.__sharedListBootStartedAt = Date.now();
         }
@@ -2333,7 +2334,7 @@
     
     <div class="header-top">
       <div class="app-title-box">
-        <img src="https://www.listadecompras.website/icon-512.png" alt="Logo Mis Listas" class="header-logo-img">
+        <img src="https://www.listadecompras.website/icon-512.png" alt="Logo Mis Listas" decoding="async" class="header-logo-img">
         <h1 class="app-title">Mis Listas</h1>
       </div>
       <div class="header-right-controls">
@@ -2392,7 +2393,7 @@
       
       <div id="secPortada" style="display: none;">
         <div class="welcome-hero">
-          <img src="https://www.listadecompras.website/icon-512.png" alt="Mis Listas de Compras" class="welcome-logo-img">
+          <img src="https://www.listadecompras.website/icon-512.png" alt="Mis Listas de Compras" decoding="async" class="welcome-logo-img">
           <h2 class="welcome-title">Mis Listas de Compras</h2>
           <div class="welcome-domain">listadecompras.website</div>
           
@@ -2426,14 +2427,14 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span>Política de Privacidad</span></a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>Última actualización: Agosto de 2026 · v5.8.0</span></span>
+          <span style="font-size: 0.7rem; opacity: 0.7;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>Última actualización: Agosto de 2026 · v5.8.1</span></span>
         </div>
       </div>
 
       <div id="secInicio">
         <div class="home-card">
           <div class="home-logo-box">
-            <img src="https://www.listadecompras.website/icon-512.png" alt="Logo Mis Listas de Compras" class="home-app-logo">
+            <img src="https://www.listadecompras.website/icon-512.png" alt="Logo Mis Listas de Compras" decoding="async" class="home-app-logo">
             <h1 class="home-app-name">Mis Listas de Compras</h1>
           </div>
 
@@ -2464,7 +2465,7 @@
         <div class="app-credits">
           Plataforma gratuita y creada sin fines de lucro por <a href="https://www.instagram.com/sabenedettoa" target="_blank" rel="noopener noreferrer">Santiago Benedetto</a> 🇨🇱<br>
           <a href="javascript:void(0)" onclick="abrirModalPrivacidad()" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span>Política de Privacidad</span></a><br>
-          <span style="font-size: 0.7rem; opacity: 0.7;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>Última actualización: Agosto de 2026 · v5.8.0</span></span>
+          <span style="font-size: 0.7rem; opacity: 0.7;"><svg class="ui-icon ui-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 10h18"></path></svg><span>Última actualización: Agosto de 2026 · v5.8.1</span></span>
         </div>
       </div>
 
@@ -2796,7 +2797,7 @@
       <div style="font-size: 0.82rem; background: var(--tab-bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 16px;">
         🗓️ <strong>Fecha de Creación:</strong> 25 de julio de 2026<br>
         👨‍💻 <strong>Creador:</strong> Santiago Benedetto (@sabenedettoa) 🇨🇱<br>
-        📌 <strong>Versión Actual:</strong> 5.8.0 (Agosto 2026)
+        📌 <strong>Versión Actual:</strong> 5.8.1 (Agosto 2026)
       </div>
 
       <button class="btn-tut next" onclick="cerrarModalAcercaDe()" style="width: 100%;">¡Entendido! 👍</button>
@@ -3060,7 +3061,7 @@
 
     async function asegurarMembresiaLista(listaId) {
       if (!listaId) throw new Error('Lista inválida');
-      // v5.8.0: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
+      // v5.8.1: con reglas basadas en auth != null, no se requiere escribir un nodo de membresía.
       // Solo aseguramos que exista una sesión anónima válida antes de tocar Realtime Database.
       return await obtenerUsuarioFirebase();
     }
@@ -5941,7 +5942,7 @@
         await db.ref('listas/' + lista.id + '/items').set(itemsAObjetoFirebase(lista.items || []));
         await db.ref('listas/' + lista.id + '/presupuesto').set(obtenerPresupuestoLista(lista));
 
-        const urlCompartida = `${window.location.origin}${window.location.pathname}?id=${lista.id}`;
+        const urlCompartida = `${URL_PUBLICA_APP}?id=${encodeURIComponent(lista.id)}`;
         const mensajeTexto = `🛒 Te comparto la lista "${lista.nombre}" en vivo.\n🔑 Código de acceso: ${lista.id}`;
 
         if (navigator.share) {
@@ -5989,10 +5990,10 @@
     async function unirsePorCodigo() {
       vibrarConfirmacion();
       const input = document.getElementById('codigoUnirseInput');
-      const codigo = input.value.trim().toUpperCase();
+      const codigo = normalizarCodigoLista(input.value);
 
       if (!codigo) {
-        mostrarToast("⚠️ Escribe un código de 6 caracteres primero");
+        mostrarToast("⚠️ El código debe tener 6 letras o números");
         return;
       }
 
@@ -6031,6 +6032,13 @@
       }
     }
 
+    const URL_PUBLICA_APP = 'https://www.listadecompras.website/';
+
+    function normalizarCodigoLista(valor) {
+      const codigo = String(valor || '').trim().toUpperCase();
+      return /^[A-Z0-9]{6}$/.test(codigo) ? codigo : '';
+    }
+
     let sharedListLoadingOpenedAt = Number(window.__sharedListBootStartedAt) || 0;
     function mostrarCargaListaCompartida() {
       const overlay = document.getElementById('sharedListLoadingOverlay');
@@ -6055,12 +6063,22 @@
 
     function obtenerCodigoListaDesdeURL() {
       const urlParams = new URLSearchParams(window.location.search);
-      return (urlParams.get('id') || '').trim().toUpperCase();
+      return normalizarCodigoLista(urlParams.get('id'));
     }
 
     async function procesarListaRecibidaPorURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const idOriginal = (urlParams.get('id') || '').trim();
       const listaIdURL = obtenerCodigoListaDesdeURL();
-      if (!listaIdURL) return false;
+      if (!listaIdURL) {
+        if (idOriginal) {
+          document.documentElement.classList.remove('shared-link-boot');
+          window.__sharedListBootStartedAt = 0;
+          window.history.replaceState({}, document.title, window.location.pathname);
+          mostrarToast('⚠️ El enlace de la lista no es válido');
+        }
+        return false;
+      }
 
       mostrarCargaListaCompartida();
       try {
