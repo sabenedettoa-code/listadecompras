@@ -13,12 +13,20 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 // APP CHECK: demuestra a Firebase que las peticiones vienen de este sitio y no de un script externo.
-// La clave de reCAPTCHA Enterprise es pública (no es un secreto). En localhost se usa un token
-// de depuración: la consola del navegador lo muestra y hay que registrarlo en Firebase > App Check.
+// La clave de reCAPTCHA Enterprise es pública (no es un secreto).
+// Ojo: si App Check no consigue su token, Realtime Database no se conecta (aunque App Check no
+// esté en modo obligatorio). Por eso solo se activa en los dominios registrados en la clave.
+// Para probar en localhost: localStorage.setItem('appCheckDebug', '1'), recargar, copiar el
+// token de depuración que aparece en la consola y registrarlo en Firebase > App Check.
 const RECAPTCHA_ENTERPRISE_SITE_KEY = '6LeuVNAtAAAAACGoKNj1oA_XUq40H1KZkgnw4-VK';
+const DOMINIOS_APP_CHECK = ['listadecompras.website', 'www.listadecompras.website'];
 try {
-  if (['localhost', '127.0.0.1'].includes(location.hostname)) self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-  firebase.appCheck().activate(new firebase.appCheck.ReCaptchaEnterpriseProvider(RECAPTCHA_ENTERPRISE_SITE_KEY), true);
+  const esLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
+  const depuracionLocal = esLocal && localStorage.getItem('appCheckDebug') === '1';
+  if (depuracionLocal) self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  if (DOMINIOS_APP_CHECK.includes(location.hostname) || depuracionLocal) {
+    firebase.appCheck().activate(new firebase.appCheck.ReCaptchaEnterpriseProvider(RECAPTCHA_ENTERPRISE_SITE_KEY), true);
+  }
 } catch (e) {
   console.warn('No se pudo activar App Check:', e);
 }
@@ -43,6 +51,20 @@ const firebaseAuthReady = (async () => {
     return null;
   }
 })();
+
+// Lectura única con tiempo límite. Sin conexión real con Firebase (mala señal, red cautiva),
+// once() espera para siempre; así la app muestra un aviso en vez de quedarse girando.
+function leerFirebase(ref, ms = 10000) {
+  let temporizador;
+  const limite = new Promise((_, rechazar) => {
+    temporizador = setTimeout(() => {
+      const error = new Error('No hubo respuesta de la nube a tiempo');
+      error.code = 'timeout';
+      rechazar(error);
+    }, ms);
+  });
+  return Promise.race([ref.once('value'), limite]).finally(() => clearTimeout(temporizador));
+}
 
 async function obtenerUsuarioFirebase() {
   const user = usuarioFirebase || await firebaseAuthReady;

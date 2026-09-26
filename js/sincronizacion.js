@@ -291,18 +291,23 @@ async function unirsePorCodigo() {
     return;
   }
 
+  if (!navigator.onLine) {
+    mostrarToast("📶 Necesitas conexión a Internet para unirte a una lista");
+    return;
+  }
+
   mostrarToast("🔍 Buscando lista...");
 
   try {
     await obtenerUsuarioFirebase();
     // Solo el nombre es consultable antes de ser miembro. El contenido permanece protegido.
-    const nombreSnapshot = await db.ref(`listas/${codigo}/nombre`).once('value');
+    const nombreSnapshot = await leerFirebase(db.ref(`listas/${codigo}/nombre`));
     if (!nombreSnapshot.exists()) {
       mostrarToast("❌ Código no encontrado o no existe");
       return;
     }
     await asegurarMembresiaLista(codigo);
-    const snapshot = await db.ref('listas/' + codigo).once('value');
+    const snapshot = await leerFirebase(db.ref('listas/' + codigo));
     const datos = listaDesdeFirebase(snapshot.val());
     if (!datos) throw new Error('Lista no disponible');
 
@@ -322,7 +327,7 @@ async function unirsePorCodigo() {
     registrarListaEnCuenta(codigo, datos.nombre);
   } catch (e) {
     console.error('Error al unirse a la lista:', e);
-    mostrarToast("⚠️ No se pudo acceder a esa lista");
+    mostrarToast(e?.code === 'timeout' ? "📶 La nube no respondió. Revisa tu conexión e inténtalo de nuevo" : "⚠️ No se pudo acceder a esa lista");
   }
 }
 
@@ -374,10 +379,25 @@ async function procesarListaRecibidaPorURL() {
     return false;
   }
 
+  // Sin conexión: si la lista ya está en este teléfono se abre esa copia; si no, se avisa.
+  const abrirCopiaLocal = async (motivo) => {
+    await ocultarCargaListaCompartida();
+    const copia = coleccionListas.find(l => String(l.id) === String(listaIdURL));
+    if (copia) {
+      abrirLista(listaIdURL);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      mostrarToast(`📶 ${motivo} · se abrió la copia guardada de "${copia.nombre}"`);
+      return true;
+    }
+    mostrarToast(`📶 ${motivo} · conéctate a Internet para abrir esta lista por primera vez`);
+    return false;
+  };
+  if (!navigator.onLine) return await abrirCopiaLocal('Sin conexión');
+
   mostrarCargaListaCompartida();
   try {
     await obtenerUsuarioFirebase();
-    const nombreSnapshot = await db.ref(`listas/${listaIdURL}/nombre`).once('value');
+    const nombreSnapshot = await leerFirebase(db.ref(`listas/${listaIdURL}/nombre`));
     if (!nombreSnapshot.exists()) {
       await ocultarCargaListaCompartida();
       mostrarToast('❌ El enlace de la lista ya no es válido');
@@ -385,7 +405,7 @@ async function procesarListaRecibidaPorURL() {
     }
 
     await asegurarMembresiaLista(listaIdURL);
-    const snapshot = await db.ref('listas/' + listaIdURL).once('value');
+    const snapshot = await leerFirebase(db.ref('listas/' + listaIdURL));
     const datos = listaDesdeFirebase(snapshot.val());
     if (!datos) {
       await ocultarCargaListaCompartida();
@@ -413,6 +433,7 @@ async function procesarListaRecibidaPorURL() {
     return true;
   } catch(e) {
     console.error('Error al abrir lista compartida:', e);
+    if (e?.code === 'timeout') return await abrirCopiaLocal('La nube no respondió');
     await ocultarCargaListaCompartida();
     mostrarToast('⚠️ No se pudo abrir la lista compartida');
     return false;
